@@ -5,6 +5,8 @@ import type { DelConnectionsQuery } from '@boxyhq/saml-jackson';
 import { validateDevelopmentModeLimits } from '@lib/development-mode';
 import { defaultHandler } from '@lib/api';
 import { normalizeBooleanParam } from '@lib/api/utils';
+import { getConnectionsQuerySchema } from '@lib/zod/schema';
+import { validateWithSchema } from '@lib/zod';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await defaultHandler(req, res, {
@@ -19,11 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 const handleGET = async (req: NextApiRequest, res: NextApiResponse) => {
   const { connectionAPIController } = await jackson();
 
-  const params = req.query as any;
-
-  if ('sort' in params) {
-    params['sort'] = params.sort === 'true';
-  }
+  const params = validateWithSchema(getConnectionsQuerySchema, req.query);
 
   const connections = await connectionAPIController.getConnections(params);
 

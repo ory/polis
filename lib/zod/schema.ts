@@ -18,7 +18,7 @@ const entityIdQuerySchema = z.object({
 const tenantArrayQuerySchema = z.object({
   tenant: z.array(z.string()),
   product: z.string(),
-  sort: z.boolean().optional(),
+  sort: z.literal('true').transform(() => true),
 });
 
 // Combined schema for GetConnectionsQuery
