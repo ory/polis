@@ -70,7 +70,7 @@
   "next_step": "Next Step",
   "boxyhq_powered_by": "Powered by Ory",
   "guides": "Guides",
-  "learn_to_enable_auth_methods": "Please visit <docLink>BoxyHQ documentation</docLink> to learn how to enable the Magic Link or Email/Password authentication methods.",
+  "learn_to_enable_auth_methods": "Please visit <docLink>Ory Polis documentation</docLink> to learn how to enable the Magic Link or Email/Password authentication methods.",
   "advanced_sp_saml_configuration": "Advanced Service Provider (SP) SAML Configuration",
   "select_identity_provider": "Select Identity Provider",
   "configure_identity_provider": "Configure {{provider}}",

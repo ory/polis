@@ -58,7 +58,7 @@ for (const provider of providers) {
     await expect(page.getByRole('cell', { name: providerUser1.emails[0].value, exact: true })).toBeVisible();
     // Assert created group
     await dsyncPage.switchToGroupsView({ waitForData: true });
-    await expect(await page.getByRole('cell', { name: 'BoxyHQ' })).toBeVisible();
+    await expect(await page.getByRole('cell', { name: 'Ory' })).toBeVisible();
     // Enable webhook logs
     await dsyncPage.setWebHookEventsLogging({ enable: true, directory });
     const providerUser2 = provider.generators.user(2);
@@ -126,9 +126,9 @@ for (const provider of providers) {
     await dsyncPage.switchToDSyncInfoView();
     await dsyncPage.switchToUsersView();
     await expect(page.getByRole('heading', { name: 'No users found for this directory.' })).toBeVisible();
-    await updateGroupName(request, directory, group.id, 'BoxyHQ-updated');
+    await updateGroupName(request, directory, group.id, 'Ory-updated');
     await dsyncPage.switchToGroupsView({ waitForData: true });
-    await expect(page.getByRole('cell', { name: 'BoxyHQ-updated' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Ory-updated' })).toBeVisible();
     // Group deletion
     await deleteGroup(request, directory, group.id);
     await page.reload();

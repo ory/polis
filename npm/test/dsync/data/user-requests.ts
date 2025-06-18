@@ -146,7 +146,7 @@ const requests = {
           {
             op: 'replace',
             path: 'companyName',
-            value: 'BoxyHQ',
+            value: 'Ory',
           },
           {
             op: 'add',

@@ -33,6 +33,7 @@ export const sendPayloadToWebhook = async (
     headers: {
       'Content-Type': 'application/json',
       'BoxyHQ-Signature': createSignatureString(webhook.secret, payload),
+      'Ory-Polis-Signature': createSignatureString(webhook.secret, payload),
     },
   });
 };

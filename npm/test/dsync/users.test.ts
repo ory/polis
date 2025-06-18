@@ -138,7 +138,7 @@ tap.test('Directory users /', async (t) => {
 
       t.ok(data);
       t.equal(status, 200);
-      t.equal(data.companyName, 'BoxyHQ');
+      t.equal(data.companyName, 'Ory');
       t.equal(data.address.streetAddress, '123 Main St');
     });
 

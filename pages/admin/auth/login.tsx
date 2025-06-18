@@ -114,14 +114,14 @@ const Login = ({
             <div className='space-y-3'>
               <div className='flex justify-center'>
                 <Image
-                  src={branding ? branding.logoUrl : '/logo.png'}
-                  alt={(branding ? branding.companyName : 'BoxyHQ') + ' logo'}
+                  src={branding ? branding.logoUrl : '/logo.svg'}
+                  alt={(branding ? branding.companyName : 'Ory Polis') + ' logo'}
                   width={50}
                   height={50}
                 />
               </div>
               <h2 className='text-center text-3xl font-extrabold text-gray-900'>
-                {(branding ? branding.companyName : 'BoxyHQ') + ' ' + t('admin_portal')}
+                {(branding ? branding.companyName : 'Ory Polis') + ' ' + t('admin_portal')}
               </h2>
               <p className='text-center text-sm text-gray-600'>{t('boxyhq_tagline')}</p>
             </div>
