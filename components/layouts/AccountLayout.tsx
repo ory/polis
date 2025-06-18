@@ -40,7 +40,7 @@ export const AccountLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Head>
-        <title>{(branding ? branding.companyName : 'BoxyHQ') + ' ' + t('admin_portal')}</title>
+        <title>{(branding ? branding.companyName : 'Ory Polis') + ' ' + t('admin_portal')}</title>
         <link rel='icon' href={branding ? branding.faviconUrl : '/favicon.ico'} />
       </Head>
       <Sidebar
