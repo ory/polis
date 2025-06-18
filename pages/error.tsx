@@ -1,25 +1,13 @@
-import { getErrorCookie } from '@lib/ui/utils';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSidePropsContext } from 'next';
 
-export default function Error() {
-  const { t } = useTranslation('common');
-  const [error, setError] = useState({ statusCode: null, message: '' });
-  const { pathname } = useRouter();
+export const config = {
+  unstable_runtimeJS: false,
+};
 
-  useEffect(() => {
-    const _error = getErrorCookie() || '';
-    try {
-      const { statusCode, message } = JSON.parse(_error);
-      setError({ statusCode, message });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      console.error('Unknown error format');
-    }
-  }, [pathname]);
+export default function Error({ error }) {
+  const { t } = useTranslation('common');
 
   const { statusCode, message } = error;
   let statusText = '';
@@ -59,9 +47,28 @@ export default function Error() {
   );
 }
 
-export async function getStaticProps({ locale }: GetServerSidePropsContext) {
+function getErrorCookie(cookie) {
+  const matches = cookie.match(
+    new RegExp('(?:^|; )' + 'jackson_error'.replace(/([.$?*|{}()[]\\\/\+^])/g, '\\$1') + '=([^;]*)')
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+export async function getServerSideProps({ locale, req }: GetServerSidePropsContext) {
+  const error = {} as { statusCode: number | null; message: string };
+  const _error = getErrorCookie(req.headers.cookie || '');
+  try {
+    const { statusCode, message } = JSON.parse(_error!);
+    error.statusCode = statusCode;
+    error.message = message;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
+    console.error('Unknown error format');
+  }
+
   return {
     props: {
+      error,
       ...(locale ? await serverSideTranslations(locale, ['common']) : {}),
     },
   };

@@ -1,12 +1,3 @@
-// returns the cookie with the given name,
-// or undefined if not found
-export function getErrorCookie() {
-  const matches = document.cookie.match(
-    new RegExp('(?:^|; )' + 'jackson_error'.replace(/([.$?*|{}()[]\\\/\+^])/g, '\\$1') + '=([^;]*)')
-  );
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
 export const fetcher = async (url: string, queryParams = '') => {
   const res = await fetch(`${url}${queryParams}`);
 
