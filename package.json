@@ -61,7 +61,7 @@
   "dependencies": {
     "@boxyhq/internal-ui": "file:internal-ui",
     "@boxyhq/metrics": "0.2.10",
-    "@boxyhq/react-ui": "3.4.1",
+    "@boxyhq/react-ui": "3.5.1",
     "@boxyhq/saml-jackson": "file:npm",
     "@heroicons/react": "2.2.0",
     "@next/bundle-analyzer": "15.3.3",
