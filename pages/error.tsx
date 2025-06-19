@@ -2,10 +2,6 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSidePropsContext } from 'next';
 
-export const config = {
-  unstable_runtimeJS: false,
-};
-
 export default function Error({ error }) {
   const { t } = useTranslation('common');
 
