@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import { ButtonPrimary, Card, Error, Loading } from '../shared';
 import { useFormik } from 'formik';
 import { useFetch, parseResponseContent } from '../hooks';
+import { boxyhqBranding } from './index';
 
 export const BrandingForm = ({
   defaults,
@@ -40,7 +41,7 @@ export const BrandingForm = ({
       logoUrl: branding?.logoUrl || `${urls.jacksonUrl ?? ''}${defaults?.logoUrl ?? ''}` || '',
       faviconUrl: branding?.faviconUrl || `${urls.jacksonUrl ?? ''}${defaults?.faviconUrl ?? ''}` || '',
       companyName: branding?.companyName || defaults?.companyName || '',
-      primaryColor: branding?.primaryColor || defaults?.primaryColor || '',
+      primaryColor: branding?.primaryColor || defaults?.primaryColor || boxyhqBranding.primaryColor,
     },
     onSubmit: async (values) => {
       const rawResponse = await fetch(urls.patch ?? urls.post!, {
