@@ -127,8 +127,8 @@ const Tab = ({ isActive, setIsActive, title, description, label }) => {
   return (
     <button
       type='button'
-      className={`w-full text-left rounded border hover:border-teal-800 p-4${
-        isActive ? ' bg-teal-50 opacity-100' : ' opacity-50'
+      className={`w-full text-left rounded border hover:border-purple-800 p-4${
+        isActive ? ' bg-purple-50 opacity-100' : ' opacity-50'
       }`}
       onClick={setIsActive}
       aria-label={label}>

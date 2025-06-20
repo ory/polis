@@ -42,7 +42,7 @@ export const azureGroup = {
     'http://schemas.microsoft.com/2006/11/ResourceManagement/ADSCIM/2.0/Group',
   ],
   externalId: '8aa1a0c0-c4c3-4bc0-b4a5-2ef676900159',
-  displayName: 'BoxyHQ',
+  displayName: 'Ory',
   meta: {
     resourceType: 'Group',
   },

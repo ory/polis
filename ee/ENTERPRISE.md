@@ -1,6 +1,6 @@
-# Enterprise Edition
+# Ory Enterprise License
 
-Welcome to the Enterprise Edition ("/ee") of BoxyHQ.
+Welcome to the Enterprise Edition ("/ee") of Ory.
 
 The [/ee](https://github.com/ory/polis/tree/main/ee) subfolder is the place for all the **Enterprise** features for this repository.
 

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
-import Logo from '../public/logo.png';
+import Logo from '../public/logo.svg';
 import { useTranslation } from 'next-i18next';
 import SSOLogo from '@components/logo/SSO';
 import DSyncLogo from '@components/logo/DSync';
@@ -248,13 +248,13 @@ const BrandingLink = ({ t, branding }) => {
         <>
           <Image
             src={branding ? branding.logoUrl : Logo}
-            alt={branding ? branding.companyName : 'BoxyHQ'}
-            width={36}
-            height={36}
+            alt={branding ? branding.companyName : 'Ory Polis'}
+            width={32}
+            height={32}
             className='h-8 w-auto'
           />
           <span className='ml-4 text-lg font-bold text-gray-900'>
-            {(branding ? branding.companyName : 'BoxyHQ') + ' ' + t('admin_portal')}
+            {(branding ? branding.companyName : 'Ory Polis') + ' ' + t('admin_portal')}
           </span>
         </>
       )}
