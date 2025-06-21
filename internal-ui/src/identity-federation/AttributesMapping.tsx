@@ -97,7 +97,7 @@ const AttributeRow = ({
   };
 
   return (
-    <div className='grid grid-cols-12 gap-4 items-center p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors duration-200'>
+    <div className='grid grid-cols-12 gap-4 items-center transition-colors duration-200'>
       {/* SP Attribute Input */}
       <div className='col-span-5'>
         <input
