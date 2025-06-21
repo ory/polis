@@ -22,7 +22,7 @@ export const validateEmailWithACL = (email: string) => {
  */
 export const setErrorCookieAndRedirect = (res: NextApiResponse, value: unknown) => {
   const stringValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
-  let cookieContents = 'jackson_error' + '=' + encodeURIComponent(stringValue);
+  let cookieContents = 'polis_error' + '=' + encodeURIComponent(stringValue);
   let path = '/error';
 
   if (jacksonOptions.externalUrl) {
