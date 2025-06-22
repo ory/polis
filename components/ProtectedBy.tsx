@@ -5,8 +5,8 @@ export const PoweredBy = () => {
 
   return (
     <p className='text-center text-xs text-gray-500 py-5'>
-      <a href='https://www.ory.sh/' target='_blank' rel='noopener noreferrer'>
-        {t('boxyhq_powered_by')}
+      <a href='https://www.ory.sh' target='_blank' rel='noopener noreferrer'>
+        {t('ory_protected_by')}
       </a>
     </p>
   );

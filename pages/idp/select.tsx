@@ -9,7 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import jackson from '@lib/jackson';
 import Head from 'next/head';
 import { hexToOklch } from '@lib/color';
-import { PoweredBy } from '@components/PoweredBy';
+import { PoweredBy } from '@components/ProtectedBy';
 import { getPortalBranding, getProductBranding } from '@ee/branding/utils';
 import { boxyhqHosted } from '@lib/env';
 import { createGlobalStyle } from 'styled-components';
