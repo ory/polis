@@ -1,22 +1,12 @@
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSidePropsContext } from 'next';
+import { getErrorMessageFromCookie } from '@lib/utils';
 
 export default function Error({ error }) {
   const { t } = useTranslation('common');
 
-  const { statusCode, message } = error;
-  let statusText = '';
-  if (typeof statusCode === 'number') {
-    if (statusCode >= 400 && statusCode <= 499) {
-      statusText = t('client_error');
-    }
-    if (statusCode >= 500 && statusCode <= 599) {
-      statusText = t('server_error');
-    }
-  }
-
-  if (statusCode === null) {
+  if (!error.statusCode) {
     return null;
   }
 
@@ -30,10 +20,10 @@ export default function Error({ error }) {
                 {error.statusCode}
               </h1>
               <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl'>
-                {statusText}
+                {t(error.statusText)}
               </p>
               <p className='mb-4 text-lg font-light'>
-                {t('sso_error')}: {message}
+                {t('sso_error')}: {error.message}
               </p>
             </div>
           </div>
@@ -43,24 +33,8 @@ export default function Error({ error }) {
   );
 }
 
-function getErrorCookie(cookie) {
-  const matches = cookie.match(
-    new RegExp('(?:^|; )' + 'polis_error'.replace(/([.$?*|{}()[]\\\/\+^])/g, '\\$1') + '=([^;]*)')
-  );
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
 export async function getServerSideProps({ locale, req }: GetServerSidePropsContext) {
-  const error = {} as { statusCode: number | null; message: string };
-  const _error = getErrorCookie(req.headers.cookie || '');
-  try {
-    const { statusCode, message } = JSON.parse(_error!);
-    error.statusCode = statusCode;
-    error.message = message;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
-    console.error('Unknown error format');
-  }
+  const error = getErrorMessageFromCookie(req.cookies.polis_error);
 
   return {
     props: {

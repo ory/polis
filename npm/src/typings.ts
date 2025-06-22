@@ -475,6 +475,7 @@ export interface JacksonOption {
     error?: (msg: string, err?: any) => void;
   };
   flattenRawClaims?: boolean;
+  jsonErrorPage?: boolean;
 }
 
 export interface SLORequestParams {

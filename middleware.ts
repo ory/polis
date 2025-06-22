@@ -19,6 +19,7 @@ const unAuthenticatedApiRoutes = [
   '/api/well-known/**',
   '/api/setup/**',
   '/api/branding',
+  '/api/error',
 ];
 
 export async function middleware(req: NextRequest) {

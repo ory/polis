@@ -107,6 +107,7 @@ const jacksonOptions: JacksonOption = {
   boxyhqHosted,
   ssoTraces,
   flattenRawClaims: process.env.FLATTEN_RAW_CLAIMS === 'true',
+  jsonErrorPage: process.env.JSON_ERROR_PAGE === 'true',
 };
 
 const adminPortalSSODefaults = {
