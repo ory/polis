@@ -73,7 +73,7 @@
     "cross-env": "7.0.3",
     "daisyui": "4.12.24",
     "formik": "2.4.6",
-    "i18next": "25.2.0",
+    "i18next": "25.3.0",
     "medium-zoom": "1.1.0",
     "micromatch": "4.0.8",
     "next": "15.3.3",
