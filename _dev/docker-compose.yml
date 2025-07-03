@@ -34,7 +34,7 @@ services:
       MARIADB_DATABASE: mysql
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
   mssql:
-    image: mcr.microsoft.com/azure-sql-edge:2.0.0
+    image: mcr.microsoft.com/mssql/server:2019-latest
     platform: linux/amd64
     ports:
       - 1433:1433
