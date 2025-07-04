@@ -115,7 +115,7 @@
     "jose": "6.0.11",
     "postcss": "8.5.4",
     "prettier": "3.5.3",
-    "prettier-plugin-tailwindcss": "0.6.11",
+    "prettier-plugin-tailwindcss": "0.6.13",
     "release-it": "19.0.2",
     "swagger-jsdoc": "6.2.8",
     "tailwindcss": "3.4.17",
