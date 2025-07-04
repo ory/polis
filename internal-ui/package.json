@@ -40,7 +40,7 @@
     "vite": "6.3.5"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.41.1"
+    "@rollup/rollup-linux-x64-gnu": "4.44.1"
   },
   "peerDependencies": {
     "@boxyhq/react-ui": ">=3.3.42",
