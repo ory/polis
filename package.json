@@ -1,6 +1,6 @@
 {
   "name": "polis",
-  "version": "1.52.0",
+  "version": "1.52.1",
   "private": true,
   "description": "SAML 2.0 service",
   "keywords": [
