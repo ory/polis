@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Enterprise SSO & Directory Sync",
-    "version": "1.52.1",
+    "version": "1.52.2",
     "description": "This is the API documentation for Polis.",
     "termsOfService": "/tos",
     "contact": {
