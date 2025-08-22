@@ -13,7 +13,7 @@
 ---
 
 <p align="left">
-    <a href="https://github.com/ory/polis/actions/workflows/main.yml"><img src="https://github.com/ory/polis/actions/workflows/main.yml/badge.svg?branch=master&event=push" alt="CI Tasks for Ory polis"></a>
+    <a href="https://github.com/ory/polis/actions/workflows/main.yml"><img src="https://github.com/ory/polis/actions/workflows/main.yml/badge.svg" alt="CI Tasks for Ory polis"></a>
     <a href="https://codecov.io/gh/ory/polis"><img src="https://codecov.io/gh/ory/polis/branch/master/graph/badge.svg?token=6t0QqOdurR"/></a>
     <a href="https://bestpractices.coreinfrastructure.org/projects/4979"><img src="https://bestpractices.coreinfrastructure.org/projects/4979/badge" alt="CII Best Practices"></a>
     <a href="https://github.com/ory/polis/blob/master/CODE_OF_CONDUCT.md" alt="Ory Code of Conduct"><img src="https://img.shields.io/badge/ory-code%20of%20conduct-green" /></a>
