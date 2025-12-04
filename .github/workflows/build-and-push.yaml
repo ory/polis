@@ -1,0 +1,44 @@
+name: Create ECR Image
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: ["main"]
+
+env:
+  ORIGIN_REPO: "jackson"
+  ORIGIN_ID: 491384846940
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::${{ env.ORIGIN_ID }}:role/ecr-user
+          role-session-name: ${{ env.ORIGIN_REPO }}-creation
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+        with:
+          registries: ${{ env.ORIGIN_ID }}
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ORIGIN_REPO }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:main .
+          docker image push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
