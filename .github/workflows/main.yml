@@ -116,7 +116,7 @@ jobs:
         ports:
           - '8080:8080'
       mocksaml:
-        image: boxyhq/mock-saml:1.4.1
+        image: boxyhq/mock-saml:1.4.2
         ports:
           - 4000:4000
         env:
@@ -138,7 +138,7 @@ jobs:
           check-latest: true
       - name: Run docker-compose up
         id: docker_compose
-        uses: isbang/compose-action@v2.4.1
+        uses: isbang/compose-action@v2.4.2
         with:
           compose-file: './_dev/docker-compose-cockroachdb.yml'
       - run: node -v
