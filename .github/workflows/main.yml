@@ -242,7 +242,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.ref == 'refs/heads/release' }}
+          push: ${{ github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/tags/beta-v') }}
           tags: ${{ needs.ci.outputs.IMAGE_PATH }}:${{ needs.ci.outputs.PUBLISH_TAG }},${{ needs.ci.outputs.IMAGE_PATH }}:${{ steps.slug.outputs.SHA7 }},${{ needs.ci.outputs.IMAGE_PATH }}:${{ needs.ci.outputs.NPM_VERSION }}
 
       - name: Image digest
