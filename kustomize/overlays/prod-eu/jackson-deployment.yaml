@@ -8,5 +8,5 @@ spec:
     spec:
       containers:
         - name: jackson
-          image: boxyhq/jackson:tagwillbereplaced
+          image: boxyhq/jackson-beta:tagwillbereplaced
           imagePullPolicy: IfNotPresent

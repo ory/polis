@@ -19,5 +19,5 @@ patches:
     path: ./migratepg-job.yaml
 
 images:
-  - name: boxyhq/jackson
-    newTag: 1.52.2
+  - name: boxyhq/jackson-beta
+    newTag: 1.52.2-beta.15745
