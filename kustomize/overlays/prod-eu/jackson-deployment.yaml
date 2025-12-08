@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: jackson
 spec:
-  replicas: 1
+  replicas: 2
   template:
     spec:
       containers:
