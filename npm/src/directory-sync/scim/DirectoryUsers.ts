@@ -166,7 +166,7 @@ export class DirectoryUsers {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:ListResponse'],
         startIndex: startIndex ? startIndex : 1,
         totalResults: totalResults ? totalResults : 0,
-        itemsPerPage: users ? users.length : 0,
+        itemsPerPage: users ? Math.min(users.length, count || users.length) : 0,
         Resources: users ? users.map((user) => user.raw) : [],
       },
     };
