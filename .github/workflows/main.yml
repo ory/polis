@@ -169,7 +169,7 @@ jobs:
       - name: e2e tests
         run: npx ts-node --log-error e2e/support/pretest.ts && npx playwright test -x
       - name: Upload e2e trace
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
@@ -297,12 +297,12 @@ jobs:
           sbom-artifact-match: ".*\\.cyclonedx$"
       - name: Download artifact for SPDX Report
         if: github.ref == 'refs/heads/release'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: npm_sbom.spdx
       - name: Download artifact for CycloneDx Report
         if: github.ref == 'refs/heads/release'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: npm_sbom.cyclonedx
       - name: Remove older SBOMs
@@ -340,12 +340,12 @@ jobs:
         run: rm -rf sbom*.* || true
       - name: Download artifact for SPDX Report
         if: github.ref == 'refs/heads/release'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: sbom.spdx
       - name: Download artifact for CycloneDx Report
         if: github.ref == 'refs/heads/release'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: sbom.cyclonedx
 
@@ -377,12 +377,12 @@ jobs:
           sbom-artifact-match: ".*\\.cyclonedx$"
       - name: Download artifact for SPDX Report [Docker]
         if: github.ref == 'refs/heads/release'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: docker_sbom.spdx
       - name: Download artifact for CycloneDx Report [Docker]
         if: github.ref == 'refs/heads/release'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: docker_sbom.cyclonedx
       - name: Create/Clear folder [Docker]
