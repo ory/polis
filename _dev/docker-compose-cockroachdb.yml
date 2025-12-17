@@ -1,6 +1,6 @@
 services:
   cockroachdb:
-    image: cockroachdb/cockroach:latest-v25.3
+    image: cockroachdb/cockroach:latest-v25.4
     platform: linux/amd64
     ports:
       - '26257:26257'
