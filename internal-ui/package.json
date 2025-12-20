@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "vite-tsconfig-paths": "6.0.2"
+    "vite-tsconfig-paths": "6.0.3"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "12.3.0",
@@ -40,7 +40,7 @@
     "vite": "6.4.1"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.53.5"
+    "@rollup/rollup-linux-x64-gnu": "4.54.0"
   },
   "peerDependencies": {
     "@boxyhq/react-ui": ">=3.5.1",
