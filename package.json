@@ -101,7 +101,7 @@
     "remark-gfm": "4.0.1",
     "rsc-daisyui": "2.3.0",
     "sharp": "0.34.5",
-    "styled-components": "6.1.19",
+    "styled-components": "6.2.0",
     "swr": "2.3.8"
   },
   "devDependencies": {
