@@ -53,12 +53,16 @@ export class SPSSOConfig {
     };
   }
 
-  public async toXMLMetadata(encryption = false, entityIdOverride?: string): Promise<string> {
+  public async toXMLMetadata(
+    encryption = false,
+    entityIdOverride?: string,
+    acsUrlOverride?: string
+  ): Promise<string> {
     const { entityId, acsUrl, publicKeyString } = await this.get();
 
     return saml20.createSPMetadataXML({
       entityId: entityIdOverride ? entityIdOverride : entityId,
-      acsUrl,
+      acsUrl: acsUrlOverride ? acsUrlOverride : acsUrl,
       publicKeyString,
       encryption,
     });
