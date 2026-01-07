@@ -138,7 +138,7 @@ jobs:
           check-latest: true
       - name: Run docker-compose up
         id: docker_compose
-        uses: isbang/compose-action@v2.4.2
+        uses: isbang/compose-action@v2.4.3
         with:
           compose-file: './_dev/docker-compose-cockroachdb.yml'
       - run: node -v
