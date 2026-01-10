@@ -43,7 +43,7 @@
     "@rollup/rollup-linux-x64-gnu": "4.55.1"
   },
   "peerDependencies": {
-    "@boxyhq/react-ui": ">=3.5.1",
+    "@boxyhq/react-ui": ">=3.5.2",
     "@heroicons/react": ">=2.2.0",
     "classnames": ">=2.5.1",
     "formik": ">=2.4.9",
