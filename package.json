@@ -101,14 +101,14 @@
     "remark-gfm": "4.0.1",
     "rsc-daisyui": "2.3.0",
     "sharp": "0.34.5",
-    "styled-components": "6.3.5",
+    "styled-components": "6.3.6",
     "swr": "2.3.8"
   },
   "devDependencies": {
     "@playwright/test": "1.57.0",
     "@types/cors": "2.8.19",
     "@types/micromatch": "4.0.10",
-    "@types/node": "24.10.7",
+    "@types/node": "24.10.8",
     "@types/prismjs": "1.26.5",
     "@types/react": "19.2.8",
     "@types/styled-components": "5.1.36",
