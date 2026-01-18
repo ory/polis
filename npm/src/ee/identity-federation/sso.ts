@@ -135,6 +135,7 @@ export class SSO {
         tenant: app.tenant,
         product: app.product,
         fedAppSamlAudienceOverride: app.samlAudienceOverride,
+        ttlInMinutes: app.ttlInMinutes,
       };
 
       return isSAMLConnection(connection)

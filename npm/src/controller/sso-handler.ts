@@ -346,6 +346,7 @@ export class SSOHandler {
         claims: mappedClaims,
         ...certificate,
         flattenArray: true,
+        ttlInMinutes: session.oidcFederated?.ttlInMinutes ?? session.requested?.ttlInMinutes,
       });
 
       const params: { name: string; value: string }[] = [];

@@ -580,6 +580,7 @@ export class OAuthController implements IOAuthController {
               id: fedApp.id,
               clientID: fedApp.clientID,
               clientSecret: fedApp.clientSecret,
+              ttlInMinutes: fedApp.ttlInMinutes,
             }
           : undefined,
       };

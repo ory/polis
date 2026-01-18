@@ -28,6 +28,7 @@ type NewAppParams = Pick<
   | 'type'
   | 'redirectUrl'
   | 'samlAudienceOverride'
+  | 'ttlInMinutes'
 > & {
   logoUrl?: string;
   faviconUrl?: string;
@@ -97,6 +98,9 @@ export class App {
    *         samlAudienceOverride:
    *           type: string
    *           description: Override the SAML Audience on a per app basis
+   *         ttlInMinutes:
+   *           type: number
+   *           description: Time-to-live in minutes for the SAML assertion, does not apply to OIDC flows
    *     IdentityFederationApp:
    *       allOf:
    *         - $ref: "#/components/schemas/IdentityFederationAppCreate"
@@ -170,6 +174,7 @@ export class App {
     tenants,
     mappings,
     samlAudienceOverride,
+    ttlInMinutes,
   }: NewAppParams) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
 
@@ -244,6 +249,7 @@ export class App {
       tenants: _tenants,
       mappings: mappings || [],
       samlAudienceOverride: samlAudienceOverride || null,
+      ttlInMinutes: ttlInMinutes ?? null,
     };
 
     if (type === 'oidc') {
@@ -500,6 +506,10 @@ export class App {
 
     if ('samlAudienceOverride' in params) {
       toUpdate['samlAudienceOverride'] = params.samlAudienceOverride;
+    }
+
+    if ('ttlInMinutes' in params) {
+      toUpdate['ttlInMinutes'] = params.ttlInMinutes ?? null;
     }
 
     if (Object.keys(toUpdate).length === 0) {
