@@ -108,7 +108,7 @@ jobs:
           ACCEPT_EULA: 'Y'
           SA_PASSWORD: '123ABabc!'
       dynamodb-local:
-        image: 'amazon/dynamodb-local:3.2.0'
+        image: 'amazon/dynamodb-local:3.3.0'
         ports:
           - '8000:8000'
       turso:
