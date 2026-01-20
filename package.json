@@ -111,7 +111,7 @@
     "@types/micromatch": "4.0.10",
     "@types/node": "24.10.9",
     "@types/prismjs": "1.26.5",
-    "@types/react": "19.2.8",
+    "@types/react": "19.2.9",
     "@types/styled-components": "5.1.36",
     "@typescript-eslint/eslint-plugin": "8.53.1",
     "@typescript-eslint/parser": "8.53.1",
