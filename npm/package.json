@@ -55,7 +55,7 @@
     "encoding": "0.1.13",
     "ipaddr.js": "2.3.0",
     "jose": "6.1.3",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "mixpanel": "0.20.0",
     "mongodb": "7.0.0",
     "mssql": "12.2.0",
