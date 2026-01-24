@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "vite-tsconfig-paths": "6.0.4"
+    "vite-tsconfig-paths": "6.0.5"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "12.3.0",
