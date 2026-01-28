@@ -1,13 +1,13 @@
 <h1 align="center">Ory polis - Open source Enterprise SSO and Directory Sync</h1>
 
 <h4 align="center">
-    <a href="https://www.ory.sh/chat">Chat</a> |
+    <a href="https://www.ory.com/chat">Chat</a> |
     <a href="https://github.com/ory/polis/discussions">Discussions</a> |
-    <a href="https://www.ory.sh/l/sign-up-newsletter">Newsletter</a><br/><br/>
-    <a href="https://www.ory.sh/docs/polis">Guide</a> |
-    <a href="https://www.ory.sh/docs/polis/reference/api">API Docs</a> |
+    <a href="https://www.ory.com/l/sign-up-newsletter">Newsletter</a><br/><br/>
+    <a href="https://www.ory.com/docs/polis">Guide</a> |
+    <a href="https://www.ory.com/docs/polis/reference/api">API Docs</a> |
     <a href="https://console.ory.sh/">Support this project!</a><br/><br/>
-    <a href="https://www.ory.sh/jobs/">Work in Open Source, Ory is hiring!</a>
+    <a href="https://www.ory.com/jobs/">Work in Open Source, Ory is hiring!</a>
 </h4>
 
 ---
@@ -23,7 +23,7 @@ Ory Polis - formerly known as BoxyHQ Jackson - bridges or proxies a SAML login f
 
 ## Ory Polis on the Ory Network
 
-The [Ory Network](https://www.ory.sh/cloud) is the fastest, most secure and
+The [Ory Network](https://www.ory.com/cloud) is the fastest, most secure and
 worry-free way to use Ory's Services. **SAML & SCIM** on Ory Network are powered by Ory Polis.
 
 The Ory Network provides the infrastructure for modern end-to-end security:
@@ -45,7 +45,7 @@ It's fully managed, highly available, developer & compliance-friendly!
 - Comprehensive admin tools with the web-based Ory Console and the Ory Command
   Line Interface (CLI)
 - Extensive documentation, straightforward examples and easy-to-follow guides
-- Fair, usage-based [pricing](https://www.ory.sh/pricing)
+- Fair, usage-based [pricing](https://www.ory.com/pricing)
 
 Sign up for a
 [**free developer account**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=polis-readme)
@@ -64,7 +64,7 @@ the Ory Enterprise License (OEL) as a self-hosted, premium offering including:
 - Premium support options, including SLAs, direct engineer access, and concierge onboarding.
 - Access to private Docker registry for a faster, more reliable access to vetted enterprise builds.
 
-A valid Ory Enterprise License and access to the Ory Enterprise Docker Registry are required to use these features. OEL is designed for mission-critical, production, and global applications where organizations need maximum control and flexibility over their identity infrastructure. Ory's offering is the only official program for qualified support from the maintainers. For more information book a meeting with the Ory team to **[discuss your needs](https://www.ory.sh/contact/)**!
+A valid Ory Enterprise License and access to the Ory Enterprise Docker Registry are required to use these features. OEL is designed for mission-critical, production, and global applications where organizations need maximum control and flexibility over their identity infrastructure. Ory's offering is the only official program for qualified support from the maintainers. For more information book a meeting with the Ory team to **[discuss your needs](https://www.ory.com/contact/)**!
 
 ## Directory Sync
 
@@ -72,7 +72,7 @@ Ory Polis also supports Directory Sync based on the SCIM 2.0 protocol.
 
 Directory sync helps organizations automate the provisioning and de-provisioning of their users. As a result, it streamlines the user lifecycle management process by saving valuable organizational hours, creating a single truth source of the user identity data, and facilitating them to keep the data secure.
 
-For complete documentation, visit the [Ory Polis documentation](https://ory.sh/docs/polis)
+For complete documentation, visit the [Ory Polis documentation](https://ory.com/docs/polis)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -119,7 +119,7 @@ Ory Polis offers a range of features to simplify and secure enterprise SSO:
   flexibility, maintainability, and the ability to adopt features incrementally.
 
 We highly recommend reading the
-[Ory Polis introduction docs](https://www.ory.sh/docs/polis) to learn more
+[Ory Polis introduction docs](https://www.ory.com/docs/polis) to learn more
 about Ory Polis's background, feature set, and differentiation from other
 products.
 
@@ -137,7 +137,7 @@ this would have been possible without each and everyone of you!
 The following list represents companies that have accompanied us along the way
 and that have made outstanding contributions to our ecosystem. _If you think
 that your company deserves a spot here, reach out to
-<a href="mailto:office@ory.sh">office@ory.sh</a> now_!
+<a href="mailto:office@ory.com">office@ory.com</a> now_!
 
 <table>
     <thead>
@@ -158,7 +158,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://openai.com/">openai.com</a></td>
-            <td><a href="https://www.ory.sh/case-studies/openai">OpenAI Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/openai">OpenAI Case Study</a></td>
         </tr>
         <tr>
             <td>Fandom</td>
@@ -169,7 +169,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://www.fandom.com/">fandom.com</a></td>
-            <td><a href="https://www.ory.sh/case-studies/fandom">Fandom Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/fandom">Fandom Case Study</a></td>
         </tr>
         <tr>
             <td>Lumin</td>
@@ -180,7 +180,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://www.luminpdf.com/">luminpdf.com</a></td>
-            <td><a href="https://www.ory.sh/case-studies/lumin">Lumin Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/lumin">Lumin Case Study</a></td>
         </tr>
         <tr>
             <td>Sencrop</td>
@@ -191,7 +191,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://sencrop.com/">sencrop.com</a></td>
-            <td><a href="https://www.ory.sh/case-studies/sencrop">Sencrop Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/sencrop">Sencrop Case Study</a></td>
         </tr>
         <tr>
             <td>OSINT Industries</td>
@@ -202,7 +202,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://www.osint.industries/">osint.industries</a></td>
-            <td><a href="https://www.ory.sh/case-studies/osint">OSINT Industries Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/osint">OSINT Industries Case Study</a></td>
         </tr>
         <tr>
             <td>HGV</td>
@@ -213,7 +213,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://www.hgv.it/">hgv.it</a></td>
-            <td><a href="https://www.ory.sh/case-studies/hgv">HGV Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/hgv">HGV Case Study</a></td>
         </tr>
         <tr>
             <td>Maxroll</td>
@@ -224,7 +224,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://maxroll.gg/">maxroll.gg</a></td>
-            <td><a href="https://www.ory.sh/case-studies/maxroll">Maxroll Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/maxroll">Maxroll Case Study</a></td>
         </tr>
         <tr>
             <td>Zezam</td>
@@ -235,7 +235,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://www.zezam.io/">zezam.io</a></td>
-            <td><a href="https://www.ory.sh/case-studies/zezam">Zezam Case Study</a></td>
+            <td><a href="https://www.ory.com/case-studies/zezam">Zezam Case Study</a></td>
         </tr>
         <tr>
             <td>T.RowePrice</td>
@@ -475,13 +475,13 @@ Many thanks to all individual contributors
 
 There are two ways to integrate Ory Polis into an application. Depending on your use case, you can choose either of them. <br>
 
-1. [As a separate service](https://ory.sh/docs/polis/guides/service) ([Next.js](https://nextjs.org/) application) This includes an admin portal out of the box for managing SSO and Directory Sync connections.
-2. [NPM library](https://ory.sh/docs/polis/guides/npm-library) as an embedded library in your application.
+1. [As a separate service](https://ory.com/docs/polis/guides/service) ([Next.js](https://nextjs.org/) application) This includes an admin portal out of the box for managing SSO and Directory Sync connections.
+2. [NPM library](https://ory.com/docs/polis/guides/npm-library) as an embedded library in your application.
 
 ### Installation
 
 Head over to the
-[Ory Developer Documentation](https://ory.sh/docs/polis/install) to learn
+[Ory Developer Documentation](https://ory.com/docs/polis/install) to learn
 how to install Ory Polis.
 
 ## Ecosystem
@@ -506,7 +506,7 @@ dependencies (Java, Node, Ruby, libxml, ...).
 
 [Ory Kratos](https://github.com/ory/kratos) is an API-first Identity and User
 Management system that is built according to
-[cloud architecture best practices](https://www.ory.sh/docs/next/ecosystem/software-architecture-philosophy).
+[cloud architecture best practices](https://www.ory.com/docs/next/ecosystem/software-architecture-philosophy).
 It implements core use cases that almost every software application needs to
 deal with: Self-service Login and Registration, Multi-Factor Authentication
 (MFA/2FA), Account Recovery and Verification, Profile, and Account Management.
@@ -551,29 +551,29 @@ npm run test:e2e
 If you think you found a security vulnerability, please refrain from posting it
 publicly on the forums, the chat, or GitHub. You can find all info for
 responsible disclosure in our
-[security.txt](https://www.ory.sh/.well-known/security.txt).
+[security.txt](https://www.ory.com/.well-known/security.txt).
 
 ## Telemetry
 
 Ory's services collect summarized, anonymized data that can optionally be turned
-off. Click [here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
+off. Click [here](https://www.ory.com/docs/ecosystem/sqa) to learn more.
 
 ## Documentation
 
 ### Guide
 
-The Guide is available [here](https://www.ory.sh/docs/polis).
+The Guide is available [here](https://www.ory.com/docs/polis).
 
 ### HTTP API documentation
 
-The HTTP API is documented [here](https://www.ory.sh/docs/polis/reference/api).
+The HTTP API is documented [here](https://www.ory.com/docs/polis/reference/api).
 
 ### Upgrading and Changelog
 
 New releases might introduce breaking changes. To help you identify and
 incorporate those changes, we document these changes in the
 [Releases](https://github.com/ory/polis/releases). For upgrading, please visit the
-[upgrade guide](https://ory.sh/docs/polis/upgrade).
+[upgrade guide](https://ory.com/docs/polis/upgrade).
 
 ## Develop
 
