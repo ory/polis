@@ -13,12 +13,12 @@ services:
       - 6379:6379
     restart: always
   mongo:
-    image: mongo:8.2.3
+    image: mongo:8.2.4
     ports:
       - 27017:27017
     restart: always
   mysql:
-    image: mysql:9.5.0
+    image: mysql:9.6.0
     ports:
       - 3307:3306
     restart: always

@@ -76,18 +76,18 @@ jobs:
         ports:
           - 6379:6379
       mongo:
-        image: mongo:8.2.3
+        image: mongo:8.2.4
         ports:
           - 27017:27017
       planetscale:
-        image: mysql:9.5.0
+        image: mysql:9.6.0
         ports:
           - 3308:3306
         env:
           MYSQL_DATABASE: mysql
           MYSQL_ROOT_PASSWORD: mysql
       mysql:
-        image: mysql:9.5.0
+        image: mysql:9.6.0
         ports:
           - 3307:3306
         env:
