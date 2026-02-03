@@ -43,9 +43,9 @@
     "coverage-map": "map.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.980.0",
-    "@aws-sdk/credential-providers": "3.980.0",
-    "@aws-sdk/util-dynamodb": "3.980.0",
+    "@aws-sdk/client-dynamodb": "3.981.0",
+    "@aws-sdk/credential-providers": "3.981.0",
+    "@aws-sdk/util-dynamodb": "3.981.0",
     "@boxyhq/error-code-mnemonic": "0.1.1",
     "@boxyhq/metrics": "0.2.11",
     "@boxyhq/saml20": "1.13.0",
@@ -96,9 +96,6 @@
       "mongodb": ">=7.0.0",
       "mssql": ">=12.1.0",
       "glob": ">=11.1.0"
-    },
-    "@aws-sdk/xml-builder": {
-      "fast-xml-parser": ">=5.3.4"
     }
   }
 }

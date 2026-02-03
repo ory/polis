@@ -84,7 +84,6 @@
     "cors": "2.8.6",
     "cross-env": "10.1.0",
     "daisyui": "4.12.24",
-    "fast-xml-parser": "^5.3.4",
     "formik": "2.4.9",
     "i18next": "25.8.0",
     "medium-zoom": "1.1.0",
