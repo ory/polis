@@ -6,7 +6,7 @@
     "description": "This is the API documentation for Polis.",
     "termsOfService": "/tos",
     "contact": {
-      "email": "support@ory.sh",
+      "email": "support@ory.com",
       "name": "Polis API Support"
     },
     "license": {
@@ -2288,6 +2288,10 @@
           "samlAudienceOverride": {
             "type": "string",
             "description": "Override the SAML Audience on a per app basis"
+          },
+          "includeOidcTokensInAssertion": {
+            "type": "boolean",
+            "description": "Include OIDC tokens in the SAML assertion"
           },
           "ttlInMinutes": {
             "type": "number",

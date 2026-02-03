@@ -109,6 +109,7 @@ export class IdPLogin {
         connection,
         requestParams,
         mappings: fedApp.mappings,
+        includeOidcTokensInAssertion: fedApp.includeOidcTokensInAssertion,
         ssoTraces: {
           instance: this.ssoTraces,
           context,

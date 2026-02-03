@@ -8,7 +8,7 @@ module.exports = {
     description: 'This is the API documentation for Polis.',
     termsOfService: '/tos',
     contact: {
-      email: 'support@ory.sh',
+      email: 'support@ory.com',
       name: 'Polis API Support',
     },
     license: {

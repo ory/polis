@@ -24,6 +24,7 @@ export type IdentityFederationApp = {
   tenants?: string[]; // To support multiple tenants for a single app
   mappings?: AttributeMapping[] | null;
   samlAudienceOverride?: string | null;
+  includeOidcTokensInAssertion?: boolean; // Include full OIDC tokens in SAML assertion
   ttlInMinutes?: number | null;
 };
 

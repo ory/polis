@@ -1019,7 +1019,7 @@ export class OAuthController implements IOAuthController {
         expectedState: callbackParams.state,
         idTokenExpected: true,
       });
-      profile = await extractOIDCUserProfile(tokens, oidcConfig);
+      profile = await extractOIDCUserProfile(tokens, oidcConfig, session.includeOidcTokensInAssertion);
 
       if (isSAMLFederated) {
         const { responseForm } = await this.ssoHandler.createSAMLResponse({ profile, session });

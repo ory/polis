@@ -28,6 +28,7 @@ type NewAppParams = Pick<
   | 'type'
   | 'redirectUrl'
   | 'samlAudienceOverride'
+  | 'includeOidcTokensInAssertion'
   | 'ttlInMinutes'
 > & {
   logoUrl?: string;
@@ -98,6 +99,9 @@ export class App {
    *         samlAudienceOverride:
    *           type: string
    *           description: Override the SAML Audience on a per app basis
+   *         includeOidcTokensInAssertion:
+   *           type: boolean
+   *           description: Include OIDC tokens in the SAML assertion
    *         ttlInMinutes:
    *           type: number
    *           description: Time-to-live in minutes for the SAML assertion, does not apply to OIDC flows
@@ -174,6 +178,7 @@ export class App {
     tenants,
     mappings,
     samlAudienceOverride,
+    includeOidcTokensInAssertion,
     ttlInMinutes,
   }: NewAppParams) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
@@ -249,6 +254,7 @@ export class App {
       tenants: _tenants,
       mappings: mappings || [],
       samlAudienceOverride: samlAudienceOverride || null,
+      includeOidcTokensInAssertion,
       ttlInMinutes: ttlInMinutes ?? null,
     };
 
@@ -506,6 +512,10 @@ export class App {
 
     if ('samlAudienceOverride' in params) {
       toUpdate['samlAudienceOverride'] = params.samlAudienceOverride;
+    }
+
+    if ('includeOidcTokensInAssertion' in params) {
+      toUpdate['includeOidcTokensInAssertion'] = params.includeOidcTokensInAssertion;
     }
 
     if ('ttlInMinutes' in params) {

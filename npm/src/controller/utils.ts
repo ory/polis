@@ -271,7 +271,8 @@ export type AuthorizationCodeGrantResult = Awaited<ReturnType<typeof authorizati
 
 export const extractOIDCUserProfile = async (
   tokens: AuthorizationCodeGrantResult,
-  oidcConfig: Configuration
+  oidcConfig: Configuration,
+  includeTokens: boolean = false
 ) => {
   const idTokenClaims = tokens.claims()!;
   const client = (await dynamicImport('openid-client')) as typeof import('openid-client');
@@ -287,7 +288,25 @@ export const extractOIDCUserProfile = async (
     typeof idTokenClaims.family_name === 'string' ? idTokenClaims.family_name : userinfo.family_name;
   profile.claims.roles = idTokenClaims.roles ?? (userinfo.roles as any);
   profile.claims.groups = idTokenClaims.groups ?? (userinfo.groups as any);
-  profile.claims.raw = { ...idTokenClaims, ...userinfo };
+
+  const rawClaims: Record<string, unknown> = {
+    ...idTokenClaims,
+    ...userinfo,
+  };
+
+  // Conditionally include the raw tokens from Hydra OIDC response
+  if (includeTokens) {
+    rawClaims.oidc_tokens = {
+      id_token: tokens.id_token,
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+      token_type: tokens.token_type,
+      expires_at: tokens.expires_at,
+      scope: tokens.scope,
+    };
+  }
+
+  profile.claims.raw = rawClaims;
 
   return profile;
 };

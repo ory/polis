@@ -265,11 +265,13 @@ export class SSOHandler {
     connection,
     requestParams,
     mappings,
+    includeOidcTokensInAssertion,
     ssoTraces,
   }: {
     connection: OIDCSSORecord;
     requestParams: Record<string, any>;
     mappings: IdentityFederationApp['mappings'];
+    includeOidcTokensInAssertion?: boolean;
     ssoTraces: { instance: SSOTracesInstance; context: SSOTrace['context'] };
   }) {
     if (!this.opts.oidcPath) {
@@ -300,6 +302,7 @@ export class SSOHandler {
         oidcCodeVerifier,
         oidcNonce,
         mappings,
+        includeOidcTokensInAssertion,
       });
 
       const ssoUrl = client.buildAuthorizationUrl(oidcConfig, {
@@ -373,12 +376,14 @@ export class SSOHandler {
     oidcCodeVerifier,
     oidcNonce,
     mappings,
+    includeOidcTokensInAssertion,
   }: {
     requestId: string;
     requested: any;
     oidcCodeVerifier?: string;
     oidcNonce?: string;
     mappings: IdentityFederationApp['mappings'];
+    includeOidcTokensInAssertion?: boolean;
   }) => {
     const sessionId = crypto.randomBytes(16).toString('hex');
 
@@ -390,6 +395,10 @@ export class SSOHandler {
 
     if (oidcNonce) {
       session['oidcNonce'] = oidcNonce;
+    }
+
+    if (includeOidcTokensInAssertion !== undefined) {
+      session['includeOidcTokensInAssertion'] = includeOidcTokensInAssertion;
     }
 
     await this.session.put(sessionId, session);
