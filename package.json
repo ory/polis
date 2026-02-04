@@ -63,7 +63,7 @@
       "validator": ">=13.15.20"
     },
     "typeorm": {
-      "glob": ">=11.1.0"
+      "glob": ">=13.0.1"
     },
     "formik": {
       "lodash": ">=4.17.23",
@@ -85,7 +85,7 @@
     "cross-env": "10.1.0",
     "daisyui": "4.12.24",
     "formik": "2.4.9",
-    "i18next": "25.8.0",
+    "i18next": "25.8.1",
     "medium-zoom": "1.1.0",
     "micromatch": "4.0.8",
     "next": "16.1.6",
@@ -113,9 +113,9 @@
     "@playwright/test": "1.58.1",
     "@types/cors": "2.8.19",
     "@types/micromatch": "4.0.10",
-    "@types/node": "24.10.9",
+    "@types/node": "24.10.10",
     "@types/prismjs": "1.26.5",
-    "@types/react": "19.2.10",
+    "@types/react": "19.2.11",
     "@types/styled-components": "5.1.36",
     "@typescript-eslint/eslint-plugin": "8.54.0",
     "@typescript-eslint/parser": "8.54.0",
