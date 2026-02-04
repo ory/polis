@@ -50,7 +50,6 @@
     "@boxyhq/metrics": "0.2.11",
     "@boxyhq/saml20": "1.13.0",
     "@googleapis/admin": "30.3.0",
-    "@libsql/sqlite3": "0.3.1",
     "axios": "1.13.2",
     "encoding": "0.1.13",
     "ipaddr.js": "2.3.0",
@@ -66,7 +65,7 @@
     "redis": "4.7.1",
     "reflect-metadata": "0.2.2",
     "ripemd160": "2.0.3",
-    "sqlite3": "5.1.7",
+    "better-sqlite3": "12.6.2",
     "typeorm": "0.3.28"
   },
   "devDependencies": {

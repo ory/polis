@@ -51,17 +51,6 @@ services:
     volumes:
       - './docker/dynamodb:/home/dynamodblocal/data'
     working_dir: /home/dynamodblocal
-  turso:
-    image: ghcr.io/tursodatabase/libsql-server:latest
-    platform: linux/amd64
-    ports:
-      - '8080:8080'
-      - '5001:5001'
-    # environment:
-    #   - SQLD_NODE=primary
-    command: '/bin/sqld --enable-http-console'
-    volumes:
-      - ./docker/libsql:/var/lib/sqld
   cockroachdb:
     image: cockroachdb/cockroach:latest-v25.4
     platform: linux/amd64

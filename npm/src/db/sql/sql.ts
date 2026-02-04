@@ -68,13 +68,8 @@ class Sql implements DatabaseDriver {
         } else if (sqlType === 'sqlite') {
           this.dataSource = new DataSource(<DataSourceOptions>{
             database: this.options.url,
-            driver: require('@libsql/sqlite3'),
-            ...(this.options.url?.startsWith('libsql')
-              ? {
-                  flags: 0x00000040, // this is required to make turso work in TypeORM
-                }
-              : {}),
             ...baseOpts,
+            type: 'better-sqlite3',
           });
         } else {
           if (this.options.type === 'postgres' || this.options.type === 'cockroachdb') {

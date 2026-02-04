@@ -65,8 +65,8 @@ if (type === 'mssql') {
 } else if (type === 'sqlite') {
   AppDataSource = new DataSource(<DataSourceOptions>{
     database: url,
-    driver: require('@libsql/sqlite3'),
     ...baseOpts,
+    type: 'better-sqlite3',
   });
 } else {
   AppDataSource = new DataSource(<DataSourceOptions>{

@@ -111,10 +111,6 @@ jobs:
         image: 'amazon/dynamodb-local:3.3.0'
         ports:
           - '8000:8000'
-      turso:
-        image: ghcr.io/tursodatabase/libsql-server:latest
-        ports:
-          - '8080:8080'
       mocksaml:
         image: boxyhq/mock-saml:1.4.2
         ports:
