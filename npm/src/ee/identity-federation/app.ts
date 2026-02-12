@@ -163,6 +163,7 @@ export class App {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/IdentityFederationResponse"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async create({
     name,
@@ -313,6 +314,7 @@ export class App {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/IdentityFederationResponse"
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async get(params: AppRequestParams) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
@@ -374,6 +376,7 @@ export class App {
    *                   pageToken:
    *                     type: string
    *                     description: token for pagination
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async getByProduct({ product, pageOffset, pageLimit, pageToken }: GetByProductParams) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
@@ -443,6 +446,7 @@ export class App {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/IdentityFederationResponse"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async update(params: Partial<IdentityFederationApp>) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
@@ -594,6 +598,7 @@ export class App {
    *               properties:
    *                 error:
    *                   $ref: "#/components/schemas/IdentityFederationError"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
 
   public async delete(params: AppRequestParams): Promise<void> {

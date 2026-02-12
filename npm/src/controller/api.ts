@@ -297,6 +297,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *         $ref: "#/components/schemas/validationErrorsPost"
    *       "401":
    *         description: Unauthorized
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async createSAMLConnection(
     body: SAMLSSOConnectionWithEncodedMetadata | SAMLSSOConnectionWithRawMetadata
@@ -430,6 +431,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *       "500":
    *         description: Please set OpenID response handler path (oidcPath) on Jackson
    *         content: {}
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async updateSAMLConnection(body: UpdateSAMLConnectionParams): Promise<void> {
     const connection = await samlConnection.update(
@@ -527,6 +529,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *        $ref: '#/components/responses/400Get'
    *      '401':
    *        $ref: '#/components/responses/401Get'
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async getConnections(body: GetConnectionsQuery): Promise<Array<SAMLSSORecord | OIDCSSORecord>> {
     const clientID = 'clientID' in body ? body.clientID : undefined;
@@ -698,6 +701,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *         description: clientSecret mismatch | Please provide `clientID` and `clientSecret` or `tenant` and `product`.
    *       '401':
    *         description: Unauthorized
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async deleteConnections(body: DelConnectionsQuery): Promise<void> {
     const clientID = 'clientID' in body ? body.clientID : undefined;
@@ -789,6 +793,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *        $ref: '#/components/responses/400Get'
    *      '401':
    *        $ref: '#/components/responses/401Get'
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async getConnectionsByProduct(
     body: GetByProductParams

@@ -117,6 +117,7 @@ export class WebhookEventsLogger extends Base {
    *                  pageToken:
    *                    type: string
    *                    description: token for pagination
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   // Get the event logs for a directory paginated
   public async getAll(params: GetAllParams = {}) {

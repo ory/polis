@@ -1187,6 +1187,7 @@ export class OAuthController implements IOAuthController {
    *                 access_token: 8958e13053832b5af58fdf2ee83f35f5d013dc74
    *                 token_type: bearer
    *                 expires_in: "300"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async token(body: OAuthTokenReq, authHeader?: string | null): Promise<OAuthTokenRes> {
     let basic_client_id: string | undefined;
@@ -1447,6 +1448,7 @@ export class OAuthController implements IOAuthController {
    *                 lastName: Jackson
    *                 raw: {}
    *                 requested: {}
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async userInfo(token: string): Promise<Profile> {
     const tokens = token.split('.');
