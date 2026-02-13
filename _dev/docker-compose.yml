@@ -8,12 +8,12 @@ services:
       POSTGRES_PASSWORD: ''
       POSTGRES_HOST_AUTH_METHOD: trust
   redis:
-    image: redis:8.4-alpine
+    image: redis:8.6-alpine
     ports:
       - 6379:6379
     restart: always
   mongo:
-    image: mongo:8.2.4
+    image: mongo:8.2.5
     ports:
       - 27017:27017
     restart: always
