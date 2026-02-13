@@ -258,6 +258,16 @@
           "required": true
         },
         "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              }
+            }
+          },
           "204": {
             "description": "Success",
             "content": {}
@@ -1974,14 +1984,14 @@
             "loginType": "idp",
             "provider": "okta.com"
           },
-          "defaultRedirectUrl": "https://hoppscotch.io/",
+          "defaultRedirectUrl": "http://localhost:3000/default",
           "redirectUrl": [
-            "https://hoppscotch.io/"
+            "http://localhost:3000/default"
           ],
-          "tenant": "hoppscotch.io",
+          "tenant": "example.com",
           "product": "API Engine",
           "name": "Hoppscotch-SP",
-          "description": "SP for hoppscotch.io",
+          "description": "SP for example.com",
           "clientID": "Xq8AJt3yYAxmXizsCWmUBDRiVP1iTC8Y/otnvFIMitk",
           "clientSecret": "00e3e11a3426f97d8000000738300009130cd45419c5943",
           "deactivated": false

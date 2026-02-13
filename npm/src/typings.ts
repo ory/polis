@@ -163,8 +163,8 @@ export interface IConnectionAPIController {
    * @deprecated Use `updateSAMLConnection` instead.
    */
   updateConfig(body: UpdateSAMLConnectionParams): Promise<void>;
-  updateSAMLConnection(body: UpdateSAMLConnectionParams): Promise<void>;
-  updateOIDCConnection(body: UpdateOIDCConnectionParams): Promise<void>;
+  updateSAMLConnection(body: UpdateSAMLConnectionParams): Promise<SAMLSSORecord>;
+  updateOIDCConnection(body: UpdateOIDCConnectionParams): Promise<OIDCSSORecord>;
   getConnections(body: GetConnectionsQuery): Promise<Array<SAMLSSORecord | OIDCSSORecord>>;
   getIDPEntityID(body: GetIDPEntityIDBody): string;
   /**

@@ -101,13 +101,13 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *           thumbprint: Eo+eUi3UM3XIMkFFtdVK3yJ5vO9f7YZdasdasdad
    *           loginType: idp
    *           provider: okta.com
-   *         defaultRedirectUrl: https://hoppscotch.io/
+   *         defaultRedirectUrl: http://localhost:3000/default
    *         redirectUrl:
-   *           - https://hoppscotch.io/
-   *         tenant: hoppscotch.io
+   *           - http://localhost:3000/default
+   *         tenant: example.com
    *         product: API Engine
    *         name: Hoppscotch-SP
-   *         description: SP for hoppscotch.io
+   *         description: SP for example.com
    *         clientID: Xq8AJt3yYAxmXizsCWmUBDRiVP1iTC8Y/otnvFIMitk
    *         clientSecret: 00e3e11a3426f97d8000000738300009130cd45419c5943
    *         deactivated: false
@@ -287,7 +287,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *                 description: Require a new authentication instead of reusing an existing session.
    *       required: true
    *     responses:
-   *       200:
+   *       "200":
    *         description: Success
    *         content:
    *           application/json:
@@ -420,6 +420,12 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *                 description: Require a new authentication instead of reusing an existing session.
    *       required: true
    *     responses:
+   *       "200":
+   *         description: Success
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Connection"
    *       "204":
    *         description: Success
    *         content: {}
@@ -433,7 +439,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *         content: {}
    *     x-ory-ratelimit-bucket: polis-public-medium
    */
-  public async updateSAMLConnection(body: UpdateSAMLConnectionParams): Promise<void> {
+  public async updateSAMLConnection(body: UpdateSAMLConnectionParams): Promise<SAMLSSORecord> {
     const connection = await samlConnection.update(
       body,
       this.connectionStore,
@@ -447,6 +453,8 @@ export class ConnectionAPIController implements IConnectionAPIController {
         await this.eventController.notify('sso.deactivated', connection);
       }
     }
+
+    return connection;
   }
 
   // For backwards compatibility
@@ -456,7 +464,7 @@ export class ConnectionAPIController implements IConnectionAPIController {
     await this.updateSAMLConnection(...args);
   }
 
-  public async updateOIDCConnection(body: UpdateOIDCConnectionParams): Promise<void> {
+  public async updateOIDCConnection(body: UpdateOIDCConnectionParams): Promise<OIDCSSORecord> {
     if (!this.opts.oidcPath) {
       throw new JacksonError('Please set OpenID response handler path (oidcPath) on Jackson', 500);
     }
@@ -474,6 +482,8 @@ export class ConnectionAPIController implements IConnectionAPIController {
         await this.eventController.notify('sso.deactivated', connection);
       }
     }
+
+    return connection;
   }
 
   public getIDPEntityID(body: GetIDPEntityIDBody): string {
@@ -523,11 +533,11 @@ export class ConnectionAPIController implements IConnectionAPIController {
    *         schema:
    *           type: string
    *     responses:
-   *      '200':
+   *      "200":
    *        $ref: '#/components/responses/200Get'
-   *      '400':
+   *      "400":
    *        $ref: '#/components/responses/400Get'
-   *      '401':
+   *      "401":
    *        $ref: '#/components/responses/401Get'
    *     x-ory-ratelimit-bucket: polis-public-low
    */
