@@ -264,6 +264,10 @@ class Sql implements DatabaseDriver {
           });
         }
 
+        if (!value) {
+          continue;
+        }
+
         ret.push({
           value: value.value,
           iv: value.iv,
