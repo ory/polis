@@ -59,7 +59,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:18.1
+        image: postgres:18.2
         ports:
           - 5432:5432
         env:
@@ -94,7 +94,7 @@ jobs:
           MYSQL_DATABASE: mysql
           MYSQL_ROOT_PASSWORD: mysql
       maria:
-        image: mariadb:12.1.2
+        image: mariadb:12.2.2
         ports:
           - 3306:3306
         env:

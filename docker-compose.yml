@@ -3,7 +3,7 @@ networks:
 
 services:
   postgres:
-    image: postgres:18.1
+    image: postgres:18.2
     restart: always
     environment:
       - POSTGRES_PASSWORD=''
