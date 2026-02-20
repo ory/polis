@@ -102,7 +102,7 @@
     "remark-gfm": "4.0.1",
     "rsc-daisyui": "2.3.0",
     "sharp": "0.34.5",
-    "styled-components": "6.3.9",
+    "styled-components": "6.3.11",
     "swr": "2.4.0",
     "tar": "^7.5.7"
   },
