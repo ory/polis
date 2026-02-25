@@ -129,16 +129,14 @@ tap.before(async () => {
 
       const rawClaims: Record<string, unknown> = { ...idTokenClaims, ...userinfo };
 
-      // Include OIDC tokens in raw claims when configured
+      // Include OIDC tokens as top-level SAML attributes when configured
       if (includeTokens) {
-        rawClaims.oidc_tokens = {
-          id_token: tokens.id_token,
-          access_token: tokens.access_token,
-          refresh_token: tokens.refresh_token,
-          token_type: tokens.token_type,
-          expires_at: tokens.expires_at,
-          scope: tokens.scope,
-        };
+        rawClaims.id_token = tokens.id_token;
+        rawClaims.access_token = tokens.access_token;
+        rawClaims.refresh_token = tokens.refresh_token;
+        rawClaims.token_type = tokens.token_type;
+        rawClaims.expires_at = tokens.expires_at;
+        rawClaims.scope = tokens.scope;
       }
 
       profile.claims.raw = rawClaims;
@@ -313,17 +311,32 @@ tap.test('SAML-OIDC Federation Flow with OIDC Tokens in SAML Response', async (t
       // Verify user attributes in SAML Response
       t.ok(samlResponseXml.includes(mockUserData.email), 'SAML Response should contain user email');
 
-      // Verify OIDC tokens are included
-      t.ok(samlResponseXml.includes('oidc_tokens'), 'SAML Response should contain oidc_tokens attribute');
+      // Verify OIDC tokens are included as separate top-level SAML attributes
+      t.notOk(
+        samlResponseXml.includes('oidc_tokens'),
+        'SAML Response should NOT contain nested oidc_tokens attribute'
+      );
       t.ok(
         samlResponseXml.includes(mockOidcTokens.access_token),
-        'SAML Response should contain access_token'
+        'SAML Response should contain access_token value'
       );
-      t.ok(samlResponseXml.includes(mockOidcTokens.id_token), 'SAML Response should contain id_token');
+      t.ok(samlResponseXml.includes(mockOidcTokens.id_token), 'SAML Response should contain id_token value');
       t.ok(
         samlResponseXml.includes(mockOidcTokens.refresh_token),
-        'SAML Response should contain refresh_token'
+        'SAML Response should contain refresh_token value'
       );
+
+      // Verify each token is its own saml:Attribute
+      t.ok(samlResponseXml.includes('Name="id_token"'), 'SAML Response should have id_token attribute');
+      t.ok(
+        samlResponseXml.includes('Name="access_token"'),
+        'SAML Response should have access_token attribute'
+      );
+      t.ok(
+        samlResponseXml.includes('Name="refresh_token"'),
+        'SAML Response should have refresh_token attribute'
+      );
+      t.ok(samlResponseXml.includes('Name="token_type"'), 'SAML Response should have token_type attribute');
     }
   });
 });
@@ -371,7 +384,7 @@ tap.test('SAML Response should NOT contain OIDC tokens when not configured', asy
     t.notOk(appWithoutTokens.includeOidcTokensInAssertion, 'includeOidcTokensInAssertion should be falsy');
   });
 
-  t.test('SAML Response should not contain oidc_tokens', async (t) => {
+  t.test('SAML Response should not contain OIDC token attributes', async (t) => {
     const relayStateFromClient = 'client-relay-no-tokens';
 
     const samlRequest = `<?xml version="1.0" encoding="UTF-8"?>
@@ -438,6 +451,7 @@ tap.test('SAML Response should NOT contain OIDC tokens when not configured', asy
         samlResponseXml.includes('no-include-access-token'),
         'SAML Response should NOT contain access_token'
       );
+      t.notOk(samlResponseXml.includes('no-include-id-token'), 'SAML Response should NOT contain id_token');
     }
   });
 });

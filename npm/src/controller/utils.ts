@@ -294,16 +294,15 @@ export const extractOIDCUserProfile = async (
     ...userinfo,
   };
 
-  // Conditionally include the raw tokens from Hydra OIDC response
+  // Conditionally include the raw tokens from Hydra OIDC response as top-level
+  // SAML attributes so that standard SP frameworks can parse them out of the box.
   if (includeTokens) {
-    rawClaims.oidc_tokens = {
-      id_token: tokens.id_token,
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-      token_type: tokens.token_type,
-      expires_at: tokens.expires_at,
-      scope: tokens.scope,
-    };
+    rawClaims.id_token = tokens.id_token;
+    rawClaims.access_token = tokens.access_token;
+    rawClaims.refresh_token = tokens.refresh_token;
+    rawClaims.token_type = tokens.token_type;
+    rawClaims.expires_at = tokens.expires_at;
+    rawClaims.scope = tokens.scope;
   }
 
   profile.claims.raw = rawClaims;
