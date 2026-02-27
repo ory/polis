@@ -59,7 +59,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:18.2
+        image: postgres:18.3
         ports:
           - 5432:5432
         env:
