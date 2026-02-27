@@ -103,7 +103,7 @@
     "rsc-daisyui": "2.3.0",
     "sharp": "0.34.5",
     "styled-components": "6.3.11",
-    "swr": "2.4.0",
+    "swr": "2.4.1",
     "tar": "^7.5.7"
   },
   "devDependencies": {
