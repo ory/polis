@@ -1,5 +1,6 @@
 ARG NODEJS_IMAGE=node:24.14.0-alpine3.23
 FROM $NODEJS_IMAGE AS base
+RUN npm install -g npm@11.11.0
 
 # Install dependencies only when needed
 FROM base AS deps
