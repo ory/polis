@@ -192,6 +192,7 @@ export class SetupLinkController {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/SetupLink"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   async create(body: SetupLinkCreatePayload): Promise<SetupLink> {
     const { name, tenant, product, service, expiryDays, regenerate } = body;
@@ -377,6 +378,7 @@ export class SetupLinkController {
    *               type: object
    *               example:
    *                 data: {}
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   async remove(params: RemoveSetupLinkParams) {
     if ('id' in params) {
@@ -442,6 +444,7 @@ export class SetupLinkController {
    *               type: array
    *               items:
    *                 $ref: "#/components/schemas/SetupLink"
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   async filterBy(params: FilterByParams): Promise<{ data: SetupLink[]; pageToken?: string }> {
     const { tenant, product, service, pageOffset, pageLimit, pageToken } = params;
@@ -554,6 +557,7 @@ export class SetupLinkController {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/SetupLink"
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   async get(id: string): Promise<SetupLink> {
     if (!id) {

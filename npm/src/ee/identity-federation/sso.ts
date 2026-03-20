@@ -135,6 +135,7 @@ export class SSO {
         tenant: app.tenant,
         product: app.product,
         fedAppSamlAudienceOverride: app.samlAudienceOverride,
+        ttlInMinutes: app.ttlInMinutes,
       };
 
       return isSAMLConnection(connection)
@@ -143,6 +144,7 @@ export class SSO {
             connection,
             requestParams,
             mappings: app.mappings,
+            includeOidcTokensInAssertion: app.includeOidcTokensInAssertion,
             ssoTraces: { instance: this.ssoTraces, context },
           });
     } catch (err: unknown) {

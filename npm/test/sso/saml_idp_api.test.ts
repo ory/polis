@@ -410,8 +410,6 @@ tap.test('controller/api', async (t) => {
         body_saml_provider as SAMLSSOConnectionWithEncodedMetadata
       );
       try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         await connectionAPIController.updateSAMLConnection({
           description: 'A new description',
           clientID,
@@ -435,8 +433,6 @@ tap.test('controller/api', async (t) => {
       const { name, description } = (await connectionAPIController.getConnections({ clientID }))[0];
       t.equal(name, 'testConfig');
       t.equal(description, 'Just a test configuration');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       await connectionAPIController.updateSAMLConnection({
         clientID,
         clientSecret,

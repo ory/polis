@@ -172,7 +172,5 @@ export default NextAuth({
   pages: {
     signIn: '/admin/auth/login',
   },
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  adapter: Adapter(),
+  adapter: Adapter() as any,
 });

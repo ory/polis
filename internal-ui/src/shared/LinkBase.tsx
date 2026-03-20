@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import classNames from 'classnames';
-import type { LinkProps } from 'react-daisyui';
 
-export interface LinkBaseProps extends LinkProps {
+export interface LinkBaseProps {
   href: string;
   Icon?: any;
+  children: React.ReactNode;
+  className?: string;
+  [key: string]: any;
 }
 
 export const LinkBase = ({ children, href, className, Icon, ...others }: LinkBaseProps) => {

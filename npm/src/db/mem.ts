@@ -189,7 +189,6 @@ class Mem implements DatabaseDriver {
     const dbKeys = this.cleanup[idxKey];
 
     for (const dbKey of dbKeys || []) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.indexes[dbKey] && this.indexes[dbKey].delete(key);
     }
     if (this.indexes[dbutils.keyFromParts(dbutils.createdAtPrefix, namespace)]) {

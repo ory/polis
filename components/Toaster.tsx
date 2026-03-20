@@ -1,30 +1,36 @@
-import { useState } from 'react';
-import { Alert, Button, Toast } from 'react-daisyui';
-
-let gSetToasts;
-let successTimeoutId;
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { Alert, Button, Toast } from 'rsc-daisyui';
 
 type ToastItem = {
   text: string;
   status: 'success' | 'error';
 };
 
-export const Toaster = () => {
-  const [toasts, setToasts] = useState({} as { success?: ToastItem; error?: ToastItem });
+let gSetToasts: Dispatch<SetStateAction<{ success?: ToastItem; error?: ToastItem }>> | null = null;
+let successTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  gSetToasts = setToasts;
+export const Toaster = () => {
+  const [toasts, setToasts] = useState<{ success?: ToastItem; error?: ToastItem }>({});
+
+  // Only assign once — in an effect, not during render
+  useEffect(() => {
+    gSetToasts = setToasts;
+    return () => {
+      gSetToasts = null; // clean up on unmount
+    };
+  }, []);
 
   return (
     <div className='App'>
       <Toast horizontal='end' vertical='bottom'>
-        {[toasts.success, toasts.error].map((toast: ToastItem | undefined, index) => {
+        {[toasts.success, toasts.error].map((toast, index) => {
           if (!toast) return null;
 
           return (
-            <Alert key={`toast-${index}`} status={toast.status} className='rounded py-3'>
+            <Alert key={`toast-${index}`} color={toast.status} className='rounded py-3'>
               <h3>{toast.text}</h3>
               <Button
-                color='ghost'
+                ghost={true}
                 onClick={() =>
                   setToasts({
                     success: toast.status === 'success' ? undefined : toasts.success,
@@ -44,16 +50,17 @@ export const Toaster = () => {
 export const successToast = (text: string) => {
   if (gSetToasts) {
     gSetToasts({ success: { text, status: 'success' } });
-    clearTimeout(successTimeoutId);
+    if (successTimeoutId) clearTimeout(successTimeoutId);
     successTimeoutId = setTimeout(() => {
-      clearTimeout(successTimeoutId);
-      gSetToasts((prevToasts) => ({ success: undefined, error: prevToasts.error }));
+      if (gSetToasts) {
+        gSetToasts((prev) => ({ ...prev, success: undefined }));
+      }
     }, 10000);
   }
 };
 
 export const errorToast = (text: string) => {
   if (gSetToasts) {
-    gSetToasts((prevToasts) => ({ success: prevToasts.success, error: { text, status: 'error' } }));
+    gSetToasts((prev) => ({ ...prev, error: { text, status: 'error' } }));
   }
 };

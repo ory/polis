@@ -74,6 +74,7 @@ const jacksonOptions: JacksonOption = {
     requestProfileScope: process.env.OPENID_REQUEST_PROFILE_SCOPE === 'false' ? false : true,
     forwardOIDCParams: process.env.OPENID_REQUEST_FORWARD_PARAMS === 'true' ? true : false,
     subjectPrefix: process.env.OPENID_SUBJECT_PREFIX === 'true' ? true : false,
+    redirectExactMatch: process.env.OPENID_REDIRECT_EXACT_MATCH === 'true',
   },
   certs: { publicKey: process.env.PUBLIC_KEY || '', privateKey: process.env.PRIVATE_KEY || '' },
   boxyhqLicenseKey: process.env.BOXYHQ_LICENSE_KEY,
@@ -107,6 +108,7 @@ const jacksonOptions: JacksonOption = {
   boxyhqHosted,
   ssoTraces,
   flattenRawClaims: process.env.FLATTEN_RAW_CLAIMS === 'true',
+  jsonErrorPage: process.env.JSON_ERROR_PAGE === 'true',
 };
 
 const adminPortalSSODefaults = {

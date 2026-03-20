@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 type AlertType = 'error' | 'success' | 'warning';
 
 const variants = {
@@ -12,7 +14,7 @@ export const Alert = ({
   className,
 }: {
   variant: AlertType;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) => {
   return (

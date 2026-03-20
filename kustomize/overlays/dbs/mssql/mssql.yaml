@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: mssql
-          image: mcr.microsoft.com/azure-sql-edge:2.0.0
+          image: mcr.microsoft.com/mssql/server:2025-latest
           imagePullPolicy: IfNotPresent
           env:
             - name: ACCEPT_EULA

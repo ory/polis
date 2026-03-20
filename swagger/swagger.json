@@ -2,11 +2,11 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Enterprise SSO & Directory Sync",
-    "version": "1.52.2",
+    "version": "26.2.0",
     "description": "This is the API documentation for Polis.",
     "termsOfService": "/tos",
     "contact": {
-      "email": "support@ory.sh",
+      "email": "support@ory.com",
       "name": "Polis API Support"
     },
     "license": {
@@ -143,7 +143,8 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "patch": {
         "tags": [
@@ -257,6 +258,16 @@
           "required": true
         },
         "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              }
+            }
+          },
           "204": {
             "description": "Success",
             "content": {}
@@ -272,7 +283,8 @@
             "description": "Please set OpenID response handler path (oidcPath) on Jackson",
             "content": {}
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "get": {
         "tags": [
@@ -334,7 +346,8 @@
           "401": {
             "$ref": "#/components/responses/401Get"
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       },
       "delete": {
         "tags": [
@@ -394,7 +407,8 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       }
     },
     "/api/v1/sso/product": {
@@ -428,7 +442,8 @@
           "401": {
             "$ref": "#/components/responses/401Get"
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/oauth/token": {
@@ -509,7 +524,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       }
     },
     "/oauth/userinfo": {
@@ -572,7 +588,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/sso/setuplinks": {
@@ -807,7 +824,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "delete": {
         "tags": [
@@ -857,7 +875,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "get": {
         "tags": [
@@ -904,7 +923,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/sso/setuplinks/product": {
@@ -980,7 +1000,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/sso-traces": {
@@ -1011,7 +1032,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/sso-traces/product": {
@@ -1057,7 +1079,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync": {
@@ -1117,7 +1140,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "get": {
         "tags": [
@@ -1156,7 +1180,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync/{directoryId}": {
@@ -1187,7 +1212,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       },
       "patch": {
         "tags": [
@@ -1256,7 +1282,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "delete": {
         "tags": [
@@ -1279,7 +1306,8 @@
             "description": "Success",
             "content": {}
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       }
     },
     "/api/v1/dsync/product": {
@@ -1325,7 +1353,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync/groups/{groupId}": {
@@ -1380,7 +1409,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync/groups": {
@@ -1432,7 +1462,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync/groups/{groupId}/members": {
@@ -1483,7 +1514,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync/users/{userId}": {
@@ -1538,7 +1570,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync/users": {
@@ -1590,7 +1623,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/dsync/events": {
@@ -1642,7 +1676,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/api/v1/identity-federation": {
@@ -1677,7 +1712,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "get": {
         "tags": [
@@ -1722,7 +1758,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       },
       "patch": {
         "tags": [
@@ -1753,7 +1790,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
       "delete": {
         "tags": [
@@ -1803,7 +1841,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       }
     },
     "/api/v1/identity-federation/product": {
@@ -1858,7 +1897,8 @@
               }
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     }
   },
@@ -1944,14 +1984,14 @@
             "loginType": "idp",
             "provider": "okta.com"
           },
-          "defaultRedirectUrl": "https://hoppscotch.io/",
+          "defaultRedirectUrl": "http://localhost:3000/default",
           "redirectUrl": [
-            "https://hoppscotch.io/"
+            "http://localhost:3000/default"
           ],
-          "tenant": "hoppscotch.io",
+          "tenant": "example.com",
           "product": "API Engine",
           "name": "Hoppscotch-SP",
-          "description": "SP for hoppscotch.io",
+          "description": "SP for example.com",
           "clientID": "Xq8AJt3yYAxmXizsCWmUBDRiVP1iTC8Y/otnvFIMitk",
           "clientSecret": "00e3e11a3426f97d8000000738300009130cd45419c5943",
           "deactivated": false
@@ -2288,6 +2328,14 @@
           "samlAudienceOverride": {
             "type": "string",
             "description": "Override the SAML Audience on a per app basis"
+          },
+          "includeOidcTokensInAssertion": {
+            "type": "boolean",
+            "description": "Include OIDC tokens in the SAML assertion"
+          },
+          "ttlInMinutes": {
+            "type": "number",
+            "description": "Time-to-live in minutes for the SAML assertion, does not apply to OIDC flows"
           }
         }
       },

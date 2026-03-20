@@ -36,9 +36,7 @@ tap.test('controller/api', async (t) => {
 
   t.test('Create the connection', async (t) => {
     t.test('should throw when `oidcPath` is not set', async (t) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      connectionAPIController.opts.oidcPath = undefined;
+      (connectionAPIController as any).opts.oidcPath = undefined;
       const body: OIDCSSOConnectionWithDiscoveryUrl = Object.assign({}, oidc_connection);
       try {
         await connectionAPIController.createOIDCConnection(body);
@@ -47,17 +45,13 @@ tap.test('controller/api', async (t) => {
         t.equal(err.message, 'Please set OpenID response handler path (oidcPath) on Jackson');
         t.equal(err.statusCode, 500);
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      connectionAPIController.opts.oidcPath = jacksonOptions.oidcPath;
+      (connectionAPIController as any).opts.oidcPath = jacksonOptions.oidcPath;
     });
 
     t.test('when required fields are missing or invalid', async (t) => {
       t.test('missing discoveryUrl and metadata', async (t) => {
         const body: OIDCSSOConnectionWithDiscoveryUrl = Object.assign({}, oidc_connection);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        delete body['oidcDiscoveryUrl'];
+        delete (body as any)['oidcDiscoveryUrl'];
         try {
           await connectionAPIController.createOIDCConnection(body);
           t.fail('Expecting JacksonError.');
@@ -68,9 +62,7 @@ tap.test('controller/api', async (t) => {
       });
       t.test('missing clientId', async (t) => {
         const body: OIDCSSOConnectionWithDiscoveryUrl = Object.assign({}, oidc_connection);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        delete body['oidcClientId'];
+        delete (body as any)['oidcClientId'];
         try {
           await connectionAPIController.createOIDCConnection(body);
           t.fail('Expecting JacksonError.');
@@ -81,9 +73,7 @@ tap.test('controller/api', async (t) => {
       });
       t.test('missing clientSecret', async (t) => {
         const body: OIDCSSOConnectionWithDiscoveryUrl = Object.assign({}, oidc_connection);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        delete body['oidcClientSecret'];
+        delete (body as any)['oidcClientSecret'];
         try {
           await connectionAPIController.createOIDCConnection(body);
           t.fail('Expecting JacksonError.');
@@ -223,12 +213,8 @@ tap.test('controller/api', async (t) => {
       const { clientSecret, clientID } = await connectionAPIController.createOIDCConnection(
         body_oidc_provider as OIDCSSOConnectionWithDiscoveryUrl
       );
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      connectionAPIController.opts.oidcPath = undefined;
+      (connectionAPIController as any).opts.oidcPath = undefined;
       try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         await connectionAPIController.updateOIDCConnection({
           clientID,
           clientSecret,
@@ -242,9 +228,7 @@ tap.test('controller/api', async (t) => {
         t.equal(err.message, 'Please set OpenID response handler path (oidcPath) on Jackson');
         t.equal(err.statusCode, 500);
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      connectionAPIController.opts.oidcPath = jacksonOptions.oidcPath;
+      (connectionAPIController as any).opts.oidcPath = jacksonOptions.oidcPath;
     });
 
     t.test('When clientID is missing', async (t) => {
@@ -269,8 +253,6 @@ tap.test('controller/api', async (t) => {
         body_oidc_provider as OIDCSSOConnectionWithDiscoveryUrl
       );
       try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         await connectionAPIController.updateOIDCConnection({
           description: 'A new description',
           clientID,
@@ -294,8 +276,6 @@ tap.test('controller/api', async (t) => {
       const { name, description } = (await connectionAPIController.getConnections({ clientID }))[0];
       t.equal(name, 'OIDC Metadata for oidc.example.com');
       t.equal(description, 'OIDC Metadata for oidc.example.com');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       await connectionAPIController.updateOIDCConnection({
         clientID,
         clientSecret,

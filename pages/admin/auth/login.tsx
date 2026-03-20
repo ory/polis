@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react';
+import { useState, type ReactElement, FormEvent } from 'react';
 import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -11,6 +11,17 @@ import { ButtonOutline, Loading } from '@boxyhq/internal-ui';
 import { Login as SSOLogin } from '@boxyhq/react-ui/sso';
 import { adminPortalSSODefaults } from '@lib/env';
 import { getPortalBranding } from '@ee/branding/utils';
+
+const isValidRedirectPath = (path) => {
+  try {
+    // Parse relative paths correctly by providing the current origin as the base
+    const url = new URL(path, window.location.origin);
+    // Ensure the origin matches AND the scheme is either http: or https:
+    return url.origin === window.location.origin && (url.protocol === 'http:' || url.protocol === 'https:');
+  } catch {
+    return false;
+  }
+};
 
 const Login = ({
   csrfToken,
@@ -38,7 +49,7 @@ const Login = ({
   }
 
   if (status === 'authenticated') {
-    router.push(callbackUrl);
+    router.push(isValidRedirectPath(callbackUrl) ? callbackUrl : '/');
     return;
   }
 
@@ -47,7 +58,7 @@ const Login = ({
   };
 
   // Handle login with email and password
-  const onEmailPasswordLogin = async (e: React.FormEvent) => {
+  const onEmailPasswordLogin = async (e: FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
@@ -74,7 +85,7 @@ const Login = ({
   };
 
   // Handle login with magic link
-  const onMagicLinkLogin = async (e: React.FormEvent) => {
+  const onMagicLinkLogin = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!email) {
@@ -114,14 +125,14 @@ const Login = ({
             <div className='space-y-3'>
               <div className='flex justify-center'>
                 <Image
-                  src={branding ? branding.logoUrl : '/logo.png'}
-                  alt={(branding ? branding.companyName : 'BoxyHQ') + ' logo'}
+                  src={branding ? branding.logoUrl : '/logo.svg'}
+                  alt={(branding ? branding.companyName : 'Ory Polis') + ' logo'}
                   width={50}
                   height={50}
                 />
               </div>
               <h2 className='text-center text-3xl font-extrabold text-gray-900'>
-                {(branding ? branding.companyName : 'BoxyHQ') + ' ' + t('admin_portal')}
+                {(branding ? branding.companyName : 'Ory Polis') + ' ' + t('admin_portal')}
               </h2>
               <p className='text-center text-sm text-gray-600'>{t('boxyhq_tagline')}</p>
             </div>
@@ -240,7 +251,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   return {
     props: {
-      csrfToken: await getCsrfToken(context),
+      csrfToken: (await getCsrfToken(context)) || null,
       tenant,
       product,
       isMagicLinkEnabled,

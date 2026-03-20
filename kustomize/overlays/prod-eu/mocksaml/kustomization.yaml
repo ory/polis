@@ -5,4 +5,4 @@ resources:
 
 images:
   - name: boxyhq/mock-saml
-    newTag: 1.4.1
+    newTag: 1.4.2

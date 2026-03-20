@@ -8,3 +8,9 @@ export function scimOpUrl(directory: Directory, opPath: string) {
   }
   return endpoint;
 }
+
+export async function waitForErrorPage(page: any, baseURL: string, jsonErrorPage?: boolean) {
+  await page.waitForURL(
+    (url) => url.origin === baseURL && url.pathname === (jsonErrorPage ? '/api/error' : '/error')
+  );
+}

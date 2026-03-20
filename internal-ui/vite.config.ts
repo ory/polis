@@ -22,7 +22,7 @@ export default defineConfig({
         /@heroicons\/react\/.*/,
         'classnames',
         'formik',
-        'react-daisyui',
+        'rsc-daisyui',
         'react-tagsinput',
         '@boxyhq/react-ui',
       ],

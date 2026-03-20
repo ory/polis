@@ -98,6 +98,7 @@ export class Users extends Base {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/User"
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async get(id: string): Promise<Response<User>> {
     try {
@@ -192,6 +193,7 @@ export class Users extends Base {
    *                  pageToken:
    *                    type: string
    *                    description: token for pagination
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async getAll({
     pageOffset,

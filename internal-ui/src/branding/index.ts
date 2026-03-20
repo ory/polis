@@ -1,9 +1,9 @@
 export { BrandingForm } from './BrandingForm';
 
-// BoxyHQ branding
+// Ory branding
 export const boxyhqBranding = {
-  logoUrl: '/logo.png',
+  logoUrl: '/logo.svg',
   faviconUrl: '/favicon.ico',
-  companyName: 'BoxyHQ',
-  primaryColor: '#25c2a0',
+  companyName: 'Ory Polis',
+  primaryColor: '#4f39f6',
 };

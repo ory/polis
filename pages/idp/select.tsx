@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, ChangeEvent } from 'react';
 import getRawBody from 'raw-body';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -9,7 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import jackson from '@lib/jackson';
 import Head from 'next/head';
 import { hexToOklch } from '@lib/color';
-import { PoweredBy } from '@components/PoweredBy';
+import { PoweredBy } from '@components/ProtectedBy';
 import { getPortalBranding, getProductBranding } from '@ee/branding/utils';
 import { boxyhqHosted } from '@lib/env';
 import { createGlobalStyle } from 'styled-components';
@@ -144,7 +144,7 @@ const AppSelector = ({
   }, [connection]);
 
   // IdP initiated SSO: Submit the SAMLResponse and idp_hint to the SAML ACS endpoint
-  const appSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const appSelected = (e: ChangeEvent<HTMLInputElement>) => {
     setConnection(e.target.value);
     formRef.current?.submit();
   };

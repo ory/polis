@@ -1,8 +1,10 @@
 import classNames from 'classnames';
-import { Button, type ButtonProps } from 'react-daisyui';
+import { Button } from 'rsc-daisyui';
 
-export interface ButtonBaseProps extends ButtonProps {
+export interface ButtonBaseProps {
   Icon?: any;
+  children?: React.ReactNode;
+  [key: string]: any;
 }
 
 export const ButtonBase = ({ Icon, children, ...others }: ButtonBaseProps) => {

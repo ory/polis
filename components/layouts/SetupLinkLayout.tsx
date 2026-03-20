@@ -8,7 +8,7 @@ import { Loading } from '@boxyhq/internal-ui';
 import useSetupLink from '@lib/ui/hooks/useSetupLink';
 import { useTranslation } from 'next-i18next';
 import { hexToOklch } from '@lib/color';
-import { PoweredBy } from '@components/PoweredBy';
+import { PoweredBy } from '@components/ProtectedBy';
 
 export const SetupLinkLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();

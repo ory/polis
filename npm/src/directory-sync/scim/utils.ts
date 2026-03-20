@@ -143,6 +143,38 @@ export const extractStandardUserAttributes = (body: any) => {
   return userAttributes;
 };
 
+// Resolve a SCIM filter path like `phoneNumbers[type eq "work"].value` to a
+// lodash-compatible path like `["phoneNumbers", 0, "value"]`. Returns false for
+// non-filter paths so the caller can fall back to plain _.set.
+const applySCIMFilterUpdate = (raw: any, path: string, value: any): boolean => {
+  const match = path.match(/^(\w+)\[(\w+)\s+eq\s+"([^"]+)"\]\.(\w+)$/);
+  if (!match) {
+    return false;
+  }
+
+  const [, attribute, filterAttr, filterValue, subAttribute] = match;
+
+  let arr = _.get(raw, attribute);
+  if (!Array.isArray(arr)) {
+    _.set(raw, attribute, []);
+    arr = _.get(raw, attribute);
+    // _.set silently refuses writes to unsafe paths like __proto__
+    if (!Array.isArray(arr)) {
+      return false;
+    }
+  }
+
+  let idx = arr.findIndex((el: any) => el[filterAttr] === filterValue);
+  if (idx < 0) {
+    idx = arr.length;
+    arr.push({ [filterAttr]: filterValue });
+  }
+
+  _.set(arr, [idx, subAttribute], value);
+
+  return true;
+};
+
 // Update raw user attributes
 export const updateRawUserAttributes = (raw, attributes) => {
   const keys = Object.keys(attributes);
@@ -152,7 +184,9 @@ export const updateRawUserAttributes = (raw, attributes) => {
   }
 
   for (const key of keys) {
-    _.set(raw, key, attributes[key]);
+    if (!applySCIMFilterUpdate(raw, key, attributes[key])) {
+      _.set(raw, key, attributes[key]);
+    }
   }
 
   return raw;

@@ -105,7 +105,6 @@ class Redis implements DatabaseDriver {
     idx: Index,
     pageOffset?: number,
     pageLimit?: number,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _?: string
   ): Promise<Records> {
     const { offset: skip, limit } = dbutils.normalizeOffsetAndLimit({

@@ -90,7 +90,7 @@ export class IdentityFederationPage {
     await this.goto();
     await this.page.waitForURL(/.*admin\/identity-federation$/);
     await this.editButton.click();
-    await this.page.getByLabel('Card').getByRole('button', { name: 'Delete' }).click();
+    await this.page.locator('.card').getByRole('button', { name: 'Delete' }).click();
     await this.page.getByTestId('confirm-delete').click();
   }
 }

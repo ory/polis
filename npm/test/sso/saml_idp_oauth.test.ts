@@ -65,21 +65,13 @@ let code_verifier: string;
 let code_challenge: string;
 
 function _stubRandomBytes(codeOrToken: string) {
-  return (
-    sinon
-      .stub(crypto, 'randomBytes')
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(codeOrToken)
-      .onSecondCall()
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(genKey)
-      .onThirdCall()
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(iv)
-  );
+  return sinon
+    .stub(crypto, 'randomBytes')
+    .returns(codeOrToken as any)
+    .onSecondCall()
+    .returns(genKey as any)
+    .onThirdCall()
+    .returns(iv as any);
 }
 
 function stubRandomBytesCode() {
@@ -91,33 +83,19 @@ function stubRandomBytesToken() {
 }
 
 function stubRandomBytesAll() {
-  return (
-    sinon
-      .stub(crypto, 'randomBytes')
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(code)
-      .onSecondCall()
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(genKey)
-      .onThirdCall()
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(iv)
-      .onCall(3)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(token)
-      .onCall(4)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(genKey)
-      .onCall(5)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .returns(iv)
-  );
+  return sinon
+    .stub(crypto, 'randomBytes')
+    .returns(code as any)
+    .onSecondCall()
+    .returns(genKey as any)
+    .onThirdCall()
+    .returns(iv as any)
+    .onCall(3)
+    .returns(token as any)
+    .onCall(4)
+    .returns(genKey as any)
+    .onCall(5)
+    .returns(iv as any);
 }
 
 tap.before(async () => {

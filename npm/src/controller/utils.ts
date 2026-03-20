@@ -271,7 +271,8 @@ export type AuthorizationCodeGrantResult = Awaited<ReturnType<typeof authorizati
 
 export const extractOIDCUserProfile = async (
   tokens: AuthorizationCodeGrantResult,
-  oidcConfig: Configuration
+  oidcConfig: Configuration,
+  includeTokens: boolean = false
 ) => {
   const idTokenClaims = tokens.claims()!;
   const client = (await dynamicImport('openid-client')) as typeof import('openid-client');
@@ -287,7 +288,24 @@ export const extractOIDCUserProfile = async (
     typeof idTokenClaims.family_name === 'string' ? idTokenClaims.family_name : userinfo.family_name;
   profile.claims.roles = idTokenClaims.roles ?? (userinfo.roles as any);
   profile.claims.groups = idTokenClaims.groups ?? (userinfo.groups as any);
-  profile.claims.raw = { ...idTokenClaims, ...userinfo };
+
+  const rawClaims: Record<string, unknown> = {
+    ...idTokenClaims,
+    ...userinfo,
+  };
+
+  // Conditionally include the raw tokens from Hydra OIDC response as top-level
+  // SAML attributes so that standard SP frameworks can parse them out of the box.
+  if (includeTokens) {
+    rawClaims.id_token = tokens.id_token;
+    rawClaims.access_token = tokens.access_token;
+    rawClaims.refresh_token = tokens.refresh_token;
+    rawClaims.token_type = tokens.token_type;
+    rawClaims.expires_at = tokens.expires_at;
+    rawClaims.scope = tokens.scope;
+  }
+
+  profile.claims.raw = rawClaims;
 
   return profile;
 };

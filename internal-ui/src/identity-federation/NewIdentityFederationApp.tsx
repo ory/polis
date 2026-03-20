@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import TagsInput from 'react-tagsinput';
-import { Card, Button } from 'react-daisyui';
+import { Card, Button } from 'rsc-daisyui';
 import { useTranslation } from 'next-i18next';
 import type { IdentityFederationApp } from '../types';
 import QuestionMarkCircleIcon from '@heroicons/react/24/outline/QuestionMarkCircleIcon';
@@ -9,7 +9,7 @@ import { AttributesMapping } from './AttributesMapping';
 import { PageHeader } from '../shared';
 import { ItemList } from '@boxyhq/react-ui/shared';
 
-type NewIdentityFederationApp = Pick<
+type NewIdentityFederationAppType = Pick<
   IdentityFederationApp,
   'name' | 'tenant' | 'product' | 'acsUrl' | 'entityId' | 'tenants' | 'mappings' | 'type' | 'redirectUrl'
 >;
@@ -31,7 +31,7 @@ export const NewIdentityFederationApp = ({
 }) => {
   const { t } = useTranslation('common');
 
-  const initialValues: NewIdentityFederationApp = {
+  const initialValues: NewIdentityFederationAppType = {
     type: 'saml',
     name: '',
     tenant: '',
@@ -44,11 +44,11 @@ export const NewIdentityFederationApp = ({
 
   if (excludeFields) {
     excludeFields.forEach((key) => {
-      delete initialValues[key as keyof NewIdentityFederationApp];
+      delete initialValues[key as keyof NewIdentityFederationAppType];
     });
   }
 
-  const formik = useFormik<NewIdentityFederationApp>({
+  const formik = useFormik<NewIdentityFederationAppType>({
     initialValues: initialValues,
     onSubmit: async (values) => {
       const rawResponse = await fetch(urls.createApp, {
@@ -255,7 +255,7 @@ export const NewIdentityFederationApp = ({
             <Button
               type='submit'
               className='btn btn-primary btn-md'
-              loading={formik.isSubmitting}
+              animation={formik.isSubmitting}
               disabled={!formik.dirty || !formik.isValid}>
               {t('bui-fs-create-app-btn')}
             </Button>

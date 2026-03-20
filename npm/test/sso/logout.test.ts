@@ -109,9 +109,7 @@ tap.test('LogoutController -> createRequest', async (t) => {
     const logoutResponse = Buffer.from(logoutResponseXML).toString('base64');
     const logoutResponseFailed = Buffer.from(logoutResponseFailedXML).toString('base64');
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    sinon.stub(crypto, 'randomBytes').returns(sessionId);
+    sinon.stub(crypto, 'randomBytes').returns(sessionId as any);
 
     await logoutController.createRequest({
       ...body,

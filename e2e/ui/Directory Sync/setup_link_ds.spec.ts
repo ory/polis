@@ -13,6 +13,7 @@ export const test = baseTest.extend<MyFixtures>({
   portal: async ({ page }, use) => {
     const portal = new Portal(page);
     await portal.doCredentialsLogin();
+    await portal.isLoggedIn;
     // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(portal);
   },

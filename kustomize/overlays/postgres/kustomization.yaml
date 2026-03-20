@@ -11,4 +11,4 @@ commonLabels:
 
 images:
   - name: boxyhq/jackson
-    newTag: 1.27.1
+    newTag: 1.52.2

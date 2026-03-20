@@ -69,9 +69,7 @@ function isPrivateIP(url: string): boolean {
     ip = givenURL.host.split(':')[0];
 
     addr = ipaddr.parse(ip);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
+  } catch {
     return false;
   }
 
@@ -158,7 +156,6 @@ const saml = {
       metadata = Buffer.from(encodedRawMetadata, 'base64').toString();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     metadataUrl && validateMetadataURL(metadataUrl);
 
     metadata = metadataUrl ? await fetchMetadata(metadataUrl) : metadata;
@@ -188,13 +185,8 @@ const saml = {
 
     if (existing.length > 0) {
       for (let i = 0; i < existing.length; i++) {
-        const samlConfig = existing[i];
-        if (samlConfig.tenant !== tenant && samlConfig.product === product) {
-          throw new JacksonError('EntityID already exists for different tenant/product');
-        } else if (samlConfig.tenant !== tenant && samlConfig.product !== product) {
-          throw new JacksonError('EntityID already exists for different tenant/product');
-        } else {
-          continue;
+        if (existing[i].tenant !== tenant) {
+          throw new JacksonError('EntityID already exists for different tenant');
         }
       }
     }
@@ -278,7 +270,6 @@ const saml = {
       metadata = Buffer.from(encodedRawMetadata, 'base64').toString();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     metadataUrl && validateMetadataURL(metadataUrl);
 
     metadata = metadataUrl ? await fetchMetadata(metadataUrl) : metadata;

@@ -17,6 +17,7 @@ export const test = baseTest.extend<MyFixtures>({
   portal: async ({ page }, use) => {
     const portal = new Portal(page);
     await portal.doCredentialsLogin();
+    await portal.isLoggedIn;
     // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(portal);
   },
@@ -94,7 +95,7 @@ setupLinkTestsData.forEach((testData) => {
       ).toBeVisible();
 
       // Delete the SSO connection
-      await page.getByLabel('Edit').click();
+      await page.getByRole('row', { name: TENANT }).getByLabel('Edit').click();
       await page.getByRole('button', { name: 'Delete' }).click();
       await page.getByRole('button', { name: 'Confirm' }).click();
     });

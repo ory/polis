@@ -1,4 +1,4 @@
-import { Button } from 'react-daisyui';
+import { Button } from 'rsc-daisyui';
 import { useTranslation } from 'next-i18next';
 
 import { Card } from '../shared';

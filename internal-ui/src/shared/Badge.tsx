@@ -1,7 +1,13 @@
 import classNames from 'classnames';
-import { BadgeProps, Badge as BaseBadge } from 'react-daisyui';
+import { Badge as BaseBadge } from 'rsc-daisyui';
 
-export const Badge = ({ children, className, ...props }: BadgeProps) => {
+export interface BadgeBaseProps {
+  children?: React.ReactNode;
+  className?: string;
+  [key: string]: any;
+}
+
+export const Badge = ({ children, className, ...props }: BadgeBaseProps) => {
   return (
     <>
       <BaseBadge {...props} className={classNames('rounded text-xs py-2 text-white', className)}>

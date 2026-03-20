@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from 'react-daisyui';
+import { Button } from 'rsc-daisyui';
 import type { IdentityFederationApp } from '../types';
 import TagsInput from 'react-tagsinput';
 import { useTranslation } from 'next-i18next';
@@ -232,7 +232,7 @@ export const Edit = ({
               <Button
                 type='submit'
                 className='btn btn-primary btn-md'
-                loading={formik.isSubmitting}
+                animation={formik.isSubmitting}
                 disabled={!formik.dirty || !formik.isValid}>
                 {t('bui-shared-save-changes')}
               </Button>

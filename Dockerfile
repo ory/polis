@@ -1,4 +1,4 @@
-ARG NODEJS_IMAGE=node:22.16-alpine3.21
+ARG NODEJS_IMAGE=node:24.14.0-alpine3.23
 FROM $NODEJS_IMAGE AS base
 
 # Install dependencies only when needed
@@ -39,6 +39,9 @@ RUN npm run build
 
 # Production image, copy all the files and run next
 FROM $NODEJS_IMAGE AS runner
+
+# Required to get the latest, CVE-free dependencies.
+RUN apk update && apk upgrade
 WORKDIR /app
 
 ENV NODE_OPTIONS="--max-http-header-size=81920 --dns-result-order=ipv4first"

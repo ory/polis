@@ -41,7 +41,11 @@ export class Portal {
 
   async doCredentialsLogin() {
     await this.page.goto('/admin/auth/login');
-    await this.page.getByPlaceholder('Email').fill('super@boxyhq.com');
+
+    const email = await this.page.getByPlaceholder('Email');
+    await email.waitFor({ state: 'visible', timeout: 20000 });
+    await email.fill('super@boxyhq.com');
+
     await this.page.getByPlaceholder('Password').fill('999login');
     await this.page.getByRole('button', { name: 'Sign In' }).click();
   }
@@ -49,5 +53,9 @@ export class Portal {
   async isLoggedIn() {
     // assert login state
     await expect(this.userAvatarLocator).toBeVisible();
+  }
+
+  async isLoggedInSoft(): Promise<boolean> {
+    return this.userAvatarLocator.isVisible();
   }
 }

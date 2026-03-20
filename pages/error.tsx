@@ -1,38 +1,12 @@
-import { getErrorCookie } from '@lib/ui/utils';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSidePropsContext } from 'next';
+import { getErrorMessageFromCookie } from '@lib/utils';
 
-export default function Error() {
+export default function Error({ error }) {
   const { t } = useTranslation('common');
-  const [error, setError] = useState({ statusCode: null, message: '' });
-  const { pathname } = useRouter();
 
-  useEffect(() => {
-    const _error = getErrorCookie() || '';
-    try {
-      const { statusCode, message } = JSON.parse(_error);
-      setError({ statusCode, message });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      console.error('Unknown error format');
-    }
-  }, [pathname]);
-
-  const { statusCode, message } = error;
-  let statusText = '';
-  if (typeof statusCode === 'number') {
-    if (statusCode >= 400 && statusCode <= 499) {
-      statusText = t('client_error');
-    }
-    if (statusCode >= 500 && statusCode <= 599) {
-      statusText = t('server_error');
-    }
-  }
-
-  if (statusCode === null) {
+  if (!error.statusCode) {
     return null;
   }
 
@@ -46,10 +20,10 @@ export default function Error() {
                 {error.statusCode}
               </h1>
               <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl'>
-                {statusText}
+                {t(error.statusText)}
               </p>
               <p className='mb-4 text-lg font-light'>
-                {t('sso_error')}: {message}
+                {t('sso_error')}: {error.message}
               </p>
             </div>
           </div>
@@ -59,9 +33,12 @@ export default function Error() {
   );
 }
 
-export async function getStaticProps({ locale }: GetServerSidePropsContext) {
+export async function getServerSideProps({ locale, req }: GetServerSidePropsContext) {
+  const error = getErrorMessageFromCookie(req.cookies.polis_error);
+
   return {
     props: {
+      error,
       ...(locale ? await serverSideTranslations(locale, ['common']) : {}),
     },
   };

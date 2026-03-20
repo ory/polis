@@ -1,6 +1,10 @@
 const redirectUrlPlaceholder = 'http://_boxyhq_redirect_not_in_use';
 
-export const redirect = (redirectUrl: string, redirectUrls: string[]): boolean => {
+export const redirect = (
+  redirectUrl: string,
+  redirectUrls: string[],
+  redirectExactMatch: boolean | undefined
+): boolean => {
   // Don't allow redirect to URL placeholder
   if (redirectUrl === redirectUrlPlaceholder) {
     return false;
@@ -25,7 +29,19 @@ export const redirect = (redirectUrl: string, redirectUrls: string[]): boolean =
       // no-op
     }
 
-    // TODO: Check pathname, for now pathname is ignored
+    if (redirectExactMatch) {
+      // check for pathname as well
+      if (
+        rUrl.protocol === url.protocol &&
+        hostNameAllowed === hostname &&
+        rUrl.port === url.port &&
+        rUrl.pathname === url.pathname
+      ) {
+        return true;
+      }
+
+      return false;
+    }
 
     if (rUrl.protocol === url.protocol && hostNameAllowed === hostname && rUrl.port === url.port) {
       return true;

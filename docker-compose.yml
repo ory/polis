@@ -3,7 +3,7 @@ networks:
 
 services:
   postgres:
-    image: postgres:16.4
+    image: postgres:18.3
     restart: always
     environment:
       - POSTGRES_PASSWORD=''
@@ -13,7 +13,7 @@ services:
     ports:
       - 5432:5432
   jackson:
-    image: boxyhq/jackson:1.37.1
+    image: boxyhq/jackson:1.52.2
     restart: always
     environment:
       - JACKSON_API_KEYS=secret

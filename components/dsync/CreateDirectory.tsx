@@ -34,7 +34,6 @@ const CreateDirectory = ({
           classNames={BOXYHQ_UI_CSS}
           successCallback={({ connection }) => {
             successToast(t('directory_created_successfully'));
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             connection?.id &&
               router.replace(
                 setupLinkToken

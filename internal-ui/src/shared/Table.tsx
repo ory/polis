@@ -1,4 +1,5 @@
-import { Button } from 'react-daisyui';
+import { JSX } from 'react';
+import { Button } from 'rsc-daisyui';
 import { useTranslation } from 'next-i18next';
 import { Badge } from './Badge';
 
@@ -24,10 +25,10 @@ export interface TableBodyCell {
     text: string;
     color: string;
   };
-  element?: React.JSX.Element;
+  element?: JSX.Element;
   actions?: {
     text: string;
-    icon: React.JSX.Element;
+    icon: JSX.Element;
     onClick: () => void;
     destructive?: boolean;
   }[];
@@ -77,7 +78,7 @@ const TableBody = ({
                             key={row.id + '-button-' + index}
                             size='xs'
                             color={button.color}
-                            variant='outline'
+                            outline={true}
                             onClick={button.onClick}>
                             {button.text}
                           </Button>

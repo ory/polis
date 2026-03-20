@@ -42,7 +42,7 @@ test.describe('SCIM /api/scim/v2.0/:directoryId/Users', () => {
       schemas: ['urn:ietf:params:scim:api:messages:2.0:ListResponse'],
       startIndex: 1,
       totalResults: 1,
-      itemsPerPage: 0,
+      itemsPerPage: 1,
       Resources: [
         {
           ...users[0],

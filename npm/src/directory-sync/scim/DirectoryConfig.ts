@@ -194,6 +194,7 @@ export class DirectoryConfig {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Directory"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async create(params: {
     name?: string;
@@ -317,6 +318,7 @@ export class DirectoryConfig {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Directory"
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async get(id: string): Promise<Response<Directory>> {
     metrics.increment('getDsyncConnections');
@@ -387,6 +389,7 @@ export class DirectoryConfig {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Directory"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async update(
     id: string,
@@ -473,6 +476,7 @@ export class DirectoryConfig {
    *               type: array
    *               items:
    *                 $ref: "#/components/schemas/Directory"
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async getByTenantAndProduct(tenant: string, product: string): Promise<Response<Directory[]>> {
     metrics.increment('getDsyncConnections');
@@ -542,6 +546,7 @@ export class DirectoryConfig {
    *       200:
    *         description: Success
    *         content: {}
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async delete(id: string): Promise<Response<null>> {
     metrics.increment('deleteDsyncConnections');
@@ -628,6 +633,7 @@ export class DirectoryConfig {
    *                  pageToken:
    *                    type: string
    *                    description: token for pagination
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async filterBy(
     params: FilterByParams = {}

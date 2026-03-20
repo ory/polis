@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useFormik } from 'formik';
-import { Button } from 'react-daisyui';
+import { Button } from 'rsc-daisyui';
 import { useTranslation } from 'next-i18next';
 
 import { Card } from '../shared';
@@ -163,7 +163,7 @@ export const DSyncForm = ({
             <Button
               type='submit'
               className='btn btn-primary btn-md'
-              loading={formik.isSubmitting}
+              animation={formik.isSubmitting}
               disabled={!formik.dirty || !formik.isValid}>
               {t('bui-sl-create-link')}
             </Button>

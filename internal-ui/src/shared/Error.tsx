@@ -1,4 +1,4 @@
-import { Card } from 'react-daisyui';
+import { Card } from 'rsc-daisyui';
 
 export const Error = ({ message }: { message: string }) => {
   return (

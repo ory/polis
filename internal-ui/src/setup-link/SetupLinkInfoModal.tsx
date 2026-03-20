@@ -1,4 +1,4 @@
-import { Button } from 'react-daisyui';
+import { Button } from 'rsc-daisyui';
 import { useTranslation } from 'next-i18next';
 
 import { Modal } from '../shared';
@@ -30,7 +30,7 @@ export const SetupLinkInfoModal = ({
         <p className='text-sm text-red-500 mt-3'>{t('bui-sl-link-expired')}</p>
       )}
       <div className='modal-action'>
-        <Button color='secondary' variant='outline' type='button' size='md' onClick={() => onClose()}>
+        <Button color='secondary' outline={true} type='button' size='md' onClick={() => onClose()}>
           {t('bui-shared-close')}
         </Button>
       </div>

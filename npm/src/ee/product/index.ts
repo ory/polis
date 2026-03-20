@@ -29,7 +29,7 @@ export class ProductController {
       logoUrl: productConfig?.logoUrl || null,
       faviconUrl: productConfig?.faviconUrl || null,
       companyName: productConfig?.companyName || null,
-      primaryColor: productConfig?.primaryColor || '#25c2a0',
+      primaryColor: productConfig?.primaryColor || '#4f39f6',
     };
   }
 

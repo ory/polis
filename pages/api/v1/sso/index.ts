@@ -69,6 +69,8 @@ const handlePATCH = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const body = { ...req.body };
 
+  const returnConnection = req.headers['x-polis-return-connection'] === 'true';
+
   if ('deactivated' in req.body) {
     body.deactivated = normalizeBooleanParam(req.body.deactivated);
   }
@@ -78,14 +80,24 @@ const handlePATCH = async (req: NextApiRequest, res: NextApiResponse) => {
     if ('forceAuthn' in req.body) {
       body.forceAuthn = normalizeBooleanParam(req.body.forceAuthn);
     }
-    await connectionAPIController.updateSAMLConnection(body);
+    const updatedConnection = await connectionAPIController.updateSAMLConnection(body);
+
+    if (returnConnection) {
+      return res.json(updatedConnection);
+    }
 
     res.status(204).end();
   }
 
   // Update OIDC connection
   if (isOIDC) {
-    await connectionAPIController.updateOIDCConnection(oidcMetadataParse(body) as any);
+    const updatedConnection = await connectionAPIController.updateOIDCConnection(
+      oidcMetadataParse(body) as any
+    );
+
+    if (returnConnection) {
+      return res.json(updatedConnection);
+    }
 
     res.status(204).end();
   }

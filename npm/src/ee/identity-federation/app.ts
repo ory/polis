@@ -28,6 +28,8 @@ type NewAppParams = Pick<
   | 'type'
   | 'redirectUrl'
   | 'samlAudienceOverride'
+  | 'includeOidcTokensInAssertion'
+  | 'ttlInMinutes'
 > & {
   logoUrl?: string;
   faviconUrl?: string;
@@ -97,6 +99,12 @@ export class App {
    *         samlAudienceOverride:
    *           type: string
    *           description: Override the SAML Audience on a per app basis
+   *         includeOidcTokensInAssertion:
+   *           type: boolean
+   *           description: Include OIDC tokens in the SAML assertion
+   *         ttlInMinutes:
+   *           type: number
+   *           description: Time-to-live in minutes for the SAML assertion, does not apply to OIDC flows
    *     IdentityFederationApp:
    *       allOf:
    *         - $ref: "#/components/schemas/IdentityFederationAppCreate"
@@ -155,6 +163,7 @@ export class App {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/IdentityFederationResponse"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async create({
     name,
@@ -170,6 +179,8 @@ export class App {
     tenants,
     mappings,
     samlAudienceOverride,
+    includeOidcTokensInAssertion,
+    ttlInMinutes,
   }: NewAppParams) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
 
@@ -244,6 +255,8 @@ export class App {
       tenants: _tenants,
       mappings: mappings || [],
       samlAudienceOverride: samlAudienceOverride || null,
+      includeOidcTokensInAssertion,
+      ttlInMinutes: ttlInMinutes ?? null,
     };
 
     if (type === 'oidc') {
@@ -301,6 +314,7 @@ export class App {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/IdentityFederationResponse"
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async get(params: AppRequestParams) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
@@ -362,6 +376,7 @@ export class App {
    *                   pageToken:
    *                     type: string
    *                     description: token for pagination
+   *     x-ory-ratelimit-bucket: polis-public-low
    */
   public async getByProduct({ product, pageOffset, pageLimit, pageToken }: GetByProductParams) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
@@ -431,6 +446,7 @@ export class App {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/IdentityFederationResponse"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async update(params: Partial<IdentityFederationApp>) {
     await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
@@ -500,6 +516,14 @@ export class App {
 
     if ('samlAudienceOverride' in params) {
       toUpdate['samlAudienceOverride'] = params.samlAudienceOverride;
+    }
+
+    if ('includeOidcTokensInAssertion' in params) {
+      toUpdate['includeOidcTokensInAssertion'] = params.includeOidcTokensInAssertion;
+    }
+
+    if ('ttlInMinutes' in params) {
+      toUpdate['ttlInMinutes'] = params.ttlInMinutes ?? null;
     }
 
     if (Object.keys(toUpdate).length === 0) {
@@ -574,6 +598,7 @@ export class App {
    *               properties:
    *                 error:
    *                   $ref: "#/components/schemas/IdentityFederationError"
+   *     x-ory-ratelimit-bucket: polis-public-medium
    */
 
   public async delete(params: AppRequestParams): Promise<void> {

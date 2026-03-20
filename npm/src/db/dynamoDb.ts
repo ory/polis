@@ -20,6 +20,16 @@ const indexTableName = 'jacksonIndex';
 const globalStoreKeyIndexName = 'storeKeyIndex';
 const globalIndexKeyIndexName = 'indexKeyIndex';
 
+const checkForTableExistsError = (err: any) => {
+  if (
+    err?.name !== 'ResourceInUseException' &&
+    !err?.message?.includes('Cannot create preexisting table') &&
+    !err?.message?.toLowerCase().includes('table already exists')
+  ) {
+    throw err;
+  }
+};
+
 class DynamoDB implements DatabaseDriver {
   private options: DatabaseOption;
   private client!: DynamoDBClient;
@@ -74,12 +84,7 @@ class DynamoDB implements DatabaseDriver {
         })
       );
     } catch (err: any) {
-      if (
-        !err?.message?.includes('Cannot create preexisting table') &&
-        !err?.message?.toLowerCase().includes('table already exists')
-      ) {
-        throw err;
-      }
+      checkForTableExistsError(err);
     }
     try {
       await this.client.send(
@@ -146,12 +151,7 @@ class DynamoDB implements DatabaseDriver {
         })
       );
     } catch (err: any) {
-      if (
-        !err?.message?.includes('Cannot create preexisting table') &&
-        !err?.message?.toLowerCase().includes('table already exists')
-      ) {
-        throw err;
-      }
+      checkForTableExistsError(err);
     }
     return this;
   }

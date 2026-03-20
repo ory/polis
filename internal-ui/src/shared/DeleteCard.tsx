@@ -1,4 +1,4 @@
-import { Card, Button } from 'react-daisyui';
+import { Card, Button } from 'rsc-daisyui';
 
 export const DeleteCard = ({
   title,

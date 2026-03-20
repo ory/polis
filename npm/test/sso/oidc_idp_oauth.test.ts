@@ -108,9 +108,7 @@ tap.test('[OIDCProvider]', async (t) => {
   });
 
   t.test('[authorize] Should omit profile scope if openid.requestProfileScope is set to false', async (t) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    oauthController.opts.openid.requestProfileScope = false;
+    (oauthController as any).opts.openid.requestProfileScope = false;
     const response = (await oauthController.authorize(<OAuthReq>authz_request_oidc_provider)) as {
       redirect_url: string;
     };
@@ -123,9 +121,7 @@ tap.test('[OIDCProvider]', async (t) => {
   t.test(
     '[authorize] Should include profile scope if openid.requestProfileScope is set to false but request contains scope param',
     async (t) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      oauthController.opts.openid.requestProfileScope = false;
+      (oauthController as any).opts.openid.requestProfileScope = false;
       const response = (await oauthController.authorize(<OAuthReq>{
         ...authz_request_oidc_provider,
         scope: 'openid email profile',
@@ -142,9 +138,7 @@ tap.test('[OIDCProvider]', async (t) => {
   t.test(
     '[authorize] Should not forward openid params if openid.forwardOIDCParams is set to false',
     async (t) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      oauthController.opts.openid.forwardOIDCParams = false;
+      (oauthController as any).opts.openid.forwardOIDCParams = false;
       const response = (await oauthController.authorize(<OAuthReq>{
         ...authz_request_oidc_provider,
         scope: 'openid email profile',
@@ -159,9 +153,7 @@ tap.test('[OIDCProvider]', async (t) => {
   );
 
   t.test('[authorize] Should forward openid params if openid.forwardOIDCParams is set to true', async (t) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    oauthController.opts.openid.forwardOIDCParams = true;
+    (oauthController as any).opts.openid.forwardOIDCParams = true;
     const response = (await oauthController.authorize(<OAuthReq>{
       ...authz_request_oidc_provider,
       scope: 'openid email profile',
@@ -175,9 +167,7 @@ tap.test('[OIDCProvider]', async (t) => {
   });
 
   t.test('[authorize] Should return error if `oidcPath` is not set', async (t) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    oauthController.opts.oidcPath = undefined;
+    (oauthController as any).opts.oidcPath = undefined;
     const response = (await oauthController.authorize(<OAuthReq>authz_request_oidc_provider)) as {
       redirect_url: string;
     };
@@ -195,15 +185,11 @@ tap.test('[OIDCProvider]', async (t) => {
       'state present in error response'
     );
     // Restore
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    oauthController.opts.oidcPath = jacksonOptions.oidcPath;
+    (oauthController as any).opts.oidcPath = jacksonOptions.oidcPath;
   });
 
   t.test('[oidcAuthzResponse] Should throw an error if `state` is missing', async (t) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
       await oauthController.oidcAuthzResponse(oidc_response);
     } catch (err) {
       const { message, statusCode } = err as JacksonError;

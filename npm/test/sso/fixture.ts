@@ -88,8 +88,6 @@ export const response_type_not_code: Partial<OAuthReqBodyWithClientId> = {
   redirect_uri: boxyhq.defaultRedirectUrl,
   state: 'state-123',
   client_id: `tenant=${boxyhq.tenant}&product=${boxyhq.product}`,
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   response_type: 'token',
 };
 
@@ -124,9 +122,7 @@ const OIDC_PROVIDER_CODE = '99991afdfd';
 export const oidc_response = {
   code: OIDC_PROVIDER_CODE,
 };
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const oidc_response_with_error: CallbackParamsType = {
+export const oidc_response_with_error = {
   error: 'access_denied',
   error_description: 'The user denied the request',
 };

@@ -106,6 +106,8 @@ export type IdentityFederationApp = {
   primaryColor?: string;
   tenants?: string[]; // To support multiple tenants for a single app
   mappings: AttributeMapping[] | null;
+  samlAudienceOverride?: string | null;
+  ttlInMinutes?: number | null;
 };
 
 export interface Trace {

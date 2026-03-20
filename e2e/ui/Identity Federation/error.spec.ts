@@ -1,4 +1,6 @@
+import { jacksonOptions } from '@lib/env';
 import { test as baseTest, expect, request } from '@playwright/test';
+import { waitForErrorPage } from 'e2e/api/helpers/utils';
 import { ADMIN_PORTAL_PRODUCT, GENERIC_ERR_STRING, Portal, SSOPage } from 'e2e/support/fixtures';
 import { IdentityFederationPage } from 'e2e/support/fixtures/identity-federation';
 
@@ -91,9 +93,9 @@ test('SAML Federated app + Wrong ACS url', async ({ baseURL, page, portal, samlF
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText(`SSO error: ${GENERIC_ERR_STRING}`)).toBeVisible();
+  await expect(page.getByText(GENERIC_ERR_STRING)).toBeVisible();
 
   errorMessages.push("Assertion Consumer Service URL doesn't match.");
   await portal.doCredentialsLogin();
@@ -129,9 +131,9 @@ test('SAML Federated app + inactive SSO connection', async ({
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText(`SSO error: ${GENERIC_ERR_STRING}`)).toBeVisible();
+  await expect(page.getByText(GENERIC_ERR_STRING)).toBeVisible();
   errorMessages.push('SSO connection is deactivated.');
   await portal.doCredentialsLogin();
   await portal.isLoggedIn();
@@ -165,9 +167,9 @@ test('OIDC Federated app + SSO Provider with wrong redirect url', async ({
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText('SSO error: Redirect URL is not allowed.')).toBeVisible();
+  await expect(page.getByText('Redirect URL is not allowed.')).toBeVisible();
   errorMessages.push('Redirect URL is not allowed.');
   await portal.doCredentialsLogin();
   await portal.isLoggedIn();
@@ -202,9 +204,9 @@ test('OIDC Federated app + inactive SSO connection', async ({
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText(`SSO error: ${GENERIC_ERR_STRING}`)).toBeVisible();
+  await expect(page.getByText(GENERIC_ERR_STRING)).toBeVisible();
   errorMessages.push('SSO connection is deactivated.');
   await portal.doCredentialsLogin();
   await portal.isLoggedIn();

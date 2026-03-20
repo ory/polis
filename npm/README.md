@@ -14,7 +14,7 @@ npm install @boxyhq/saml-jackson
 
 ## Documentation
 
-For full documentation, visit [/docs/polis/guides/npm-library](https://www.ory.sh/docs/polis/guides/npm-library)
+For full documentation, visit [/docs/polis/guides/npm-library](https://www.ory.com/docs/polis/guides/npm-library)
 
 ## License
 

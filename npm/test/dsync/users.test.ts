@@ -138,8 +138,56 @@ tap.test('Directory users /', async (t) => {
 
       t.ok(data);
       t.equal(status, 200);
-      t.equal(data.companyName, 'BoxyHQ');
+      t.equal(data.companyName, 'Ory');
       t.equal(data.address.streetAddress, '123 Main St');
+    });
+
+    t.test('Should be able to update phone numbers and addresses with SCIM filter paths', async (t) => {
+      const { status, data } = await directorySync.requests.handle(
+        requests.entraPhoneAndAddress(directory, createdUser.id)
+      );
+
+      t.ok(data);
+      t.equal(status, 200);
+
+      // Phone numbers should be stored as an array with correct structure
+      t.ok(Array.isArray(data.phoneNumbers), 'phoneNumbers should be an array');
+      const workPhone = data.phoneNumbers.find((p: any) => p.type === 'work');
+      t.ok(workPhone, 'should have a work phone number');
+      t.equal(workPhone.value, '555-0100');
+      const mobilePhone = data.phoneNumbers.find((p: any) => p.type === 'mobile');
+      t.ok(mobilePhone, 'should have a mobile phone number');
+      t.equal(mobilePhone.value, '555-0101');
+
+      // Addresses should be stored as an array with correct structure
+      t.ok(Array.isArray(data.addresses), 'addresses should be an array');
+      const workAddress = data.addresses.find((a: any) => a.type === 'work');
+      t.ok(workAddress, 'should have a work address');
+      t.equal(workAddress.streetAddress, '100 Enterprise Blvd');
+      t.equal(workAddress.locality, 'San Francisco');
+      t.equal(workAddress.postalCode, '94105');
+      t.equal(workAddress.country, 'US');
+    });
+
+    t.test('Should handle SCIM filter paths for arbitrary attribute names', async (t) => {
+      const { status, data } = await directorySync.requests.handle(
+        requests.arbitraryFilterPaths(directory, createdUser.id)
+      );
+
+      t.ok(data);
+      t.equal(status, 200);
+
+      // ims should be stored as an array with correct structure
+      t.ok(Array.isArray(data.ims), 'ims should be an array');
+      const xmppIm = data.ims.find((im: any) => im.type === 'xmpp');
+      t.ok(xmppIm, 'should have an xmpp IM');
+      t.equal(xmppIm.value, 'test@test.org');
+
+      // photos should be stored as an array with correct structure
+      t.ok(Array.isArray(data.photos), 'photos should be an array');
+      const thumbnail = data.photos.find((p: any) => p.type === 'thumbnail');
+      t.ok(thumbnail, 'should have a thumbnail photo');
+      t.equal(thumbnail.value, 'https://example.com/photo.jpg');
     });
 
     t.test('Should be able to fetch all users', async (t) => {

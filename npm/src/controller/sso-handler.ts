@@ -138,7 +138,13 @@ export class SSOHandler {
 
         if (oidcConfig.serverMetadata().issuer === thirdPartyLogin.iss) {
           if (thirdPartyLogin.target_link_uri) {
-            if (!allowed.redirect(thirdPartyLogin.target_link_uri, connection.redirectUrl as string[])) {
+            if (
+              !allowed.redirect(
+                thirdPartyLogin.target_link_uri,
+                connection.redirectUrl as string[],
+                this.opts.openid?.redirectExactMatch
+              )
+            ) {
               throw new JacksonError('target_link_uri is not allowed');
             }
           }
@@ -259,11 +265,13 @@ export class SSOHandler {
     connection,
     requestParams,
     mappings,
+    includeOidcTokensInAssertion,
     ssoTraces,
   }: {
     connection: OIDCSSORecord;
     requestParams: Record<string, any>;
     mappings: IdentityFederationApp['mappings'];
+    includeOidcTokensInAssertion?: boolean;
     ssoTraces: { instance: SSOTracesInstance; context: SSOTrace['context'] };
   }) {
     if (!this.opts.oidcPath) {
@@ -294,6 +302,7 @@ export class SSOHandler {
         oidcCodeVerifier,
         oidcNonce,
         mappings,
+        includeOidcTokensInAssertion,
       });
 
       const ssoUrl = client.buildAuthorizationUrl(oidcConfig, {
@@ -340,6 +349,7 @@ export class SSOHandler {
         claims: mappedClaims,
         ...certificate,
         flattenArray: true,
+        ttlInMinutes: session.oidcFederated?.ttlInMinutes ?? session.requested?.ttlInMinutes,
       });
 
       const params: { name: string; value: string }[] = [];
@@ -366,12 +376,14 @@ export class SSOHandler {
     oidcCodeVerifier,
     oidcNonce,
     mappings,
+    includeOidcTokensInAssertion,
   }: {
     requestId: string;
     requested: any;
     oidcCodeVerifier?: string;
     oidcNonce?: string;
     mappings: IdentityFederationApp['mappings'];
+    includeOidcTokensInAssertion?: boolean;
   }) => {
     const sessionId = crypto.randomBytes(16).toString('hex');
 
@@ -383,6 +395,10 @@ export class SSOHandler {
 
     if (oidcNonce) {
       session['oidcNonce'] = oidcNonce;
+    }
+
+    if (includeOidcTokensInAssertion !== undefined) {
+      session['includeOidcTokensInAssertion'] = includeOidcTokensInAssertion;
     }
 
     await this.session.put(sessionId, session);

@@ -64,16 +64,16 @@ export default function Adapter() {
     async unlinkAccount() {
       return;
     },
-    async createSession() {
+    async createSession(_) {
       return;
     },
-    async getSessionAndUser() {
+    async getSessionAndUser(_) {
       return;
     },
-    async updateSession() {
+    async updateSession(_) {
       return;
     },
-    async deleteSession() {
+    async deleteSession(_) {
       return;
     },
     async createVerificationToken(data: VerificationToken) {

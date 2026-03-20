@@ -1,4 +1,6 @@
+import { jacksonOptions } from '@lib/env';
 import { test as baseTest, expect, request } from '@playwright/test';
+import { waitForErrorPage } from 'e2e/api/helpers/utils';
 import { ADMIN_PORTAL_PRODUCT, GENERIC_ERR_STRING, Portal, SSOPage } from 'e2e/support/fixtures';
 
 type MyFixtures = {
@@ -45,9 +47,9 @@ test('OAuth2 wrapper + SAML provider + wrong redirectUrl', async ({ ssoPage, pag
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText(`SSO error: Redirect URL is not allowed.`)).toBeVisible();
+  await expect(page.getByText('Redirect URL is not allowed.')).toBeVisible();
   errorMessages.push('Redirect URL is not allowed.');
 });
 
@@ -70,9 +72,9 @@ test('OAuth2 wrapper + SAML provider + inactive connection', async ({ ssoPage, p
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText(`SSO error: ${GENERIC_ERR_STRING}`)).toBeVisible();
+  await expect(page.getByText(GENERIC_ERR_STRING)).toBeVisible();
   errorMessages.push('SSO connection is deactivated.');
 });
 
@@ -89,9 +91,9 @@ test('OAuth2 wrapper + OIDC provider + wrong redirectUrl', async ({ ssoPage, pag
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText('SSO error: Redirect URL is not allowed.')).toBeVisible();
+  await expect(page.getByText('Redirect URL is not allowed.')).toBeVisible();
   errorMessages.push('Redirect URL is not allowed.');
 });
 
@@ -114,9 +116,9 @@ test('OAuth2 wrapper + OIDC provider + inactive connection', async ({ ssoPage, p
   await ssoPage.logout();
   await ssoPage.signInWithSSO();
   // Wait for browser to redirect to error page
-  await page.waitForURL((url) => url.origin === baseURL && url.pathname === '/error');
+  await waitForErrorPage(page, baseURL!, jacksonOptions.jsonErrorPage);
   // Assert error text
-  await expect(page.getByText(`SSO error: ${GENERIC_ERR_STRING}`)).toBeVisible();
+  await expect(page.getByText(GENERIC_ERR_STRING)).toBeVisible();
   errorMessages.push('SSO connection is deactivated.');
 });
 

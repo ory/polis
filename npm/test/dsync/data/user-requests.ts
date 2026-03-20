@@ -146,12 +146,84 @@ const requests = {
           {
             op: 'replace',
             path: 'companyName',
-            value: 'BoxyHQ',
+            value: 'Ory',
           },
           {
             op: 'add',
             path: 'address.streetAddress',
             value: '123 Main St',
+          },
+        ],
+      },
+      directoryId: directory.id,
+      resourceType: 'users',
+      resourceId: userId,
+      apiSecret: directory.scim.secret,
+      query: {},
+    };
+  },
+
+  // Entra ID-style PATCH with SCIM filter paths for phone numbers and addresses
+  entraPhoneAndAddress: (directory: Directory, userId: string): DirectorySyncRequest => {
+    return {
+      method: 'PATCH',
+      body: {
+        Operations: [
+          {
+            op: 'replace',
+            path: 'phoneNumbers[type eq "work"].value',
+            value: '555-0100',
+          },
+          {
+            op: 'replace',
+            path: 'phoneNumbers[type eq "mobile"].value',
+            value: '555-0101',
+          },
+          {
+            op: 'replace',
+            path: 'addresses[type eq "work"].streetAddress',
+            value: '100 Enterprise Blvd',
+          },
+          {
+            op: 'replace',
+            path: 'addresses[type eq "work"].locality',
+            value: 'San Francisco',
+          },
+          {
+            op: 'replace',
+            path: 'addresses[type eq "work"].postalCode',
+            value: '94105',
+          },
+          {
+            op: 'replace',
+            path: 'addresses[type eq "work"].country',
+            value: 'US',
+          },
+        ],
+      },
+      directoryId: directory.id,
+      resourceType: 'users',
+      resourceId: userId,
+      apiSecret: directory.scim.secret,
+      query: {},
+    };
+  },
+
+  // Arbitrary attribute names with SCIM filter paths (e.g. ims, photos)
+  arbitraryFilterPaths: (directory: Directory, userId: string): DirectorySyncRequest => {
+    return {
+      method: 'PATCH',
+      body: {
+        Operations: [
+          {
+            op: 'replace',
+            path: 'ims[type eq "xmpp"].value',
+            value: 'test@test.org',
+          },
+          {
+            op: 'replace',
+            path: 'photos[type eq "thumbnail"].value',
+            value: 'https://example.com/photo.jpg',
           },
         ],
       },
