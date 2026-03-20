@@ -22,6 +22,10 @@ on:
   schedule:
     - cron: '0 8 * * MON,THU' # Run every Monday and Thursday at 08:00 UTC
 
+permissions:
+  id-token: write # Required for npm publish OIDC
+  contents: read
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   ci:
@@ -200,8 +204,6 @@ jobs:
           echo "BOXYHQ_GITHUB_REPO=${BOXYHQ_GITHUB_REPO}" >> $GITHUB_OUTPUT
 
         working-directory: ./npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   build:
     needs: ci
@@ -470,5 +472,3 @@ jobs:
 
           npm publish --tag ${{ needs.ci.outputs.PUBLISH_TAG }} --access public
         working-directory: ./${{ matrix.package }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
