@@ -18,6 +18,10 @@ export const extractSAMLResponseAttributes = async (
     if (!attributes.claims.id && attributes.claims.email) {
       attributes.claims.id = crypto.createHash('sha256').update(attributes.claims.email).digest('hex');
     }
+
+    if (!attributes.claims.id) {
+      throw new Error('SAML assertion is missing both id (NameID) and email. Ensure the IdP is configured to send at least one of these attributes.');
+    }
   }
 
   // we'll send a ripemd160 hash of the id, this can be used in the case of email missing it can be used as the local part
