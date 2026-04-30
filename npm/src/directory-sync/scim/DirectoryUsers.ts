@@ -33,11 +33,20 @@ export class DirectoryUsers {
   public async create(directory: Directory, body: any): Promise<DirectorySyncResponse> {
     const userAttributes = extractStandardUserAttributes(body);
 
-    // Check if the user already exists
-    const { data: users } = await this.users.search(userAttributes.email, directory.id);
+    // [LEV-956] Dedupe on userName (RFC 7643 uniqueness=server, caseExact=false) rather
+    // than on emails[0].value (uniqueness=none). Email value lags userName during
+    // IdP-driven renames, which is what produced the BCG 409 on a deactivated record.
+    const { data: users } = await this.users.search(body.userName, directory.id);
 
     if (users && users.length > 0) {
-      return this.respondWithError({ code: 409, message: 'User already exists' });
+      // [LEV-956] RFC 7644 §3.3 / §3.12: a uniqueness conflict on POST must include
+      // scimType: "uniqueness" so the IdP knows to retry as a PATCH on the existing
+      // resource instead of looping POST.
+      return this.respondWithError({
+        code: 409,
+        message: 'User already exists',
+        scimType: 'uniqueness',
+      });
     }
 
     const newUser = {
@@ -172,11 +181,12 @@ export class DirectoryUsers {
     };
   }
 
-  private respondWithError(error: ApiError | null) {
+  private respondWithError(error: (ApiError & { scimType?: string }) | null) {
     return {
       status: error ? error.code : 500,
       data: {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
+        ...(error && 'scimType' in error && error.scimType ? { scimType: error.scimType } : {}),
         detail: error ? error.message : 'Internal Server Error',
       },
     };
