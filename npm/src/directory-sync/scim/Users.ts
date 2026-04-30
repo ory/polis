@@ -11,7 +11,9 @@ export class Users extends Base {
 
   // Create a new user
   public async create(user: User & { directoryId: string }): Promise<Response<User>> {
-    const { directoryId, id, email } = user;
+    const { directoryId, id } = user;
+    // Index by userName (RFC 7643: uniqueness=server, caseExact=false) instead of email.
+    const indexValue = (user.raw?.userName ?? user.email).toLowerCase();
 
     try {
       await this.store('users').put(
@@ -19,7 +21,7 @@ export class Users extends Base {
         user,
         {
           name: indexNames.directoryIdUsername,
-          value: keyFromParts(directoryId, email),
+          value: keyFromParts(directoryId, indexValue),
         },
         {
           name: indexNames.directoryId,
@@ -155,7 +157,8 @@ export class Users extends Base {
     try {
       const { data: users } = await this.store('users').getByIndex({
         name: indexNames.directoryIdUsername,
-        value: keyFromParts(directoryId, userName),
+        // Lowercase to match the index built in create() (RFC 7643: caseExact=false).
+        value: keyFromParts(directoryId, userName.toLowerCase()),
       });
 
       return { data: users, error: null };
