@@ -32,12 +32,18 @@ export class DirectoryUsers {
 
   public async create(directory: Directory, body: any): Promise<DirectorySyncResponse> {
     const userAttributes = extractStandardUserAttributes(body);
+    const { userName } = body as { userName: string };
 
-    // Check if the user already exists
-    const { data: users } = await this.users.search(userAttributes.email, directory.id);
+    // Dedupe by userName (uniqueness=server) instead of email (uniqueness=none).
+    const { data: users } = await this.users.search(userName, directory.id);
 
     if (users && users.length > 0) {
-      return this.respondWithError({ code: 409, message: 'User already exists' });
+      // RFC 7644 §3.12: scimType=uniqueness so the IdP retries as PATCH.
+      return this.respondWithError({
+        code: 409,
+        message: 'User already exists',
+        scimType: 'uniqueness',
+      });
     }
 
     const newUser = {
@@ -172,11 +178,12 @@ export class DirectoryUsers {
     };
   }
 
-  private respondWithError(error: ApiError | null) {
+  private respondWithError(error: (ApiError & { scimType?: string }) | null) {
     return {
       status: error ? error.code : 500,
       data: {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
+        ...(error?.scimType ? { scimType: error.scimType } : {}),
         detail: error ? error.message : 'Internal Server Error',
       },
     };
