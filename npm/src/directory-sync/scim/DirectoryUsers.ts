@@ -31,8 +31,13 @@ export class DirectoryUsers {
   }
 
   public async create(directory: Directory, body: any): Promise<DirectorySyncResponse> {
+    const userName = body?.userName;
+
+    if (!userName || typeof userName !== 'string') {
+      return this.respondWithError({ code: 400, message: 'userName is required' });
+    }
+
     const userAttributes = extractStandardUserAttributes(body);
-    const { userName } = body as { userName: string };
 
     // Dedupe by userName (uniqueness=server) instead of email (uniqueness=none).
     const { data: users } = await this.users.search(userName, directory.id);
@@ -78,11 +83,15 @@ export class DirectoryUsers {
   public async update(directory: Directory, user: User, body: any): Promise<DirectorySyncResponse> {
     const userAttributes = extractStandardUserAttributes(body);
 
-    const { data: updatedUser } = await this.users.update(user.id, {
-      ...userAttributes,
-      id: user.id,
-      raw: 'rawAttributes' in body ? body.rawAttributes : body,
-    });
+    const { data: updatedUser } = await this.users.update(
+      user.id,
+      {
+        ...userAttributes,
+        id: user.id,
+        raw: 'rawAttributes' in body ? body.rawAttributes : body,
+      },
+      directory.id
+    );
 
     await sendEvent('user.updated', { directory, user: updatedUser }, this.callback);
 
@@ -113,11 +122,15 @@ export class DirectoryUsers {
       };
     }
 
-    const { data: updatedUser } = await this.users.update(user.id, {
-      ...user,
-      ...attributes,
-      raw: updateRawUserAttributes(user.raw, rawAttributes),
-    });
+    const { data: updatedUser } = await this.users.update(
+      user.id,
+      {
+        ...user,
+        ...attributes,
+        raw: updateRawUserAttributes(user.raw, rawAttributes),
+      },
+      directory.id
+    );
 
     await sendEvent('user.updated', { directory, user: updatedUser }, this.callback);
 

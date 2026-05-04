@@ -13,7 +13,7 @@ export class Users extends Base {
   public async create(user: User & { directoryId: string }): Promise<Response<User>> {
     const { directoryId, id } = user;
     // Index by userName (RFC 7643: uniqueness=server, caseExact=false) instead of email.
-    const indexValue = (user.raw?.userName ?? user.email).toLowerCase();
+    const indexValue = (user.raw?.userName || user.email).toLowerCase();
 
     try {
       await this.store('users').put(
@@ -117,7 +117,7 @@ export class Users extends Base {
   }
 
   // Update the user data
-  public async update(id: string, user: User): Promise<Response<User>> {
+  public async update(id: string, user: User, directoryId: string): Promise<Response<User>> {
     const { raw } = user;
 
     raw['id'] = id;
@@ -127,8 +127,21 @@ export class Users extends Base {
       raw,
     };
 
+    const indexValue = (updatedUser.raw?.userName || updatedUser.email).toLowerCase();
+
     try {
-      await this.store('users').put(id, updatedUser);
+      await this.store('users').put(
+        id,
+        updatedUser,
+        {
+          name: indexNames.directoryIdUsername,
+          value: keyFromParts(directoryId, indexValue),
+        },
+        {
+          name: indexNames.directoryId,
+          value: directoryId,
+        }
+      );
       return { data: updatedUser, error: null };
     } catch (err: any) {
       return apiError(err);
