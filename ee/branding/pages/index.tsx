@@ -1,4 +1,4 @@
-import { BrandingForm, boxyhqBranding } from '@boxyhq/internal-ui';
+import { BrandingForm, polisBranding } from '@boxyhq/internal-ui';
 import LicenseRequired from '@components/LicenseRequired';
 import { errorToast, successToast } from '@components/Toaster';
 import { jacksonOptions } from '@lib/env';
@@ -14,10 +14,10 @@ const Branding = ({ hasValidLicense }: { hasValidLicense: boolean }) => {
   return (
     <BrandingForm
       defaults={{
-        primaryColor: boxyhqBranding.primaryColor,
-        logoUrl: boxyhqBranding.logoUrl,
-        faviconUrl: boxyhqBranding.faviconUrl,
-        companyName: boxyhqBranding.companyName,
+        primaryColor: polisBranding.primaryColor,
+        logoUrl: polisBranding.logoUrl,
+        faviconUrl: polisBranding.faviconUrl,
+        companyName: polisBranding.companyName,
       }}
       urls={{
         getBranding: '/api/admin/branding',

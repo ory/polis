@@ -446,7 +446,7 @@ export interface JacksonOption {
     redirectExactMatch?: boolean; // defaults to false
   };
   certs?: { publicKey: string; privateKey: string };
-  boxyhqLicenseKey?: string;
+  polisLicenseKey?: string;
   noAnalytics?: boolean;
   webhook?: Webhook;
   dsync?: {
@@ -467,7 +467,7 @@ export interface JacksonOption {
 
   /**  The number of days a setup link is valid for. Defaults to 3 days. */
   setupLinkExpiryDays?: number;
-  boxyhqHosted?: boolean;
+  polisHosted?: boolean;
 
   ssoTraces?: SSOTracesOption;
   logger?: {

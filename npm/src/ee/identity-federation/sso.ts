@@ -54,7 +54,7 @@ export class SSO {
     samlBinding: 'HTTP-POST' | 'HTTP-Redirect';
     idp_hint?: string;
   }) => {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     const protocol = 'saml-federation';
     const login_type = 'sp-initiated';

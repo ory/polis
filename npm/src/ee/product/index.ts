@@ -12,7 +12,7 @@ export class ProductController {
   }
 
   public async get(productId: string): Promise<ProductConfig> {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     const productConfig = (await this.productStore.get(productId)) as ProductConfig;
 
@@ -34,7 +34,7 @@ export class ProductController {
   }
 
   public async upsert(params: Partial<ProductConfig> & { id: string }) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     if (!('id' in params)) {
       throw new JacksonError('Provide a product id', 400);
@@ -48,7 +48,7 @@ export class ProductController {
   }
 
   public async delete(productId: string) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     await this.productStore.delete(productId);
   }

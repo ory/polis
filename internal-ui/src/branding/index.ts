@@ -1,7 +1,7 @@
 export { BrandingForm } from './BrandingForm';
 
 // Ory branding
-export const boxyhqBranding = {
+export const polisBranding = {
   logoUrl: '/logo.svg',
   faviconUrl: '/favicon.ico',
   companyName: 'Ory Polis',

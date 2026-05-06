@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { boxyhqHosted, adminPortal } from '@lib/env';
+import { polisHosted, adminPortal } from '@lib/env';
 import { getPortalBranding, getProductBranding } from '../utils';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 const handleGET = async (req: NextApiRequest, res: NextApiResponse) => {
   const { productId } = req.query as { productId: string };
 
-  const productOrPortalBranding = boxyhqHosted
+  const productOrPortalBranding = polisHosted
     ? await getProductBranding(productId)
     : await getPortalBranding();
 

@@ -36,7 +36,7 @@
     "db:migration:run:mssql": "cross-env DB_TYPE=mssql DB_URL='sqlserver://localhost:1433;database=master;username=sa;password=123ABabc!' ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
     "db:migration:run:sqlite": "cross-env DB_TYPE=sqlite DB_URL='file:///tmp/migration-sqlite.db' ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
     "prepublishOnly": "npm run build",
-    "test": "cross-env BOXYHQ_NO_ANALYTICS=1 tap --timeout=300 --allow-incomplete-coverage --allow-empty-coverage --bail test/**/*.test.ts",
+    "test": "cross-env POLIS_NO_ANALYTICS=1 tap --timeout=300 --allow-incomplete-coverage --allow-empty-coverage --bail test/**/*.test.ts",
     "sort": "npx sort-package-json"
   },
   "tap": {

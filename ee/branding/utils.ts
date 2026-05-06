@@ -1,22 +1,22 @@
 import jackson from '@lib/jackson';
-import { boxyhqHosted } from '@lib/env';
-import { boxyhqBranding } from 'internal-ui/src';
+import { polisHosted } from '@lib/env';
+import { polisBranding } from 'internal-ui/src';
 
 export const getPortalBranding = async () => {
   const { brandingController, checkLicense } = await jackson();
 
   // If the licence is not valid, return the default branding
   if (!(await checkLicense())) {
-    return boxyhqBranding;
+    return polisBranding;
   }
 
   const customBranding = await brandingController?.get();
 
   return {
-    logoUrl: customBranding?.logoUrl || boxyhqBranding.logoUrl,
-    primaryColor: customBranding?.primaryColor || boxyhqBranding.primaryColor,
-    faviconUrl: customBranding?.faviconUrl || boxyhqBranding.faviconUrl,
-    companyName: customBranding?.companyName || boxyhqBranding.companyName,
+    logoUrl: customBranding?.logoUrl || polisBranding.logoUrl,
+    primaryColor: customBranding?.primaryColor || polisBranding.primaryColor,
+    faviconUrl: customBranding?.faviconUrl || polisBranding.faviconUrl,
+    companyName: customBranding?.companyName || polisBranding.companyName,
   };
 };
 
@@ -30,19 +30,19 @@ export const getProductBranding = async (productId: string) => {
   const { checkLicense, productController } = await jackson();
 
   if (!(await checkLicense())) {
-    return boxyhqBranding;
+    return polisBranding;
   }
 
-  if (!boxyhqHosted || !productId) {
-    return boxyhqBranding;
+  if (!polisHosted || !productId) {
+    return polisBranding;
   }
 
   const productBranding = await productController?.get(productId);
 
   return {
-    logoUrl: productBranding.logoUrl || boxyhqBranding.logoUrl,
-    faviconUrl: productBranding.faviconUrl || boxyhqBranding.faviconUrl,
-    companyName: productBranding.companyName || boxyhqBranding.companyName,
-    primaryColor: productBranding.primaryColor || boxyhqBranding.primaryColor,
+    logoUrl: productBranding.logoUrl || polisBranding.logoUrl,
+    faviconUrl: productBranding.faviconUrl || polisBranding.faviconUrl,
+    companyName: productBranding.companyName || polisBranding.companyName,
+    primaryColor: productBranding.primaryColor || polisBranding.primaryColor,
   };
 };

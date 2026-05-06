@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import jackson from '@lib/jackson';
-import { boxyhqHosted } from '@lib/env';
+import { polisHosted } from '@lib/env';
 import { getPortalBranding, getProductBranding } from '@ee/branding/utils';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -28,7 +28,7 @@ const handleGET = async (req: NextApiRequest, res: NextApiResponse) => {
   const { token } = req.query as { token: string };
 
   const setupLink = await setupLinkController.getByToken(token);
-  const branding = boxyhqHosted ? await getProductBranding(setupLink.product) : await getPortalBranding();
+  const branding = polisHosted ? await getProductBranding(setupLink.product) : await getPortalBranding();
 
   return res.json({
     data: {

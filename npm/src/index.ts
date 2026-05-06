@@ -58,7 +58,7 @@ const defaultOpts = (opts: JacksonOption): JacksonOptionWithRequiredLogger => {
   newOpts.openid.requestProfileScope = newOpts.openid?.requestProfileScope ?? true;
   newOpts.openid.forwardOIDCParams = newOpts.openid?.forwardOIDCParams ?? false;
 
-  newOpts.boxyhqLicenseKey = newOpts.boxyhqLicenseKey || undefined;
+  newOpts.polisLicenseKey = newOpts.polisLicenseKey || undefined;
 
   newOpts.ssoTraces = newOpts.ssoTraces || {};
   newOpts.ssoTraces.ttl = newOpts.ssoTraces?.ttl || TRACES_TTL_DEFAULT;
@@ -171,7 +171,7 @@ export const controllers = async (
 
   if (!opts.noAnalytics) {
     logger.info(
-      'Anonymous analytics enabled. You can disable this by setting the DO_NOT_TRACK=1 or BOXYHQ_NO_ANALYTICS=1 environment variables'
+      'Anonymous analytics enabled. You can disable this by setting the DO_NOT_TRACK=1 or POLIS_NO_ANALYTICS=1 environment variables'
     );
     const analyticsStore = db.store('_analytics:events');
     const analyticsController = new AnalyticsController({
@@ -203,7 +203,7 @@ export const controllers = async (
     identityFederationController,
     brandingController,
     checkLicense: () => {
-      return checkLicense(opts.boxyhqLicenseKey);
+      return checkLicense(opts.polisLicenseKey);
     },
     productController,
     close: async () => {

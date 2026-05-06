@@ -39,7 +39,7 @@ const jacksonOptions: JacksonOption = {
     jwtSigningKeys: { private: 'PRIVATE_KEY', public: 'PUBLIC_KEY' },
     jwsAlg: 'RS256',
   },
-  boxyhqLicenseKey: 'dummy-license',
+  polisLicenseKey: 'dummy-license',
   noAnalytics: true,
 };
 

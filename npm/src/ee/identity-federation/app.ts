@@ -182,7 +182,7 @@ export class App {
     includeOidcTokensInAssertion,
     ttlInMinutes,
   }: NewAppParams) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     if (type === 'oidc') {
       if (!tenant || !product || !redirectUrl || !name) {
@@ -317,7 +317,7 @@ export class App {
    *     x-ory-ratelimit-bucket: polis-public-high
    */
   public async get(params: AppRequestParams) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     if ('id' in params) {
       const app = await this.store.get(params.id);
@@ -379,7 +379,7 @@ export class App {
    *     x-ory-ratelimit-bucket: polis-public-high
    */
   public async getByProduct({ product, pageOffset, pageLimit, pageToken }: GetByProductParams) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     if (!product) {
       throw new JacksonError('Please provide a `product`.', 400);
@@ -400,7 +400,7 @@ export class App {
 
   // Get the app by SP EntityId
   public async getByEntityId(entityId: string) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     if (!entityId) {
       throw new JacksonError(
@@ -449,7 +449,7 @@ export class App {
    *     x-ory-ratelimit-bucket: polis-public-medium
    */
   public async update(params: Partial<IdentityFederationApp>) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     const { id, tenant, product, type } = params;
 
@@ -553,7 +553,7 @@ export class App {
     pageLimit?: number;
     pageToken?: string;
   }) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     const apps = (await this.store.getAll(
       pageOffset,
@@ -602,7 +602,7 @@ export class App {
    */
 
   public async delete(params: AppRequestParams): Promise<void> {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     if ('id' in params) {
       return await this.store.delete(params.id);
@@ -618,7 +618,7 @@ export class App {
 
   // Get the metadata for the app
   public async getMetadata(samlAudienceOverride?: string) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     const { publicKey } = await getDefaultCertificate();
 

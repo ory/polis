@@ -9,7 +9,7 @@ export const validateDevelopmentModeLimits = async (
   type: Module,
   message: string = 'Maximum number of connections reached'
 ) => {
-  if (productId && jacksonOptions.boxyhqHosted) {
+  if (productId && jacksonOptions.polisHosted) {
     const {
       productController,
       connectionAPIController,

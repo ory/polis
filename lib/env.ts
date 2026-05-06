@@ -52,7 +52,7 @@ const ssoTraces: SSOTracesOption = {
 };
 
 /** Indicates if the Jackson instance is hosted (i.e. not self-hosted) */
-export const boxyhqHosted = process.env.BOXYHQ_HOSTED === '1';
+export const polisHosted = process.env.POLIS_HOSTED === '1' || process.env.BOXYHQ_HOSTED === '1';
 
 const jacksonOptions: JacksonOption = {
   externalUrl,
@@ -77,10 +77,12 @@ const jacksonOptions: JacksonOption = {
     redirectExactMatch: process.env.OPENID_REDIRECT_EXACT_MATCH === 'true',
   },
   certs: { publicKey: process.env.PUBLIC_KEY || '', privateKey: process.env.PRIVATE_KEY || '' },
-  boxyhqLicenseKey: process.env.BOXYHQ_LICENSE_KEY,
+  polisLicenseKey: process.env.POLIS_LICENSE_KEY || process.env.BOXYHQ_LICENSE_KEY,
   noAnalytics:
     process.env.DO_NOT_TRACK === '1' ||
     process.env.DO_NOT_TRACK === 'true' ||
+    process.env.POLIS_NO_ANALYTICS === '1' ||
+    process.env.POLIS_NO_ANALYTICS === 'true' ||
     process.env.BOXYHQ_NO_ANALYTICS === '1' ||
     process.env.BOXYHQ_NO_ANALYTICS === 'true',
   webhook: { endpoint: process.env.WEBHOOK_URL || '', secret: process.env.WEBHOOK_SECRET || '' },
@@ -105,7 +107,7 @@ const jacksonOptions: JacksonOption = {
     },
   },
   setupLinkExpiryDays,
-  boxyhqHosted,
+  polisHosted,
   ssoTraces,
   flattenRawClaims: process.env.FLATTEN_RAW_CLAIMS === 'true',
   jsonErrorPage: process.env.JSON_ERROR_PAGE === 'true',

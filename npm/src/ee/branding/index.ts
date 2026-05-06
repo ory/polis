@@ -13,7 +13,7 @@ export class BrandingController {
 
   // Get branding
   public async get() {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     const branding: AdminPortalBranding = await this.store.get(this.storeKey);
 
@@ -29,7 +29,7 @@ export class BrandingController {
 
   // Update branding
   public async update(params: Partial<AdminPortalBranding>) {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
 
     const { logoUrl, faviconUrl, companyName, primaryColor } = params;
 

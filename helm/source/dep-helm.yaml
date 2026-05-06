@@ -6,7 +6,7 @@ metadata:
     jacksondev: '1'
   name: jackson
 stringData:
-  # BOXYHQ_LICENSE_KEY: ""
+  # POLIS_LICENSE_KEY: ""
   # DB_CLEANUP_LIMIT: ""
   # DB_ENCRYPTION_KEY: ""
   DB_MANUAL_MIGRATION: 'true'

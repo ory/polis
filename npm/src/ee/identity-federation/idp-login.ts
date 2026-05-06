@@ -30,7 +30,7 @@ export class IdPLogin {
   public async oidcInitiateLogin(
     body: OIDCIdPInitiatedReq & { fedAppId: string }
   ): Promise<{ redirect_url: string }> {
-    await throwIfInvalidLicense(this.opts.boxyhqLicenseKey);
+    await throwIfInvalidLicense(this.opts.polisLicenseKey);
     const protocol = 'saml-federation';
     const login_type = 'idp-initiated';
 
