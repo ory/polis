@@ -43,8 +43,8 @@
     "coverage-map": "map.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1037.0",
-    "@aws-sdk/credential-providers": "3.1037.0",
+    "@aws-sdk/client-dynamodb": "3.1043.0",
+    "@aws-sdk/credential-providers": "3.1043.0",
     "@aws-sdk/util-dynamodb": "3.996.2",
     "@boxyhq/error-code-mnemonic": "0.1.1",
     "@boxyhq/metrics": "0.2.13",
@@ -52,12 +52,12 @@
     "@googleapis/admin": "30.3.0",
     "axios": "1.15.2",
     "encoding": "0.1.13",
-    "ipaddr.js": "2.3.0",
+    "ipaddr.js": "2.4.0",
     "jose": "6.2.3",
     "lodash": "4.18.1",
-    "mixpanel": "0.21.0",
+    "mixpanel": "0.22.0",
     "mongodb": "7.2.0",
-    "mssql": "12.5.0",
+    "mssql": "12.5.2",
     "mysql2": "3.22.3",
     "node-forge": "1.4.0",
     "openid-client": "6.8.4",
@@ -75,9 +75,9 @@
     "@types/sinon": "21.0.1",
     "cross-env": "10.1.0",
     "migrate-mongo": "14.0.7",
-    "nock": "14.0.13",
+    "nock": "14.0.14",
     "sinon": "21.1.2",
-    "tap": "21.7.1",
+    "tap": "21.7.2",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
     "typescript": "5.9.3"
@@ -88,18 +88,18 @@
   },
   "overrides": {
     "tap": {
-      "tar": "7.5.13",
+      "tar": "7.5.14",
       "glob": "13.0.6"
     },
     "typeorm": {
       "mongodb": "7.2.0",
-      "mssql": "12.5.0",
+      "mssql": "12.5.2",
       "glob": "13.0.6"
     },
     "uuid": "14.0.0",
     "picomatch": "4.0.4",
     "minimatch": "10.2.5",
     "brace-expansion": "5.0.5",
-    "tar": "7.5.13"
+    "tar": "7.5.14"
   }
 }
