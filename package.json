@@ -76,7 +76,7 @@
     "picomatch": "$picomatch",
     "minimatch": "10.2.5",
     "brace-expansion": "5.0.5",
-    "tar": "7.5.14",
+    "tar": "7.5.15",
     "postcss": "$postcss",
     "protobufjs": "7.5.6"
   },
@@ -120,15 +120,15 @@
     "swr": "2.4.1"
   },
   "devDependencies": {
-    "@playwright/test": "1.59.1",
+    "@playwright/test": "1.60.0",
     "@types/cors": "2.8.19",
     "@types/micromatch": "4.0.10",
-    "@types/node": "24.12.2",
+    "@types/node": "24.12.4",
     "@types/prismjs": "1.26.6",
     "@types/react": "19.2.14",
     "@types/styled-components": "5.1.36",
-    "@typescript-eslint/eslint-plugin": "8.59.2",
-    "@typescript-eslint/parser": "8.59.2",
+    "@typescript-eslint/eslint-plugin": "8.59.3",
+    "@typescript-eslint/parser": "8.59.3",
     "autoprefixer": "10.5.0",
     "env-cmd": "11.0.0",
     "eslint": "9.39.4",
