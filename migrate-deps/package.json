@@ -7,10 +7,10 @@
     "migrate-mongo": "14.0.7",
     "mssql": "12.5.4",
     "mysql2": "3.22.3",
-    "pg": "8.20.0",
+    "pg": "8.21.0",
     "reflect-metadata": "0.2.2",
     "ts-node": "10.9.2",
-    "typeorm": "0.3.29"
+    "typeorm": "0.3.30"
   },
   "overrides": {
     "uuid": "14.0.0"

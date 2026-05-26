@@ -43,8 +43,8 @@
     "coverage-map": "map.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1048.0",
-    "@aws-sdk/credential-providers": "3.1048.0",
+    "@aws-sdk/client-dynamodb": "3.1049.0",
+    "@aws-sdk/credential-providers": "3.1049.0",
     "@aws-sdk/util-dynamodb": "3.996.2",
     "@boxyhq/error-code-mnemonic": "0.1.1",
     "@boxyhq/metrics": "0.2.13",
@@ -61,12 +61,12 @@
     "mysql2": "3.22.3",
     "node-forge": "1.4.0",
     "openid-client": "6.8.4",
-    "pg": "8.20.0",
+    "pg": "8.21.0",
     "redis": "4.7.1",
     "reflect-metadata": "0.2.2",
     "ripemd160": "2.0.3",
     "better-sqlite3": "12.10.0",
-    "typeorm": "0.3.29"
+    "typeorm": "0.3.30"
   },
   "devDependencies": {
     "@faker-js/faker": "10.4.0",
