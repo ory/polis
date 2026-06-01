@@ -50,7 +50,7 @@
     "@boxyhq/metrics": "0.2.13",
     "@boxyhq/saml20": "1.15.2",
     "@googleapis/admin": "30.3.0",
-    "axios": "1.15.2",
+    "axios": "1.16.1",
     "encoding": "0.1.13",
     "ipaddr.js": "2.4.0",
     "jose": "6.2.3",

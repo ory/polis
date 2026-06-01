@@ -88,7 +88,7 @@
     "@heroicons/react": "2.2.0",
     "@next/bundle-analyzer": "16.2.6",
     "@tailwindcss/typography": "0.5.19",
-    "axios": "1.15.2",
+    "axios": "1.16.1",
     "chroma-js": "3.2.0",
     "classnames": "2.5.1",
     "cors": "2.8.6",
