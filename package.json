@@ -75,10 +75,10 @@
     "uuid": "14.0.0",
     "picomatch": "$picomatch",
     "minimatch": "10.2.5",
-    "brace-expansion": "5.0.5",
+    "brace-expansion": "5.0.6",
     "tar": "7.5.15",
     "postcss": "$postcss",
-    "protobufjs": "7.5.6"
+    "protobufjs": "7.5.8"
   },
   "dependencies": {
     "@boxyhq/internal-ui": "file:internal-ui",
