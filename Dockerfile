@@ -1,4 +1,4 @@
-ARG NODEJS_IMAGE=node:24.15.0-alpine3.23
+ARG NODEJS_IMAGE=node:24.16.0-alpine3.23
 FROM $NODEJS_IMAGE AS base
 
 # Install dependencies only when needed

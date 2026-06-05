@@ -63,7 +63,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:18.3
+        image: postgres:18.4
         ports:
           - 5432:5432
         env:
@@ -76,7 +76,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       redis:
-        image: redis:8.6-alpine
+        image: redis:8.8-alpine
         ports:
           - 6379:6379
       mongo:
