@@ -5,7 +5,7 @@
   "description": "Pinned migration tooling for the polis Docker image. The npm overrides force patched versions of transitive dependencies (notably uuid) that the global migration CLIs would otherwise pull in.",
   "dependencies": {
     "migrate-mongo": "14.0.7",
-    "mssql": "12.5.4",
+    "mssql": "12.5.5",
     "mysql2": "3.22.4",
     "pg": "8.21.0",
     "reflect-metadata": "0.2.2",
