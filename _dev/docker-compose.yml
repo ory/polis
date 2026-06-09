@@ -26,7 +26,7 @@ services:
       MYSQL_DATABASE: mysql
       MYSQL_ROOT_PASSWORD: mysql
   maria:
-    image: mariadb:12.2.2
+    image: mariadb:12.3.2
     ports:
       - 3306:3306
     restart: always
