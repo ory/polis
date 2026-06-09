@@ -78,7 +78,9 @@
     "brace-expansion": "5.0.6",
     "tar": "7.5.15",
     "postcss": "$postcss",
-    "protobufjs": "7.6.2"
+    "protobufjs": "7.6.2",
+    "react-router": "7.15.0",
+    "react-router-dom": "7.15.0"
   },
   "dependencies": {
     "@boxyhq/internal-ui": "file:internal-ui",
