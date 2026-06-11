@@ -10,7 +10,13 @@ import { WebhookEventsLogger } from './scim/WebhookEventsLogger';
 import { newGoogleProvider } from './non-scim/google';
 import { SyncProviders } from './non-scim';
 import { storeNamespacePrefix } from '../controller/utils';
-import { eventLockKey, eventLockTTL, googleLockKey, handleEventCallback } from './utils';
+import {
+  eventLockKey,
+  eventLockTTL,
+  googleLockKey,
+  handleEventCallback,
+  resolveWebhookLogsTTL,
+} from './utils';
 import { EventProcessor } from './batch-events/queue';
 import { CronLock } from '../cron/lock';
 
@@ -23,7 +29,8 @@ const directorySync = async (params: {
 
   const users = new Users({ db });
   const groups = new Groups({ db });
-  const webhookLogs = new WebhookEventsLogger({ db });
+  const webhookLogsTTLSeconds = resolveWebhookLogsTTL(opts.dsync?.webhookLogsTTL, opts.logger);
+  const webhookLogs = new WebhookEventsLogger({ db, ttlSeconds: webhookLogsTTLSeconds });
   const directories = new DirectoryConfig({
     db,
     opts,

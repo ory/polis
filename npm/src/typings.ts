@@ -453,6 +453,9 @@ export interface JacksonOption {
     webhookBatchSize?: number;
     webhookBatchCronInterval?: number;
     debugWebhooks?: boolean;
+    // Retention for SCIM webhook event logs as a duration string (e.g. "720h",
+    // "30d"). Unset keeps the 7-day default; an empty string means indefinite.
+    webhookLogsTTL?: string;
     providers?: {
       google: {
         clientId: string;

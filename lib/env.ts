@@ -94,6 +94,7 @@ const jacksonOptions: JacksonOption = {
       ? Number(process.env.DSYNC_WEBHOOK_BATCH_CRON_INTERVAL)
       : undefined,
     debugWebhooks: process.env.DSYNC_DEBUG_WEBHOOKS === 'true',
+    webhookLogsTTL: process.env.DSYNC_WEBHOOK_LOGS_TTL,
     providers: {
       google: {
         clientId: process.env.DSYNC_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '',

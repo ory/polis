@@ -21,7 +21,7 @@ export const parsePGOptions = (url: string) => {
   return queryParams;
 };
 
-const parseDurationSeconds = (duration: string): number => {
+export const parseDurationSeconds = (duration: string): number => {
   const durationRegex = /(\d+)([smhd])/g;
   const units: Record<string, number> = { s: 1, m: 60, h: 3600, d: 86400 };
   let totalSeconds = 0;

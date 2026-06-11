@@ -9,7 +9,6 @@ import type {
   Records,
 } from '../../typings';
 import { Base } from './Base';
-import { webhookLogsTTL } from '../utils';
 import { indexNames } from './utils';
 
 type GetAllParams = PaginationParams & {
@@ -17,8 +16,11 @@ type GetAllParams = PaginationParams & {
 };
 
 export class WebhookEventsLogger extends Base {
-  constructor({ db }: { db: DatabaseStore }) {
+  private readonly ttlSeconds: number;
+
+  constructor({ db, ttlSeconds }: { db: DatabaseStore; ttlSeconds: number }) {
     super({ db });
+    this.ttlSeconds = ttlSeconds;
   }
 
   public async log(directory: Directory, event: DirectorySyncEvent | DirectorySyncEvent[], status: number) {
@@ -165,6 +167,6 @@ export class WebhookEventsLogger extends Base {
 
   // Get the store for the events
   private eventStore() {
-    return this.store('logs', webhookLogsTTL);
+    return this.store('logs', this.ttlSeconds);
   }
 }
