@@ -453,6 +453,12 @@ export interface JacksonOption {
     webhookBatchSize?: number;
     webhookBatchCronInterval?: number;
     debugWebhooks?: boolean;
+    /**
+     * Maximum number of group members returned inline in a SCIM Group response
+     * when `includeMembers=true` is requested. Groups larger than this return
+     * an error instead. Defaults to 500.
+     */
+    maxInlineGroupMembers?: number;
     // Retention for SCIM webhook event logs as a duration string (e.g. "720h",
     // "30d"). Unset keeps the 7-day default; an empty string means indefinite.
     webhookLogsTTL?: string;

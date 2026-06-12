@@ -21,7 +21,7 @@ const requests = {
 
   // Get a group by id
   // GET /api/scim/v2.0/{directoryId: directory.id}/Groups/{groupId}
-  getById: (directory: Directory, groupId: string): DirectorySyncRequest => {
+  getById: (directory: Directory, groupId: string, includeMembers?: boolean): DirectorySyncRequest => {
     return {
       method: 'GET',
       body: undefined,
@@ -29,7 +29,7 @@ const requests = {
       resourceType: 'groups',
       resourceId: groupId,
       apiSecret: directory.scim.secret,
-      query: {},
+      query: { includeMembers },
     };
   },
 
@@ -79,7 +79,7 @@ const requests = {
 
   // Get all groups
   // GET /api/scim/v2.0/{directoryId: directory.id}/Groups
-  getAll: (directory: Directory): DirectorySyncRequest => {
+  getAll: (directory: Directory, includeMembers?: boolean): DirectorySyncRequest => {
     return {
       method: 'GET',
       body: undefined,
@@ -90,6 +90,7 @@ const requests = {
       query: {
         count: 1,
         startIndex: 1,
+        includeMembers,
       },
     };
   },

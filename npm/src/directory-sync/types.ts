@@ -86,6 +86,9 @@ export interface DirectorySyncRequest {
     count?: number;
     startIndex?: number;
     filter?: string;
+    // When true, group reads include the group's members. Off by default to
+    // avoid loading very large memberships inline.
+    includeMembers?: boolean;
   };
 }
 

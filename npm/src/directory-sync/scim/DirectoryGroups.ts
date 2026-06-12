@@ -11,6 +11,7 @@ import type {
   IUsers,
   IGroups,
   GroupPatchOperation,
+  JacksonOption,
 } from '../../typings';
 import { parseGroupOperation } from './utils';
 import { sendEvent } from '../utils';
@@ -20,18 +21,32 @@ interface DirectoryGroupsParams {
   directories: IDirectoryConfig;
   users: IUsers;
   groups: IGroups;
+  opts?: JacksonOption;
 }
+
+// Default maximum number of group members returned inline in a SCIM Group
+// response. Groups larger than this must be read through the paginated group
+// members endpoint to avoid loading an unbounded membership into memory.
+// Override with the `dsync.maxInlineGroupMembers` option.
+const defaultMaxInlineGroupMembers = 500;
 
 export class DirectoryGroups {
   private directories: IDirectoryConfig;
   private users: IUsers;
   private groups: IGroups;
   private callback: EventCallback | undefined;
+  private maxInlineGroupMembers: number;
 
-  constructor({ directories, users, groups }: DirectoryGroupsParams) {
+  constructor({ directories, users, groups, opts }: DirectoryGroupsParams) {
     this.directories = directories;
     this.users = users;
     this.groups = groups;
+
+    const configured = opts?.dsync?.maxInlineGroupMembers;
+    this.maxInlineGroupMembers =
+      configured !== undefined && Number.isFinite(configured) && configured > 0
+        ? configured
+        : defaultMaxInlineGroupMembers;
   }
 
   public async create(directory: Directory, body: any): Promise<DirectorySyncResponse> {
@@ -64,20 +79,44 @@ export class DirectoryGroups {
     };
   }
 
-  public async get(group: Group): Promise<DirectorySyncResponse> {
+  public async get(group: Group, includeMembers = false): Promise<DirectorySyncResponse> {
+    // Members are omitted by default to avoid loading very large memberships
+    // inline. Callers opt in with the `includeMembers` query parameter.
+    if (!includeMembers) {
+      return {
+        status: 200,
+        data: {
+          schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
+          id: group.id,
+          displayName: group.name,
+          members: [],
+        },
+      };
+    }
+
+    const { members, error } = await this.resolveGroupMembers(group);
+
+    if (error) {
+      return this.respondWithError(error);
+    }
+
     return {
       status: 200,
       data: {
         schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
         id: group.id,
         displayName: group.name,
-        members: [],
+        members,
       },
     };
   }
 
-  public async getAll(queryParams: { filter?: string; directoryId: string }): Promise<DirectorySyncResponse> {
-    const { filter, directoryId } = queryParams;
+  public async getAll(queryParams: {
+    filter?: string;
+    directoryId: string;
+    includeMembers?: boolean;
+  }): Promise<DirectorySyncResponse> {
+    const { filter, directoryId, includeMembers = false } = queryParams;
 
     let groups: Group[] | null = [];
 
@@ -94,6 +133,25 @@ export class DirectoryGroups {
       groups = data;
     }
 
+    // By default the stored raw attributes carry an empty members list, because
+    // memberships are stored separately from the group. Only enrich each group
+    // with its current members when the caller opts in.
+    let resources = groups ? groups.map((group) => group.raw) : [];
+
+    if (includeMembers && groups) {
+      resources = [];
+
+      for (const group of groups) {
+        const { members, error } = await this.resolveGroupMembers(group);
+
+        if (error) {
+          return this.respondWithError(error);
+        }
+
+        resources.push({ ...group.raw, members });
+      }
+    }
+
     return {
       status: 200,
       data: {
@@ -101,7 +159,7 @@ export class DirectoryGroups {
         totalResults: groups ? groups.length : 0,
         itemsPerPage: groups ? groups.length : 0,
         startIndex: 1,
-        Resources: groups ? groups.map((group) => group.raw) : [],
+        Resources: resources,
       },
     };
   }
@@ -182,6 +240,93 @@ export class DirectoryGroups {
     await sendEvent('group.updated', { directory, group: updatedGroup }, this.callback);
 
     return updatedGroup;
+  }
+
+  // Fetch the current members of a group as SCIM group members. Memberships are
+  // stored separately from the group, so they must be loaded explicitly to
+  // populate the `members` attribute in SCIM Group responses.
+  //
+  // Reads are bounded to `this.maxInlineGroupMembers + 1` members so a group with a
+  // very large membership cannot exhaust memory. Groups over the limit return
+  // an error directing the caller to the paginated group members endpoint.
+  private async resolveGroupMembers(
+    group: Group
+  ): Promise<{ members: { value: string }[]; error?: undefined } | { members?: undefined; error: ApiError }> {
+    // Fast path: stores that support counting (SQL, Mongo) reject oversized
+    // groups without reading any member rows.
+    const total = await this.groups.getGroupMembersCount(group.id);
+
+    if (total !== undefined && total > this.maxInlineGroupMembers) {
+      return { error: this.membersTooLargeError(group) };
+    }
+
+    // Walk pages until the membership is exhausted. The store caps the page
+    // size, so a single read cannot return the whole membership. Offset-based
+    // stores (SQL, Mongo, in-memory) and token-based stores (DynamoDB) are both
+    // supported; a page that does not advance ends the walk so a store that
+    // ignores the offset cannot loop forever.
+    const members: { value: string }[] = [];
+    let pageOffset = 0;
+    let pageToken: string | undefined;
+    let previousFirstId: string | undefined;
+
+    while (true) {
+      const usedToken = pageToken !== undefined;
+
+      const response = await this.groups.getGroupMembers({
+        groupId: group.id,
+        pageOffset,
+        pageLimit: this.maxInlineGroupMembers + 1,
+        pageToken,
+      });
+
+      const rows = response.data ?? [];
+      const nextPageToken = (response as { pageToken?: string }).pageToken;
+
+      if (rows.length === 0) {
+        break;
+      }
+
+      // Guard against a store that ignores the offset and keeps returning the
+      // same page, which would otherwise duplicate members or loop forever.
+      if (!usedToken && rows[0].user_id === previousFirstId) {
+        break;
+      }
+
+      previousFirstId = rows[0].user_id;
+
+      for (const member of rows) {
+        members.push({ value: member.user_id });
+      }
+
+      if (members.length > this.maxInlineGroupMembers) {
+        return { error: this.membersTooLargeError(group) };
+      }
+
+      if (nextPageToken) {
+        // Token-paginated store: continue with the next page token.
+        pageToken = nextPageToken;
+        pageOffset += rows.length;
+        continue;
+      }
+
+      if (usedToken) {
+        // Token-paginated store with no further pages.
+        break;
+      }
+
+      // Offset-paginated store: advance to the next page.
+      pageOffset += rows.length;
+    }
+
+    return { members };
+  }
+
+  private membersTooLargeError(group: Group): ApiError {
+    return {
+      code: 400,
+      message: `Group "${group.name}" has more than ${this.maxInlineGroupMembers} members. Retrieve them with the group members endpoint instead.`,
+    };
   }
 
   public async addGroupMembers(
@@ -289,7 +434,7 @@ export class DirectoryGroups {
     if (group) {
       switch (method) {
         case 'GET':
-          return await this.get(group);
+          return await this.get(group, query.includeMembers);
         case 'PUT':
           return await this.update(directory, group, body);
         case 'PATCH':
@@ -306,6 +451,7 @@ export class DirectoryGroups {
         return await this.getAll({
           filter: query.filter,
           directoryId,
+          includeMembers: query.includeMembers,
         });
     }
 

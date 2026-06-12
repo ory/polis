@@ -41,7 +41,7 @@ const directorySync = async (params: {
   });
 
   const directoryUsers = new DirectoryUsers({ directories, users });
-  const directoryGroups = new DirectoryGroups({ directories, users, groups });
+  const directoryGroups = new DirectoryGroups({ directories, users, groups, opts });
 
   // Fetch the supported providers
   const getProviders = () => {

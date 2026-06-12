@@ -325,17 +325,18 @@ export class Groups extends Base {
   public async getGroupMembers(
     parmas: { groupId: string } & PaginationParams
   ): Promise<Response<Pick<GroupMembership, 'user_id'>[]>> {
-    const { groupId, pageOffset, pageLimit } = parmas;
+    const { groupId, pageOffset, pageLimit, pageToken } = parmas;
 
     try {
-      const { data } = (await this.store('members').getByIndex(
+      const { data, pageToken: nextPageToken } = (await this.store('members').getByIndex(
         {
           name: indexNames.groupId,
           value: groupId,
         },
         pageOffset,
-        pageLimit
-      )) as { data: GroupMembership[] };
+        pageLimit,
+        pageToken
+      )) as { data: GroupMembership[]; pageToken?: string };
 
       const members = data.map((member) => {
         return {
@@ -343,10 +344,19 @@ export class Groups extends Base {
         };
       });
 
-      return { data: members, error: null };
+      return { data: members, error: null, pageToken: nextPageToken };
     } catch (err: any) {
       return apiError(err);
     }
+  }
+
+  // Count the members of a group. Returns undefined when the configured store
+  // does not support counting (e.g. the in-memory and DynamoDB stores).
+  public async getGroupMembersCount(groupId: string): Promise<number | undefined> {
+    return this.store('members').getCount({
+      name: indexNames.groupId,
+      value: groupId,
+    });
   }
 
   // Delete all groups from a directory
