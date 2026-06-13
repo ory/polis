@@ -6,7 +6,7 @@
   "dependencies": {
     "migrate-mongo": "14.0.7",
     "mssql": "12.5.5",
-    "mysql2": "3.22.4",
+    "mysql2": "3.22.5",
     "pg": "8.21.0",
     "reflect-metadata": "0.2.2",
     "ts-node": "10.9.2",
