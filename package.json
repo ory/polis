@@ -78,7 +78,7 @@
     "brace-expansion": "5.0.6",
     "tar": "7.5.16",
     "postcss": "$postcss",
-    "protobufjs": "8.6.0",
+    "protobufjs": "8.6.1",
     "react-router": "7.17.0",
     "react-router-dom": "7.17.0"
   },
