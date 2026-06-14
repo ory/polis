@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 
 export const Modal = ({
   visible,
@@ -12,11 +11,9 @@ export const Modal = ({
   description?: string;
   children?: React.ReactNode;
 }) => {
-  const [open, setOpen] = useState(visible ? visible : false);
-
-  useEffect(() => {
-    setOpen(visible);
-  }, [visible]);
+  // The modal is fully controlled by the visible prop, so derive open during
+  // render instead of mirroring it into state via an effect.
+  const open = visible;
 
   return (
     <div className={`modal ${open ? 'modal-open' : ''}`}>

@@ -11,6 +11,14 @@ export const usePaginate = (router: NextRouter) => {
   const [paginate, setPaginate] = useState({ offset });
   const [pageTokenMap, setPageTokenMap] = useState({});
 
+  // When the offset changes in the URL (external navigation), reset paginate by
+  // adjusting state during render instead of synchronizing it in an effect.
+  const [prevOffset, setPrevOffset] = useState(offset);
+  if (offset !== prevOffset) {
+    setPrevOffset(offset);
+    setPaginate({ offset });
+  }
+
   useEffect(() => {
     // Prevent pushing the same URL to the history
     if (offset === paginate.offset) {
@@ -22,10 +30,6 @@ export const usePaginate = (router: NextRouter) => {
     router.push(`${path}?offset=${paginate.offset}`, undefined, { shallow: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginate]);
-
-  useEffect(() => {
-    setPaginate({ offset });
-  }, [offset]);
 
   return {
     paginate,
