@@ -73,6 +73,7 @@
       "nodemailer": ">=8.0.5"
     },
     "uuid": "14.0.0",
+    "@grpc/grpc-js": "1.14.4",
     "picomatch": "$picomatch",
     "minimatch": "10.2.5",
     "brace-expansion": "5.0.6",
