@@ -142,7 +142,7 @@
     "globals": "16.5.0",
     "jose": "6.2.3",
     "postcss": "8.5.15",
-    "prettier": "3.8.3",
+    "prettier": "3.8.4",
     "prettier-plugin-tailwindcss": "0.8.0",
     "release-it": "20.2.0",
     "swagger-jsdoc": "6.3.0",
