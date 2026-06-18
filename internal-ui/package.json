@@ -62,7 +62,7 @@
     "uuid": "14.0.0",
     "picomatch": "4.0.4",
     "minimatch": "10.2.5",
-    "brace-expansion": "5.0.5",
+    "brace-expansion": "5.0.6",
     "tar": "7.5.16",
     "react-router": "7.17.0",
     "react-router-dom": "7.17.0"
