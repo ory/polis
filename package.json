@@ -119,7 +119,7 @@
     "react-tagsinput": "3.20.3",
     "remark-gfm": "4.0.1",
     "rsc-daisyui": "2.3.0",
-    "sharp": "0.35.0",
+    "sharp": "0.35.1",
     "styled-components": "6.4.2",
     "swr": "2.4.1",
     "tar": "7.5.16"
