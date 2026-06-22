@@ -43,11 +43,11 @@
     "coverage-map": "map.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1066.0",
-    "@aws-sdk/credential-providers": "3.1066.0",
+    "@aws-sdk/client-dynamodb": "3.1068.0",
+    "@aws-sdk/credential-providers": "3.1068.0",
     "@aws-sdk/util-dynamodb": "3.996.4",
     "@boxyhq/error-code-mnemonic": "0.1.1",
-    "@boxyhq/metrics": "0.2.13",
+    "@boxyhq/metrics": "0.2.14",
     "@boxyhq/saml20": "1.15.2",
     "@googleapis/admin": "31.0.0",
     "axios": "1.16.1",
@@ -65,7 +65,7 @@
     "redis": "4.7.1",
     "reflect-metadata": "0.2.2",
     "ripemd160": "2.0.3",
-    "better-sqlite3": "12.10.0",
+    "better-sqlite3": "12.10.1",
     "typeorm": "0.3.30"
   },
   "devDependencies": {
