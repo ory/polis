@@ -3,6 +3,8 @@ FROM $NODEJS_IMAGE AS base
 
 # Install dependencies only when needed
 FROM base AS deps
+# Populated automatically by BuildKit per target platform (e.g. amd64, arm64).
+ARG TARGETARCH=amd64
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 # Install dependencies including Python
@@ -17,7 +19,14 @@ COPY npm npm
 COPY internal-ui internal-ui
 COPY migrate.sh ./
 RUN npm i
-RUN npm rebuild --arch=x64 --platform=linux --libc=musl sharp
+# Rebuild sharp's prebuilt native binary for the target architecture. sharp uses
+# x64/arm64 names, while TARGETARCH is amd64/arm64, so map amd64 to x64.
+RUN case "$TARGETARCH" in \
+        amd64) SHARP_ARCH=x64 ;; \
+        arm64) SHARP_ARCH=arm64 ;; \
+        *) SHARP_ARCH="$TARGETARCH" ;; \
+    esac && \
+    npm rebuild --arch="$SHARP_ARCH" --platform=linux --libc=musl sharp
 
 
 # Rebuild the source code only when needed
