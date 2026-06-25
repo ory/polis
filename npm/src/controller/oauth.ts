@@ -555,6 +555,11 @@ export class OAuthController implements IOAuthController {
       if (requestedProduct) {
         requested.product = requestedProduct;
       }
+      // Persist the federation app's tenant allow-list so the upstream-response
+      // callback can re-assert connection scope, including multi-tenant apps.
+      if (fedApp?.tenants?.length) {
+        requested.tenants = fedApp.tenants;
+      }
       if (idp_hint) {
         requested.idp_hint = idp_hint;
       } else {
@@ -752,6 +757,41 @@ export class OAuthController implements IOAuthController {
             (c.tenant === session.requested.tenant && c.product === session.requested.product)
           );
         })[0];
+
+        // Defense in depth: re-assert that the selected connection belongs to
+        // the tenant/product scope the session was created under. The scoping
+        // in resolveConnection already prevents an out-of-scope connection from
+        // being bound to a session, but selecting by clientID/idp_hint here is
+        // not tenant-bound on its own, so we verify the result against the
+        // session's allow-list (CWE-639). Multi-tenant federation apps persist
+        // their tenant list; everything else is scoped to a single tenant.
+        //
+        // This fails closed: if the session does not carry a verifiable scope
+        // (tenant/tenants and product), we deny rather than fall back to the
+        // permissive filter above. Every SP-initiated and federated SAML
+        // session created by authorize() and createSAMLRequest() sets both, so
+        // a missing scope means a malformed or legacy session and must not pass.
+        let allowedTenants: string[] = [];
+        if (Array.isArray(session.requested.tenants)) {
+          // Multi-tenant federation app: any of the app's tenants is in scope.
+          allowedTenants = session.requested.tenants;
+        } else if (session.requested.tenant) {
+          // Everything else is scoped to the session's single tenant.
+          allowedTenants = [session.requested.tenant];
+        }
+
+        const tenantsKnown = allowedTenants.length > 0;
+        const productKnown = !!session.requested.product;
+
+        if (
+          connection &&
+          (!tenantsKnown ||
+            !productKnown ||
+            !allowedTenants.includes(connection.tenant) ||
+            connection.product !== session.requested.product)
+        ) {
+          throw new JacksonError(GENERIC_ERR_STRING, 403, 'SAML connection not found.');
+        }
       }
 
       if (!connection) {

@@ -134,6 +134,11 @@ export class SSO {
         relayState,
         tenant: app.tenant,
         product: app.product,
+        // Persist the app's tenant allow-list so the upstream-response callback
+        // can re-assert that the connection it selects is in scope, including
+        // for multi-tenant federation apps where the connection may live in any
+        // of app.tenants.
+        tenants: app.tenants,
         fedAppSamlAudienceOverride: app.samlAudienceOverride,
         ttlInMinutes: app.ttlInMinutes,
       };
