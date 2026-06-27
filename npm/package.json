@@ -43,8 +43,8 @@
     "coverage-map": "map.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1070.0",
-    "@aws-sdk/credential-providers": "3.1070.0",
+    "@aws-sdk/client-dynamodb": "3.1073.0",
+    "@aws-sdk/credential-providers": "3.1073.0",
     "@aws-sdk/util-dynamodb": "3.996.5",
     "@boxyhq/error-code-mnemonic": "0.1.1",
     "@boxyhq/metrics": "0.2.14",
@@ -61,7 +61,7 @@
     "mysql2": "3.22.5",
     "node-forge": "1.4.0",
     "openid-client": "6.8.4",
-    "pg": "8.21.0",
+    "pg": "8.22.0",
     "redis": "4.7.1",
     "reflect-metadata": "0.2.2",
     "ripemd160": "2.0.3",
@@ -69,7 +69,7 @@
     "typeorm": "0.3.30"
   },
   "devDependencies": {
-    "@faker-js/faker": "10.4.0",
+    "@faker-js/faker": "10.5.0",
     "@types/lodash": "4.17.24",
     "@types/node": "24.13.2",
     "@types/sinon": "21.0.1",
@@ -96,7 +96,7 @@
       "mssql": "12.5.5",
       "glob": "13.0.6"
     },
-    "uuid": "14.0.0",
+    "uuid": "14.0.1",
     "picomatch": "4.0.4",
     "minimatch": "10.2.5",
     "brace-expansion": "5.0.6",
