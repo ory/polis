@@ -121,7 +121,7 @@
     "rsc-daisyui": "2.3.0",
     "sharp": "0.35.2",
     "styled-components": "6.4.2",
-    "swr": "2.4.1",
+    "swr": "2.4.2",
     "tar": "7.5.16"
   },
   "devDependencies": {
@@ -132,8 +132,8 @@
     "@types/prismjs": "1.26.6",
     "@types/react": "19.2.17",
     "@types/styled-components": "5.1.36",
-    "@typescript-eslint/eslint-plugin": "8.61.1",
-    "@typescript-eslint/parser": "8.61.1",
+    "@typescript-eslint/eslint-plugin": "8.62.0",
+    "@typescript-eslint/parser": "8.62.0",
     "autoprefixer": "10.5.0",
     "env-cmd": "11.0.0",
     "eslint": "9.39.4",
