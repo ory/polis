@@ -80,7 +80,7 @@
     "brace-expansion": "5.0.6",
     "tar": "7.5.16",
     "postcss": "$postcss",
-    "protobufjs": "8.6.4",
+    "protobufjs": "8.6.5",
     "react-router": "7.18.0",
     "react-router-dom": "7.18.0"
   },
@@ -99,7 +99,7 @@
     "cross-env": "10.1.0",
     "daisyui": "4.12.24",
     "formik": "2.4.9",
-    "i18next": "26.3.1",
+    "i18next": "26.3.2",
     "medium-zoom": "1.1.0",
     "micromatch": "4.0.8",
     "next": "16.2.9",
@@ -125,7 +125,7 @@
     "tar": "7.5.16"
   },
   "devDependencies": {
-    "@playwright/test": "1.61.0",
+    "@playwright/test": "1.61.1",
     "@types/cors": "2.8.19",
     "@types/micromatch": "4.0.10",
     "@types/node": "24.13.2",
@@ -134,7 +134,7 @@
     "@types/styled-components": "5.1.36",
     "@typescript-eslint/eslint-plugin": "8.62.0",
     "@typescript-eslint/parser": "8.62.0",
-    "autoprefixer": "10.5.0",
+    "autoprefixer": "10.5.1",
     "env-cmd": "11.0.0",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.9",

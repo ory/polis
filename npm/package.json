@@ -57,7 +57,7 @@
     "lodash": "4.18.1",
     "mixpanel": "0.22.0",
     "mongodb": "7.3.0",
-    "mssql": "12.5.5",
+    "mssql": "12.6.0",
     "mysql2": "3.22.5",
     "node-forge": "1.4.0",
     "openid-client": "6.8.4",
@@ -93,7 +93,7 @@
     },
     "typeorm": {
       "mongodb": "7.3.0",
-      "mssql": "12.5.5",
+      "mssql": "12.6.0",
       "glob": "13.0.6"
     },
     "uuid": "14.0.1",

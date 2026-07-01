@@ -18,7 +18,7 @@ services:
       - 27017:27017
     restart: always
   mysql:
-    image: mysql:9.7.0
+    image: mysql:9.7.1
     ports:
       - 3307:3306
     restart: always
