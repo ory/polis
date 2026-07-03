@@ -78,7 +78,7 @@
     "picomatch": "$picomatch",
     "minimatch": "10.2.5",
     "brace-expansion": "5.0.6",
-    "tar": "7.5.16",
+    "tar": "7.5.17",
     "postcss": "$postcss",
     "protobufjs": "8.6.5",
     "react-router": "7.18.0",
@@ -99,7 +99,7 @@
     "cross-env": "10.1.0",
     "daisyui": "4.12.24",
     "formik": "2.4.9",
-    "i18next": "26.3.2",
+    "i18next": "26.3.3",
     "medium-zoom": "1.1.0",
     "micromatch": "4.0.8",
     "next": "16.2.9",
@@ -120,9 +120,9 @@
     "remark-gfm": "4.0.1",
     "rsc-daisyui": "2.3.0",
     "sharp": "0.35.2",
-    "styled-components": "6.4.2",
+    "styled-components": "6.4.3",
     "swr": "2.4.2",
-    "tar": "7.5.16"
+    "tar": "7.5.17"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",
@@ -134,7 +134,7 @@
     "@types/styled-components": "5.1.36",
     "@typescript-eslint/eslint-plugin": "8.62.0",
     "@typescript-eslint/parser": "8.62.0",
-    "autoprefixer": "10.5.1",
+    "autoprefixer": "10.5.2",
     "env-cmd": "11.0.0",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.9",

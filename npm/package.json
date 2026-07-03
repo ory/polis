@@ -56,7 +56,7 @@
     "jose": "6.2.3",
     "lodash": "4.18.1",
     "mixpanel": "0.22.0",
-    "mongodb": "7.3.0",
+    "mongodb": "7.4.0",
     "mssql": "12.6.0",
     "mysql2": "3.22.5",
     "node-forge": "1.4.0",
@@ -75,7 +75,7 @@
     "@types/sinon": "21.0.1",
     "cross-env": "10.1.0",
     "migrate-mongo": "14.0.7",
-    "nock": "14.0.15",
+    "nock": "14.0.16",
     "sinon": "22.0.0",
     "tap": "21.7.4",
     "ts-node": "10.9.2",
@@ -88,11 +88,11 @@
   },
   "overrides": {
     "tap": {
-      "tar": "7.5.16",
+      "tar": "7.5.17",
       "glob": "13.0.6"
     },
     "typeorm": {
-      "mongodb": "7.3.0",
+      "mongodb": "7.4.0",
       "mssql": "12.6.0",
       "glob": "13.0.6"
     },
@@ -100,6 +100,6 @@
     "picomatch": "4.0.4",
     "minimatch": "10.2.5",
     "brace-expansion": "5.0.6",
-    "tar": "7.5.16"
+    "tar": "7.5.17"
   }
 }
