@@ -76,8 +76,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/migrate.sh ./migrate.sh
 COPY npm npm
 RUN chmod +x migrate.sh
 # Pin npm to a patched version so the bundled npm CLI no longer ships
-# vulnerable transitive deps (picomatch, minimatch, brace-expansion, tar).
-RUN npm install -g npm@11.13.0
+# vulnerable transitive deps (e.g. sigstore, CVE-2026-48815).
+RUN npm install -g npm@11.18.0
 # Install migration tools from a checked-in package.json + lockfile so npm
 # overrides apply to transitive dependencies (e.g., uuid in typeorm/mssql)
 # and the install is reproducible. migrate.sh resolves them via
