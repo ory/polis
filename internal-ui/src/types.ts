@@ -12,7 +12,7 @@ enum DirectorySyncProviders {
   'okta-scim-v2' = 'Okta SCIM v2.0',
   'jumpcloud-scim-v2' = 'JumpCloud v2.0',
   'generic-scim-v2' = 'Generic SCIM v2.0',
-  'google' = 'Google',
+  google = 'Google',
 }
 
 type DirectorySyncEventType =

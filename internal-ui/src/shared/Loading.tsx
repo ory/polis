@@ -23,6 +23,7 @@ export const Loading = () => {
     <div className='flex items-center justify-center'>
       <div role='status'>
         <Spinner />
+        {/* eslint-disable-next-line i18next/no-literal-string */}
         <span className='sr-only'>Loading...</span>
       </div>
     </div>

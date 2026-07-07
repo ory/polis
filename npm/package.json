@@ -43,8 +43,8 @@
     "coverage-map": "map.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1075.0",
-    "@aws-sdk/credential-providers": "3.1075.0",
+    "@aws-sdk/client-dynamodb": "3.1076.0",
+    "@aws-sdk/credential-providers": "3.1076.0",
     "@aws-sdk/util-dynamodb": "3.996.5",
     "@boxyhq/error-code-mnemonic": "0.1.1",
     "@boxyhq/metrics": "0.2.15",
@@ -88,7 +88,7 @@
   },
   "overrides": {
     "tap": {
-      "tar": "7.5.17",
+      "tar": "7.5.19",
       "glob": "13.0.6"
     },
     "typeorm": {
@@ -99,7 +99,7 @@
     "uuid": "14.0.1",
     "picomatch": "4.0.4",
     "minimatch": "10.2.5",
-    "brace-expansion": "5.0.6",
-    "tar": "7.5.17"
+    "brace-expansion": "5.0.7",
+    "tar": "7.5.19"
   }
 }

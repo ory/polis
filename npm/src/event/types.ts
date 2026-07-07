@@ -12,10 +12,7 @@ export type IEventController = InstanceType<typeof EventController>;
 export type SSOConnectionEventType = 'sso.created' | 'sso.deleted' | 'sso.activated' | 'sso.deactivated';
 
 export type DsyncConnectionEventType =
-  | 'dsync.created'
-  | 'dsync.deleted'
-  | 'dsync.activated'
-  | 'dsync.deactivated';
+  'dsync.created' | 'dsync.deleted' | 'dsync.activated' | 'dsync.deactivated';
 
 export type EventType = SSOConnectionEventType | DsyncConnectionEventType | DirectorySyncEventType;
 
@@ -37,10 +34,7 @@ export type OIDCSSOConnectionEventData = Pick<
 export type DsyncConnectionEventData = Pick<Directory, 'id' | 'name' | 'type'>;
 
 export type EventData =
-  | SAMLSSOConnectionEventData
-  | OIDCSSOConnectionEventData
-  | DsyncConnectionEventData
-  | DirectorySyncEventData;
+  SAMLSSOConnectionEventData | OIDCSSOConnectionEventData | DsyncConnectionEventData | DirectorySyncEventData;
 
 export type EventPayloadSchema = {
   tenant: string;
