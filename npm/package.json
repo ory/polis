@@ -66,7 +66,7 @@
     "reflect-metadata": "0.2.2",
     "ripemd160": "2.0.3",
     "better-sqlite3": "12.11.1",
-    "typeorm": "0.3.30"
+    "typeorm": "0.3.31"
   },
   "devDependencies": {
     "@faker-js/faker": "10.5.0",
@@ -100,6 +100,7 @@
     "picomatch": "4.0.5",
     "minimatch": "10.2.5",
     "brace-expansion": "5.0.7",
-    "tar": "7.5.19"
+    "tar": "7.5.19",
+    "protobufjs": "7.6.5"
   }
 }

@@ -10,9 +10,10 @@
     "pg": "8.22.0",
     "reflect-metadata": "0.2.2",
     "ts-node": "10.9.2",
-    "typeorm": "0.3.30"
+    "typeorm": "0.3.31"
   },
   "overrides": {
-    "uuid": "14.0.1"
+    "uuid": "14.0.1",
+    "brace-expansion": "2.1.2"
   }
 }

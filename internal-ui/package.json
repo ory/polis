@@ -65,6 +65,8 @@
     "brace-expansion": "5.0.7",
     "tar": "7.5.19",
     "react-router": "7.18.1",
-    "react-router-dom": "7.18.1"
+    "react-router-dom": "7.18.1",
+    "sharp": "0.35.3",
+    "js-yaml@4": "4.3.0"
   }
 }
