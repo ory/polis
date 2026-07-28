@@ -22,7 +22,10 @@ const parseUserRoles = (roles: string | string[]) => {
 };
 
 export const parseGroupOperation = (operation: GroupPatchOperation) => {
-  const { op, path, value } = operation;
+  const { path, value } = operation;
+  // Microsoft Entra sends PascalCase ops ("Add"/"Remove"/"Replace") unless the
+  // tenant enables the aadOptscim062020 flag, so compare case-insensitively.
+  const op = operation.op?.toLowerCase();
 
   if (path === 'members' && typeof value == 'object') {
     if (op === 'add') {
@@ -80,7 +83,10 @@ export const getDirectorySyncProviders = (): { [K: string]: string } => {
 
 // Parse the PATCH request body and return the user attributes (both standard and custom)
 export const parseUserPatchRequest = (operation: UserPatchOperation) => {
-  const { op, value, path } = operation;
+  const { value, path } = operation;
+  // Entra sends PascalCase ops (e.g. "Remove") unless aadOptscim062020 is set;
+  // normalize so removals aren't misread as sets. See parseGroupOperation above.
+  const op = operation.op?.toLowerCase();
 
   const attributes: Partial<User> = {};
   const rawAttributes = {};
