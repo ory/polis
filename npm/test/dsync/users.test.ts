@@ -571,4 +571,91 @@ tap.test('Directory users /', async (t) => {
       );
     });
   });
+
+  t.test('userName-based dedup contract /', async (t) => {
+    t.afterEach(async () => {
+      directorySync.users.setTenantAndProduct(directory.tenant, directory.product);
+      await directorySync.users.deleteAll(directory.id);
+    });
+
+    t.test('POST duplicate userName should return 409 with scimType=uniqueness', async (t) => {
+      await directorySync.requests.handle(requests.create(directory, users[0]));
+
+      const { status, data } = await directorySync.requests.handle(requests.create(directory, users[0]));
+
+      t.equal(status, 409);
+      t.equal(data.scimType, 'uniqueness');
+      t.equal(data.detail, 'User already exists');
+    });
+
+    t.test('POST same userName different email should return 409', async (t) => {
+      await directorySync.requests.handle(requests.create(directory, users[0]));
+
+      const { status } = await directorySync.requests.handle(
+        requests.create(directory, {
+          ...users[0],
+          emails: [{ primary: true, value: 'different@example.com', type: 'work' }],
+        })
+      );
+
+      t.equal(status, 409);
+    });
+
+    t.test('POST different userName same email should return 201 (LEV-956)', async (t) => {
+      await directorySync.requests.handle(requests.create(directory, users[0]));
+
+      const { status } = await directorySync.requests.handle(
+        requests.create(directory, {
+          ...users[0],
+          userName: 'different-user@boxyhq.com',
+        })
+      );
+
+      t.equal(status, 201);
+    });
+
+    t.test('POST case-insensitive userName match should return 409', async (t) => {
+      await directorySync.requests.handle(requests.create(directory, users[0]));
+
+      const { status } = await directorySync.requests.handle(
+        requests.create(directory, {
+          ...users[0],
+          userName: users[0].userName.toUpperCase(),
+        })
+      );
+
+      t.equal(status, 409);
+    });
+
+    t.test('PUT rename then POST with old userName should return 201', async (t) => {
+      const { data: created } = await directorySync.requests.handle(requests.create(directory, users[0]));
+
+      await directorySync.requests.handle(
+        requests.updateById(directory, created.id, {
+          ...users[0],
+          userName: 'renamed@boxyhq.com',
+        })
+      );
+
+      const { status } = await directorySync.requests.handle(
+        requests.create(directory, {
+          ...users[2],
+          userName: users[0].userName,
+        })
+      );
+
+      t.equal(status, 201);
+    });
+
+    t.test('POST without userName should return 400', async (t) => {
+      const { userName, ...userWithoutUserName } = users[0];
+
+      const { status, data } = await directorySync.requests.handle(
+        requests.create(directory, userWithoutUserName)
+      );
+
+      t.equal(status, 400);
+      t.equal(data.detail, 'userName is required');
+    });
+  });
 });

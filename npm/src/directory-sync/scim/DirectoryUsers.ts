@@ -31,13 +31,24 @@ export class DirectoryUsers {
   }
 
   public async create(directory: Directory, body: any): Promise<DirectorySyncResponse> {
+    const userName = body?.userName;
+
+    if (!userName || typeof userName !== 'string') {
+      return this.respondWithError({ code: 400, message: 'userName is required' });
+    }
+
     const userAttributes = extractStandardUserAttributes(body);
 
-    // Check if the user already exists
-    const { data: users } = await this.users.search(userAttributes.email, directory.id);
+    // Dedupe by userName (uniqueness=server) instead of email (uniqueness=none).
+    const { data: users } = await this.users.search(userName, directory.id);
 
     if (users && users.length > 0) {
-      return this.respondWithError({ code: 409, message: 'User already exists' });
+      // RFC 7644 §3.12: scimType=uniqueness so the IdP retries as PATCH.
+      return this.respondWithError({
+        code: 409,
+        message: 'User already exists',
+        scimType: 'uniqueness',
+      });
     }
 
     const newUser = {
@@ -72,11 +83,15 @@ export class DirectoryUsers {
   public async update(directory: Directory, user: User, body: any): Promise<DirectorySyncResponse> {
     const userAttributes = extractStandardUserAttributes(body);
 
-    const { data: updatedUser } = await this.users.update(user.id, {
-      ...userAttributes,
-      id: user.id,
-      raw: 'rawAttributes' in body ? body.rawAttributes : body,
-    });
+    const { data: updatedUser } = await this.users.update(
+      user.id,
+      {
+        ...userAttributes,
+        id: user.id,
+        raw: 'rawAttributes' in body ? body.rawAttributes : body,
+      },
+      directory.id
+    );
 
     await sendEvent('user.updated', { directory, user: updatedUser }, this.callback);
 
@@ -107,11 +122,15 @@ export class DirectoryUsers {
       };
     }
 
-    const { data: updatedUser } = await this.users.update(user.id, {
-      ...user,
-      ...attributes,
-      raw: updateRawUserAttributes(user.raw, rawAttributes),
-    });
+    const { data: updatedUser } = await this.users.update(
+      user.id,
+      {
+        ...user,
+        ...attributes,
+        raw: updateRawUserAttributes(user.raw, rawAttributes),
+      },
+      directory.id
+    );
 
     await sendEvent('user.updated', { directory, user: updatedUser }, this.callback);
 
@@ -172,11 +191,12 @@ export class DirectoryUsers {
     };
   }
 
-  private respondWithError(error: ApiError | null) {
+  private respondWithError(error: (ApiError & { scimType?: string }) | null) {
     return {
       status: error ? error.code : 500,
       data: {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
+        ...(error?.scimType ? { scimType: error.scimType } : {}),
         detail: error ? error.message : 'Internal Server Error',
       },
     };
