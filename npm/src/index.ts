@@ -1,4 +1,5 @@
 import type {
+  Connection,
   IDirectorySyncController,
   JacksonOption,
   JacksonOptionWithRequiredLogger,
@@ -153,19 +154,32 @@ export const controllers = async (
     eventController,
   });
 
-  // write pre-loaded connections if present
+  // write pre-loaded connections if present (in-memory array — bundler-safe, no dynamic imports)
+  const preLoadedConnections = opts.preLoadedConnections;
   const preLoadedConnection = opts.preLoadedConnection;
+
+  const writeConnection = async (connection: Connection) => {
+    if ('oidcDiscoveryUrl' in connection || 'oidcMetadata' in connection) {
+      await connectionAPIController.createOIDCConnection(connection);
+    } else {
+      await connectionAPIController.createSAMLConnection(connection);
+    }
+
+    logger.info(`loaded connection for tenant "${connection.tenant}" and product "${connection.product}"`);
+  };
+
+  if (preLoadedConnections && preLoadedConnections.length > 0) {
+    for (const connection of preLoadedConnections) {
+      await writeConnection(connection);
+    }
+  }
+
+  // existing path-based approach — kept for backward compatibility
   if (preLoadedConnection && preLoadedConnection.length > 0) {
     const connections = await loadConnection(preLoadedConnection);
 
     for (const connection of connections) {
-      if ('oidcDiscoveryUrl' in connection || 'oidcMetadata' in connection) {
-        await connectionAPIController.createOIDCConnection(connection);
-      } else {
-        await connectionAPIController.createSAMLConnection(connection);
-      }
-
-      logger.info(`loaded connection for tenant "${connection.tenant}" and product "${connection.product}"`);
+      await writeConnection(connection);
     }
   }
 

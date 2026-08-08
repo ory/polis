@@ -66,6 +66,11 @@ export interface OIDCSSOConnectionWithDiscoveryUrl extends OIDCSSOConnection {
   oidcDiscoveryUrl: string;
   oidcMetadata?: never;
 }
+export type Connection =
+  | SAMLSSOConnectionWithEncodedMetadata
+  | SAMLSSOConnectionWithRawMetadata
+  | OIDCSSOConnectionWithDiscoveryUrl
+  | OIDCSSOConnectionWithMetadata;
 
 export interface SAMLSSORecord extends SAMLSSOConnection {
   clientID: string; // set by Jackson
@@ -428,6 +433,7 @@ export interface JacksonOption {
   acsUrl?: string;
   oidcPath?: string;
   samlAudience?: string;
+  preLoadedConnections?: Connection[]; // new (in-memory, no dynamic imports)
   preLoadedConnection?: string;
   idpEnabled?: boolean;
   db: DatabaseOption | DatabaseDriverOption;
