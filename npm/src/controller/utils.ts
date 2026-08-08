@@ -268,29 +268,30 @@ export const extractHostName = (url: string): string | null => {
 };
 
 export type AuthorizationCodeGrantResult = Awaited<ReturnType<typeof authorizationCodeGrant>>;
-// Extracts the user's email from OIDC claims with fallbacks for providers
-// like Microsoft Entra ID, which may not populate the standard `email` claim.
+const extractEmailClaim = (claims: Record<string, unknown>): string | undefined => {
+  if (typeof claims.email === 'string' && claims.email.trim().length > 0) {
+    return claims.email;
+  }
+
+  if (Array.isArray(claims.email)) {
+    return claims.email.find(
+      (value): value is string => typeof value === 'string' && value.trim().length > 0
+    );
+  }
+};
+
 export const extractOIDCEmail = (
   idTokenClaims: Record<string, unknown>,
   userinfo: Record<string, unknown>
 ): string | undefined => {
-  // 1. Standard OIDC claims
-  if (typeof idTokenClaims.email === 'string' && idTokenClaims.email.length > 0) {
-    return idTokenClaims.email;
-  }
-  if (typeof userinfo.email === 'string' && userinfo.email.length > 0) {
-    return userinfo.email;
-  }
+  // 1. Standard OIDC claims — id token first, then userinfo
+  const idTokenEmail = extractEmailClaim(idTokenClaims);
+  if (idTokenEmail) return idTokenEmail;
 
-  // 2. Some providers (Entra) return email as an array -> take the first
-  if (Array.isArray(idTokenClaims.email) && typeof idTokenClaims.email[0] === 'string') {
-    return idTokenClaims.email[0];
-  }
-  if (Array.isArray(userinfo.email) && typeof userinfo.email[0] === 'string') {
-    return userinfo.email[0];
-  }
+  const userinfoEmail = extractEmailClaim(userinfo);
+  if (userinfoEmail) return userinfoEmail;
 
-  // 3. Entra commonly provides the email as preferred_username (e.g. user@company.com)
+  // 2. Entra commonly provides the email as preferred_username (e.g. user@company.com)
   if (typeof idTokenClaims.preferred_username === 'string' && idTokenClaims.preferred_username.length > 0) {
     return idTokenClaims.preferred_username;
   }
@@ -298,7 +299,7 @@ export const extractOIDCEmail = (
     return userinfo.preferred_username;
   }
 
-  // 4. Fallback to UPN (Entra User Principal Name)
+  // 3. Fallback to UPN (Entra User Principal Name)
   if (typeof idTokenClaims.upn === 'string' && idTokenClaims.upn.length > 0) {
     return idTokenClaims.upn;
   }
@@ -321,9 +322,9 @@ export const extractOIDCUserProfile = async (
 
   profile.claims.id = idTokenClaims.sub;
   profile.claims.email = extractOIDCEmail(
-  idTokenClaims as Record<string, unknown>,
-  userinfo as Record<string, unknown>
-);
+    idTokenClaims as Record<string, unknown>,
+    userinfo as Record<string, unknown>
+  );
   profile.claims.firstName =
     typeof idTokenClaims.given_name === 'string' ? idTokenClaims.given_name : userinfo.given_name;
   profile.claims.lastName =
