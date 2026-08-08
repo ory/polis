@@ -268,7 +268,46 @@ export const extractHostName = (url: string): string | null => {
 };
 
 export type AuthorizationCodeGrantResult = Awaited<ReturnType<typeof authorizationCodeGrant>>;
+// Extracts the user's email from OIDC claims with fallbacks for providers
+// like Microsoft Entra ID, which may not populate the standard `email` claim.
+export const extractOIDCEmail = (
+  idTokenClaims: Record<string, unknown>,
+  userinfo: Record<string, unknown>
+): string | undefined => {
+  // 1. Standard OIDC claims
+  if (typeof idTokenClaims.email === 'string' && idTokenClaims.email.length > 0) {
+    return idTokenClaims.email;
+  }
+  if (typeof userinfo.email === 'string' && userinfo.email.length > 0) {
+    return userinfo.email;
+  }
 
+  // 2. Some providers (Entra) return email as an array -> take the first
+  if (Array.isArray(idTokenClaims.email) && typeof idTokenClaims.email[0] === 'string') {
+    return idTokenClaims.email[0];
+  }
+  if (Array.isArray(userinfo.email) && typeof userinfo.email[0] === 'string') {
+    return userinfo.email[0];
+  }
+
+  // 3. Entra commonly provides the email as preferred_username (e.g. user@company.com)
+  if (typeof idTokenClaims.preferred_username === 'string' && idTokenClaims.preferred_username.length > 0) {
+    return idTokenClaims.preferred_username;
+  }
+  if (typeof userinfo.preferred_username === 'string' && userinfo.preferred_username.length > 0) {
+    return userinfo.preferred_username;
+  }
+
+  // 4. Fallback to UPN (Entra User Principal Name)
+  if (typeof idTokenClaims.upn === 'string' && idTokenClaims.upn.length > 0) {
+    return idTokenClaims.upn;
+  }
+  if (typeof userinfo.upn === 'string' && userinfo.upn.length > 0) {
+    return userinfo.upn;
+  }
+
+  return undefined;
+};
 export const extractOIDCUserProfile = async (
   tokens: AuthorizationCodeGrantResult,
   oidcConfig: Configuration,
@@ -281,7 +320,10 @@ export const extractOIDCUserProfile = async (
   const profile: { claims: Partial<Profile & { raw: Record<string, unknown> }> } = { claims: {} };
 
   profile.claims.id = idTokenClaims.sub;
-  profile.claims.email = typeof idTokenClaims.email === 'string' ? idTokenClaims.email : userinfo.email;
+  profile.claims.email = extractOIDCEmail(
+  idTokenClaims as Record<string, unknown>,
+  userinfo as Record<string, unknown>
+);
   profile.claims.firstName =
     typeof idTokenClaims.given_name === 'string' ? idTokenClaims.given_name : userinfo.given_name;
   profile.claims.lastName =
