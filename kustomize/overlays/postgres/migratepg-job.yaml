@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jackson-migrate-pg
+spec:
+  template:
+    spec:
+      restartPolicy: 'OnFailure'
+      containers:
+        - name: db
+          image: boxyhq/jackson-local
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - migrate.sh
+          envFrom:
+            - secretRef:
+                name: jackson

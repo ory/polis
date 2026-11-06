@@ -1,6 +1,6 @@
 import { Entity, Column, Index } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'jackson_ttl' })
 export class JacksonTTL {
   @Column({
     primary: true,

@@ -1,26 +1,34 @@
 import * as redis from 'redis';
-import { DatabaseDriver, DatabaseOption, Encrypted, Index } from '../typings';
+import {
+  DatabaseDriver,
+  DatabaseOption,
+  Encrypted,
+  Index,
+  Records,
+  RequiredLogger,
+  SortOrder,
+} from '../typings';
 import * as dbutils from './utils';
 
 class Redis implements DatabaseDriver {
   private options: DatabaseOption;
   private client!: any;
+  private logger: RequiredLogger;
 
-  constructor(options: DatabaseOption) {
+  constructor(options: DatabaseOption, logger: RequiredLogger) {
     this.options = options;
+    this.logger = logger;
   }
 
   async init(): Promise<Redis> {
     const opts = {};
 
     if (this.options && this.options.url) {
-      opts['socket'] = {
-        url: this.options.url,
-      };
+      opts['url'] = this.options.url;
     }
 
     this.client = redis.createClient(opts);
-    this.client.on('error', (err: any) => console.log('Redis Client Error', err));
+    this.client.on('error', (err: any) => this.logger.info('Redis Client Error', err));
 
     await this.client.connect();
 
@@ -36,48 +44,110 @@ class Redis implements DatabaseDriver {
     return null;
   }
 
-  async getAll(namespace: string, pageOffset: number, pageLimit: number): Promise<unknown[]> {
-    const offsetAndLimitValueCheck = !dbutils.isNumeric(pageOffset) && !dbutils.isNumeric(pageLimit);
-    let take = Number(offsetAndLimitValueCheck ? this.options.pageLimit : pageLimit);
-    const skip = Number(offsetAndLimitValueCheck ? 0 : pageOffset);
-    const returnValue: string[] = [];
-    const keyArray: string[] = [];
-    let count = 0;
-    take += skip;
-    for await (const { score, value } of this.client.zScanIterator(
-      dbutils.keyFromParts(dbutils.createdAtPrefix, namespace),
-      Math.min(take, 1000)
-    )) {
-      if (count >= take) {
-        break;
-      }
-      if (count >= skip) {
-        keyArray.push(dbutils.keyFromParts(namespace, value));
-      }
-      count++;
+  async getAll(
+    namespace: string,
+    pageOffset?: number,
+    pageLimit?: number,
+    _?: string,
+    sortOrder?: SortOrder
+  ): Promise<Records> {
+    const sortedSetKey = dbutils.keyFromParts(dbutils.createdAtPrefix, namespace);
+
+    const { offset, limit: count } = dbutils.normalizeOffsetAndLimit({
+      pageOffset,
+      pageLimit,
+      maxLimit: this.options.pageLimit!,
+    });
+
+    const zRangeOptions = {
+      BY: 'SCORE',
+      REV: sortOrder === 'ASC',
+      LIMIT: {
+        offset,
+        count,
+      },
+    };
+
+    const elements =
+      sortOrder === 'ASC'
+        ? await this.client.zRange(sortedSetKey, +Infinity, -Infinity, zRangeOptions)
+        : await this.client.zRange(sortedSetKey, -Infinity, +Infinity, zRangeOptions);
+
+    if (elements.length === 0) {
+      return { data: [] };
     }
 
+    const keyArray = elements.map((element) => {
+      return dbutils.keyFromParts(namespace, element);
+    });
+
+    const records: string[] = [];
+    const values = await this.client.MGET(keyArray);
+
+    for (let i = 0; i < values.length; i++) {
+      if (!values[i]) {
+        // delete zadd
+        this.client.ZREM(dbutils.keyFromParts(dbutils.createdAtPrefix, namespace), elements[i]);
+        continue;
+      }
+
+      const valueObject = JSON.parse(values[i].toString());
+      if (valueObject !== null && valueObject !== '') {
+        records.push(valueObject);
+      }
+    }
+
+    return { data: records };
+  }
+
+  async getByIndex(
+    namespace: string,
+    idx: Index,
+    pageOffset?: number,
+    pageLimit?: number,
+    _?: string
+  ): Promise<Records> {
+    const { offset: skip, limit } = dbutils.normalizeOffsetAndLimit({
+      pageOffset,
+      pageLimit,
+      maxLimit: this.options.pageLimit!,
+    });
+    let take = limit;
+
+    let count = 0;
+    take! += skip!;
+    const returnValue: string[] = [];
+    const keyArray: string[] = [];
+    const idxKey = dbutils.keyForIndex(namespace, idx);
+    const dbKeys = await this.client.sMembers(dbutils.keyFromParts(dbutils.indexPrefix, idxKey));
+    for await (const { value } of this.client.zScanIterator(
+      dbutils.keyFromParts(dbutils.createdAtPrefix, namespace),
+      count + 1
+    )) {
+      if (dbKeys.indexOf(value) !== -1) {
+        if (count >= take!) {
+          break;
+        }
+        if (count >= skip!) {
+          keyArray.push(dbutils.keyFromParts(namespace, value));
+        }
+        count++;
+      }
+    }
     if (keyArray.length > 0) {
-      const value = await this.client.MGET(keyArray);
-      for (let i = 0; i < value.length; i++) {
-        const valueObject = JSON.parse(value[i].toString());
+      const values = await this.client.MGET(keyArray);
+      for (let i = 0; i < values.length; i++) {
+        if (!values[i]) {
+          continue;
+        }
+
+        const valueObject = JSON.parse(values[i].toString());
         if (valueObject !== null && valueObject !== '') {
           returnValue.push(valueObject);
         }
       }
     }
-    return returnValue || [];
-  }
-
-  async getByIndex(namespace: string, idx: Index): Promise<any> {
-    const idxKey = dbutils.keyForIndex(namespace, idx);
-    const dbKeys = await this.client.sMembers(dbutils.keyFromParts(dbutils.indexPrefix, idxKey));
-    const ret: string[] = [];
-    for (const dbKey of dbKeys || []) {
-      ret.push(await this.get(namespace, dbKey));
-    }
-
-    return ret;
+    return { data: returnValue || [] };
   }
 
   async put(namespace: string, key: string, val: Encrypted, ttl = 0, ...indexes: any[]): Promise<void> {
@@ -97,7 +167,8 @@ class Redis implements DatabaseDriver {
       tx = tx.sAdd(dbutils.keyFromParts(dbutils.indexPrefix, k), idxKey);
     }
     const timestamp = Number(Date.now());
-    //Converting Timestamp in negative so that when we get the value, it will be found in reverse order (descending order).
+    // Converting Timestamp in negative so that when we get the value,
+    // it will be found in reverse order (descending order).
     const negativeTimestamp = -Math.abs(timestamp);
     const value = await this.client.get(k);
     if (!value) {
@@ -105,9 +176,6 @@ class Redis implements DatabaseDriver {
         { score: negativeTimestamp, value: key },
       ]);
     }
-    tx = tx.zAdd(dbutils.keyFromParts(dbutils.modifiedAtPrefix, namespace), [
-      { score: negativeTimestamp, value: key },
-    ]);
     await tx.exec();
   }
 
@@ -123,15 +191,50 @@ class Redis implements DatabaseDriver {
       tx.sRem(dbutils.keyFromParts(dbutils.indexPrefix, dbKey), key);
     }
     tx.ZREM(dbutils.keyFromParts(dbutils.createdAtPrefix, namespace), key);
-    tx.ZREM(dbutils.keyFromParts(dbutils.modifiedAtPrefix, namespace), key);
     tx.del(idxKey);
 
     return await tx.exec();
   }
+
+  async deleteMany(namespace: string, keys: string[]): Promise<void> {
+    if (keys.length === 0) {
+      return;
+    }
+
+    let tx = this.client.multi();
+
+    for (const key of keys) {
+      const k = dbutils.key(namespace, key);
+
+      tx = tx.del(k);
+
+      const idxKey = dbutils.keyFromParts(dbutils.indexPrefix, k);
+      const dbKeys = await this.client.sMembers(idxKey);
+
+      for (const dbKey of dbKeys || []) {
+        tx.sRem(dbutils.keyFromParts(dbutils.indexPrefix, dbKey), key);
+      }
+
+      tx.ZREM(dbutils.keyFromParts(dbutils.createdAtPrefix, namespace), key);
+
+      tx.del(idxKey);
+    }
+
+    await tx.exec();
+  }
+
+  async close(): Promise<void> {
+    await this.client.quit();
+  }
+
+  getStats(): Record<string, number> {
+    // no-op
+    return {};
+  }
 }
 
 export default {
-  new: async (options: DatabaseOption): Promise<Redis> => {
-    return await new Redis(options).init();
+  new: async (options: { db: DatabaseOption; logger: RequiredLogger }): Promise<Redis> => {
+    return await new Redis(options.db, options.logger).init();
   },
 };

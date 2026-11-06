@@ -1,38 +1,60 @@
-# this file is a helper to run all the supported dbs locally, the data is ephemeral since no host volumes will be mounted
-version: "3.6"
 services:
   postgres:
-    image: postgres:13
+    image: postgres:18.3
     ports:
-      - "5432:5432"
+      - 5432:5432
     restart: always
     environment:
-      POSTGRES_PASSWORD: ""
+      POSTGRES_PASSWORD: ''
       POSTGRES_HOST_AUTH_METHOD: trust
   redis:
-    image: redis:6.2.5-alpine
+    image: redis:8.6-alpine
     ports:
-      - "6379:6379"
+      - 6379:6379
     restart: always
   mongo:
-    image: mongo:4.4.10
+    image: mongo:8.2.6
     ports:
-      - "27017:27017"
+      - 27017:27017
     restart: always
   mysql:
-    image: mysql:5.7
-    platform: linux/amd64
+    image: mysql:9.6.0
     ports:
-      - "3307:3306"
+      - 3307:3306
     restart: always
     environment:
       MYSQL_DATABASE: mysql
       MYSQL_ROOT_PASSWORD: mysql
   maria:
-    image: mariadb:10.4.22
+    image: mariadb:12.2.2
     ports:
-      - "3306:3306"
+      - 3306:3306
     restart: always
     environment:
       MARIADB_DATABASE: mysql
-      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    platform: linux/amd64
+    ports:
+      - 1433:1433
+    restart: always
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: '123ABabc!'
+  dynamodb-local:
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath ./data'
+    image: 'amazon/dynamodb-local:3.3.0'
+    container_name: dynamodb-local
+    ports:
+      - '8000:8000'
+    volumes:
+      - './docker/dynamodb:/home/dynamodblocal/data'
+    working_dir: /home/dynamodblocal
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v25.4
+    platform: linux/amd64
+    ports:
+      - '26257:26257'
+      - '8081:8080'
+    command: start-single-node --insecure

@@ -1,30 +1,17 @@
 {
+  "openapi": "3.0.3",
   "info": {
-    "title": "SAML Jackson API",
-    "version": "0.4.1",
-    "description": "This is the API documentation for SAML Jackson service.",
-    "termsOfService": "https://boxyhq.com/terms.html",
+    "title": "Enterprise SSO & Directory Sync",
+    "version": "26.2.0",
+    "description": "This is the API documentation for Polis.",
+    "termsOfService": "/tos",
     "contact": {
-      "name": "Boxy HQ",
-      "url": "https://boxyhq.com/",
-      "email": "support@boxyhq.com"
+      "email": "support@ory.com",
+      "name": "Polis API Support"
     },
     "license": {
-      "name": "Apache-2.0 License",
-      "url": "https://github.com/boxyhq/jackson/blob/main/LICENSE"
-    }
-  },
-  "host": "localhost:5225",
-  "basePath": "/",
-  "schemes": [
-    "http",
-    "https"
-  ],
-  "securityDefinitions": {
-    "apiKey": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "Authorization"
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
   "security": [
@@ -32,300 +19,382 @@
       "apiKey": []
     }
   ],
-  "swagger": "2.0",
+  "servers": [
+    {
+      "url": "http://localhost:5225",
+      "description": "Local"
+    }
+  ],
   "paths": {
-    "/api/v1/saml/config": {
+    "/api/v1/sso": {
       "post": {
-        "summary": "Create SAML configuration",
-        "operationId": "create-saml-config",
         "tags": [
-          "SAML Config"
+          "Single Sign-On"
         ],
-        "produces": [
-          "application/json"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ],
-        "parameters": [
-          {
-            "name": "name",
-            "description": "Name/identifier for the config",
-            "type": "string",
-            "in": "formData"
-          },
-          {
-            "name": "description",
-            "description": "A short description for the config not more than 100 characters",
-            "type": "string",
-            "in": "formData"
-          },
-          {
-            "name": "encodedRawMetadata",
-            "description": "Base64 encoding of the XML metadata",
-            "in": "formData",
-            "type": "string"
-          },
-          {
-            "name": "rawMetadata",
-            "description": "Raw XML metadata",
-            "in": "formData",
-            "type": "string"
-          },
-          {
-            "name": "defaultRedirectUrl",
-            "description": "The redirect URL to use in the IdP login flow",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "redirectUrl",
-            "description": "JSON encoded array containing a list of allowed redirect URLs",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "tenant",
-            "description": "Tenant",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "product",
-            "description": "Product",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "client_id": {
-                  "type": "string"
-                },
-                "client_secret": {
-                  "type": "string"
-                },
-                "provider": {
-                  "type": "string"
-                }
-              },
-              "example": {
-                "client_id": "8958e13053832b5af58fdf2ee83f35f5d013dc74",
-                "client_secret": "13f01f4df5b01770c616e682d14d3ba23f20948cfa89b1d7",
-                "type": "accounts.google.com"
-              }
-            }
-          },
-          "400": {
-            "description": "Please provide rawMetadata or encodedRawMetadata | Please provide a defaultRedirectUrl | Please provide redirectUrl | Please provide tenant | Please provide product | Please provide a friendly name | Description should not exceed 100 characters"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update SAML configuration",
-        "operationId": "update-saml-config",
-        "tags": [
-          "SAML Config"
-        ],
-        "consumes": [
-          "application/json",
-          "application/x-www-form-urlencoded"
-        ],
-        "parameters": [
-          {
-            "name": "clientID",
-            "description": "Client ID for the config",
-            "type": "string",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "name": "clientSecret",
-            "description": "Client Secret for the config",
-            "type": "string",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "name": "name",
-            "description": "Name/identifier for the config",
-            "type": "string",
-            "in": "formData"
-          },
-          {
-            "name": "description",
-            "description": "A short description for the config not more than 100 characters",
-            "type": "string",
-            "in": "formData"
-          },
-          {
-            "name": "encodedRawMetadata",
-            "description": "Base64 encoding of the XML metadata",
-            "in": "formData",
-            "type": "string"
-          },
-          {
-            "name": "rawMetadata",
-            "description": "Raw XML metadata",
-            "in": "formData",
-            "type": "string"
-          },
-          {
-            "name": "defaultRedirectUrl",
-            "description": "The redirect URL to use in the IdP login flow",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "redirectUrl",
-            "description": "JSON encoded array containing a list of allowed redirect URLs",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "tenant",
-            "description": "Tenant",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "product",
-            "description": "Product",
-            "in": "formData",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Please provide clientID | Please provide clientSecret | clientSecret mismatch | Tenant/Product config mismatch with IdP metadata | Description should not exceed 100 characters"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      },
-      "get": {
-        "summary": "Get SAML configuration",
-        "operationId": "get-saml-config",
-        "tags": [
-          "SAML Config"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "tenant",
-            "type": "string",
-            "description": "Tenant"
-          },
-          {
-            "in": "query",
-            "name": "product",
-            "type": "string",
-            "description": "Product"
-          },
-          {
-            "in": "query",
-            "name": "clientID",
-            "type": "string",
-            "description": "Client ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "object",
-              "example": {
-                "config": {
-                  "idpMetadata": {
-                    "sso": {
-                      "postUrl": "https://dev-20901260.okta.com/app/dev-20901260_jacksonnext_1/xxxxxxxxxxxxx/sso/saml",
-                      "redirectUrl": "https://dev-20901260.okta.com/app/dev-20901260_jacksonnext_1/xxxxxxxxxxxxx/sso/saml"
-                    },
-                    "entityID": "http://www.okta.com/xxxxxxxxxxxxx",
-                    "thumbprint": "Eo+eUi3UM3XIMkFFtdVK3yJ5vO9f7YZdasdasdad",
-                    "loginType": "idp",
-                    "provider": "okta.com"
+        "summary": "Create SSO connection",
+        "operationId": "create-sso-connection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "defaultRedirectUrl",
+                  "product",
+                  "redirectUrl",
+                  "tenant"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of connection"
                   },
-                  "defaultRedirectUrl": "https://hoppscotch.io/",
-                  "redirectUrl": [
-                    "https://hoppscotch.io/"
-                  ],
-                  "tenant": "hoppscotch.io",
-                  "product": "API Engine",
-                  "name": "Hoppscotch-SP",
-                  "description": "SP for hoppscotch.io",
-                  "clientID": "Xq8AJt3yYAxmXizsCWmUBDRiVP1iTC8Y/otnvFIMitk",
-                  "clientSecret": "00e3e11a3426f97d8000000738300009130cd45419c5943",
-                  "certs": {
-                    "publicKey": "-----BEGIN CERTIFICATE-----.......-----END CERTIFICATE-----",
-                    "privateKey": "-----BEGIN PRIVATE KEY-----......-----END PRIVATE KEY-----"
+                  "label": {
+                    "type": "string",
+                    "description": "An internal label to identify the connection"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A short description for the connection not more than 100 characters"
+                  },
+                  "encodedRawMetadata": {
+                    "type": "string",
+                    "description": "Base64 encoding of the XML metadata"
+                  },
+                  "rawMetadata": {
+                    "type": "string",
+                    "description": "Raw XML metadata"
+                  },
+                  "metadataUrl": {
+                    "type": "string",
+                    "description": "URL containing raw XML metadata"
+                  },
+                  "defaultRedirectUrl": {
+                    "type": "string",
+                    "description": "The redirect URL to use in the IdP login flow"
+                  },
+                  "redirectUrl": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "JSON encoded array containing a list of allowed redirect URLs"
+                  },
+                  "tenant": {
+                    "type": "string",
+                    "description": "Tenant"
+                  },
+                  "product": {
+                    "type": "string",
+                    "description": "Product"
+                  },
+                  "oidcDiscoveryUrl": {
+                    "type": "string",
+                    "description": "well-known URL where the OpenID Provider configuration is exposed"
+                  },
+                  "oidcMetadata": {
+                    "type": "string",
+                    "description": "metadata (JSON) for the OpenID Provider in the absence of discoveryUrl"
+                  },
+                  "oidcClientId": {
+                    "type": "string",
+                    "description": "clientId of the application set up on the OpenID Provider"
+                  },
+                  "oidcClientSecret": {
+                    "type": "string",
+                    "description": "clientSecret of the application set up on the OpenID Provider"
+                  },
+                  "sortOrder": {
+                    "type": "number",
+                    "description": "Indicate the position of the connection in the IdP selection screen"
+                  },
+                  "acsUrlOverride": {
+                    "type": "string",
+                    "description": "Override the global ACS URL on a per connection basis"
+                  },
+                  "samlAudienceOverride": {
+                    "type": "string",
+                    "description": "Override the global SAML Audience on a per connection basis"
+                  },
+                  "forceAuthn": {
+                    "type": "boolean",
+                    "description": "Require a new authentication instead of reusing an existing session."
                   }
                 }
               }
             }
           },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              }
+            }
+          },
           "400": {
-            "description": "Please provide `clientID` or `tenant` and `product`."
+            "$ref": "#/components/schemas/validationErrorsPost"
           },
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
       },
-      "delete": {
-        "summary": "Delete SAML configuration",
-        "operationId": "delete-saml-config",
+      "patch": {
         "tags": [
-          "SAML Config"
+          "Single Sign-On"
         ],
-        "consumes": [
-          "application/x-www-form-urlencoded"
+        "summary": "Update SSO Connection",
+        "operationId": "update-sso-connection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "clientID",
+                  "clientSecret",
+                  "product",
+                  "tenant"
+                ],
+                "type": "object",
+                "properties": {
+                  "clientID": {
+                    "type": "string",
+                    "description": "Client ID for the connection"
+                  },
+                  "clientSecret": {
+                    "type": "string",
+                    "description": "Client Secret for the connection"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name/identifier for the connection"
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "An internal label to identify the connection"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A short description for the connection not more than 100 characters"
+                  },
+                  "encodedRawMetadata": {
+                    "type": "string",
+                    "description": "Base64 encoding of the XML metadata"
+                  },
+                  "rawMetadata": {
+                    "type": "string",
+                    "description": "Raw XML metadata"
+                  },
+                  "metadataUrl": {
+                    "type": "string",
+                    "description": "URL containing raw XML metadata"
+                  },
+                  "oidcDiscoveryUrl": {
+                    "type": "string",
+                    "description": "well-known URL where the OpenID Provider configuration is exposed"
+                  },
+                  "oidcMetadata": {
+                    "type": "string",
+                    "description": "metadata (JSON) for the OpenID Provider in the absence of discoveryUrl"
+                  },
+                  "oidcClientId": {
+                    "type": "string",
+                    "description": "clientId of the application set up on the OpenID Provider"
+                  },
+                  "oidcClientSecret": {
+                    "type": "string",
+                    "description": "clientSecret of the application set up on the OpenID Provider"
+                  },
+                  "defaultRedirectUrl": {
+                    "type": "string",
+                    "description": "The redirect URL to use in the IdP login flow"
+                  },
+                  "redirectUrl": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "JSON encoded array containing a list of allowed redirect URLs"
+                  },
+                  "tenant": {
+                    "type": "string",
+                    "description": "Tenant"
+                  },
+                  "product": {
+                    "type": "string",
+                    "description": "Product"
+                  },
+                  "deactivated": {
+                    "type": "boolean",
+                    "description": "Connection status"
+                  },
+                  "sortOrder": {
+                    "type": "number",
+                    "description": "Indicate the position of the connection in the IdP selection screen"
+                  },
+                  "acsUrlOverride": {
+                    "type": "string",
+                    "description": "Override the global ACS URL on a per connection basis"
+                  },
+                  "samlAudienceOverride": {
+                    "type": "string",
+                    "description": "Override the global SAML Audience on a per connection basis"
+                  },
+                  "forceAuthn": {
+                    "type": "boolean",
+                    "description": "Require a new authentication instead of reusing an existing session."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Success",
+            "content": {}
+          },
+          "400": {
+            "$ref": "#/components/schemas/validationErrorsPatch"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Please set OpenID response handler path (oidcPath) on Jackson",
+            "content": {}
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      },
+      "get": {
+        "tags": [
+          "Single Sign-On"
         ],
+        "summary": "Get SSO Connections",
+        "operationId": "get-connections",
         "parameters": [
           {
-            "name": "clientID",
-            "in": "formData",
-            "type": "string",
-            "required": true,
-            "description": "Client ID"
-          },
-          {
-            "name": "clientSecret",
-            "in": "formData",
-            "type": "string",
-            "required": true,
-            "description": "Client Secret"
-          },
-          {
             "name": "tenant",
-            "in": "formData",
-            "type": "string",
-            "description": "Tenant"
+            "in": "query",
+            "description": "Tenant",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "product",
-            "in": "formData",
-            "type": "string",
-            "description": "Product"
+            "in": "query",
+            "description": "Product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientID",
+            "in": "query",
+            "description": "Client ID (Optional if tenant/product provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strategy",
+            "in": "query",
+            "description": "Strategy which can help to filter connections with tenant/product query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "If present, the connections will be sorted by `sortOrder`. It won't consider if pagination is used.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Get"
+          },
+          "400": {
+            "$ref": "#/components/responses/400Get"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Get"
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      },
+      "delete": {
+        "tags": [
+          "Single Sign-On"
+        ],
+        "summary": "Delete SSO Connections",
+        "operationId": "delete-sso-connection",
+        "parameters": [
+          {
+            "name": "clientID",
+            "in": "query",
+            "description": "Client ID (Optional if tenant/product provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientSecret",
+            "in": "query",
+            "description": "Client Secret (Optional if tenant/product provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant (Optional if clientID/Secret provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product (Optional if clientID/Secret provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strategy",
+            "in": "query",
+            "description": "Strategy which can help to filter connections with tenant/product query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -333,128 +402,2195 @@
             "description": "Success"
           },
           "400": {
-            "description": "clientSecret mismatch | Please provide `clientID` and `clientSecret` or `tenant` and `product`.'"
+            "description": "clientSecret mismatch | Please provide `clientID` and `clientSecret` or `tenant` and `product`."
           },
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      }
+    },
+    "/api/v1/sso/product": {
+      "get": {
+        "tags": [
+          "Single Sign-On"
+        ],
+        "summary": "Get SSO Connections by product",
+        "operationId": "get-connections-by-product",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/productParamGet"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200GetByProduct"
+          },
+          "400": {
+            "$ref": "#/components/responses/400Get"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Get"
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
       }
     },
     "/oauth/token": {
       "post": {
-        "summary": "Code exchange",
-        "operationId": "oauth-code-exchange",
         "tags": [
           "OAuth"
         ],
-        "consumes": [
-          "application/x-www-form-urlencoded"
+        "summary": "Code exchange",
+        "operationId": "oauth-code-exchange",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "required": [
+                  "client_id",
+                  "client_secret",
+                  "code",
+                  "grant_type",
+                  "redirect_uri"
+                ],
+                "type": "object",
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "description": "Grant type should be 'authorization_code'",
+                    "default": "authorization_code"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "Use the client_id returned by the SAML connection API"
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "description": "Use the client_secret returned by the SAML connection API"
+                  },
+                  "code_verifier": {
+                    "type": "string",
+                    "description": "code_verifier against the code_challenge in the authz request (relevant to PKCE flow)"
+                  },
+                  "redirect_uri": {
+                    "type": "string",
+                    "description": "Redirect URI"
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "Code"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "token_type": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "access_token": "8958e13053832b5af58fdf2ee83f35f5d013dc74",
+                    "token_type": "bearer",
+                    "expires_in": "300"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      }
+    },
+    "/oauth/userinfo": {
+      "get": {
+        "tags": [
+          "OAuth"
         ],
+        "summary": "Get profile",
+        "operationId": "oauth-get-profile",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "groups": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "raw": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "requested": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  },
+                  "example": {
+                    "id": "32b5af58fdf",
+                    "email": "jackson@coolstartup.com",
+                    "firstName": "SAML",
+                    "lastName": "Jackson",
+                    "raw": {},
+                    "requested": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/sso/setuplinks": {
+      "post": {
+        "tags": [
+          "Setup Links | Single Sign On"
+        ],
+        "summary": "Create a Setup Link",
+        "operationId": "create-sso-setup-link",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "defaultRedirectUrl",
+                  "product",
+                  "redirectUrl",
+                  "tenant"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of connection"
+                  },
+                  "tenant": {
+                    "type": "string",
+                    "description": "Tenant"
+                  },
+                  "product": {
+                    "type": "string",
+                    "description": "Product"
+                  },
+                  "defaultRedirectUrl": {
+                    "type": "string",
+                    "description": "The redirect URL to use in the IdP login flow"
+                  },
+                  "redirectUrl": {
+                    "type": "string",
+                    "description": "JSON encoded array containing a list of allowed redirect URLs"
+                  },
+                  "expiryDays": {
+                    "type": "number",
+                    "description": "Days in number for the setup link to expire",
+                    "default": 3
+                  },
+                  "regenerate": {
+                    "type": "boolean",
+                    "description": "If passed as true, it will remove the existing setup link and create a new one.",
+                    "default": false
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupLink"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Setup Links | Single Sign On"
+        ],
+        "summary": "Delete the Setup Link",
+        "operationId": "delete-sso-setup-link",
         "parameters": [
           {
-            "name": "grant_type",
-            "in": "formData",
-            "type": "string",
-            "description": "Grant type should be 'authorization_code'",
-            "default": "authorization_code",
-            "required": true
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "name": "client_id",
-            "in": "formData",
-            "type": "string",
-            "description": "Use the client_id returned by the SAML config API",
-            "required": true
+            "name": "product",
+            "in": "query",
+            "description": "Product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "name": "client_secret",
-            "in": "formData",
-            "type": "string",
-            "description": "Use the client_secret returned by the SAML config API",
-            "required": true
-          },
-          {
-            "name": "redirect_uri",
-            "in": "formData",
-            "type": "string",
-            "description": "Redirect URI",
-            "required": true
-          },
-          {
-            "name": "code",
-            "in": "formData",
-            "type": "string",
-            "description": "Code",
-            "required": true
+            "name": "id",
+            "in": "query",
+            "description": "Setup link ID",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "access_token": {
-                  "type": "string"
-                },
-                "token_type": {
-                  "type": "string"
-                },
-                "expires_in": {
-                  "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "data": {}
+                  }
                 }
-              },
-              "example": {
-                "access_token": "8958e13053832b5af58fdf2ee83f35f5d013dc74",
-                "token_type": "bearer",
-                "expires_in": 300
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Setup Links | Single Sign On"
+        ],
+        "summary": "Get the Setup Link",
+        "operationId": "get-sso-setup-link",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Setup Link ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupLink"
+                }
               }
             }
           }
         }
       }
     },
-    "/oauth/userinfo": {
-      "get": {
-        "summary": "Get profile",
-        "operationId": "oauth-get-profile",
+    "/api/v1/dsync/setuplinks": {
+      "post": {
         "tags": [
-          "OAuth"
+          "Setup Links | Directory Sync"
+        ],
+        "summary": "Create a Setup Link",
+        "operationId": "create-dsync-setup-link",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "product",
+                  "tenant",
+                  "webhook_secret",
+                  "webhook_url"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of connection"
+                  },
+                  "tenant": {
+                    "type": "string",
+                    "description": "Tenant"
+                  },
+                  "product": {
+                    "type": "string",
+                    "description": "Product"
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "The URL to send the directory sync events to"
+                  },
+                  "webhook_secret": {
+                    "type": "string",
+                    "description": "The secret to sign the directory sync events"
+                  },
+                  "expiryDays": {
+                    "type": "number",
+                    "description": "Days in number for the setup link to expire",
+                    "default": 3
+                  },
+                  "regenerate": {
+                    "type": "boolean",
+                    "description": "If passed as true, it will remove the existing setup link and create a new one.",
+                    "default": false
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupLink"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      },
+      "delete": {
+        "tags": [
+          "Setup Links | Directory Sync"
+        ],
+        "summary": "Delete the Setup Link",
+        "operationId": "delete-dsync-setup-link",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Setup link ID",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                },
-                "firstName": {
-                  "type": "string"
-                },
-                "lastName": {
-                  "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "data": {}
+                  }
                 }
-              },
-              "example": {
-                "id": "32b5af58fdf",
-                "email": "jackson@coolstartup.com",
-                "firstName": "SAML",
-                "lastName": "Jackson"
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      },
+      "get": {
+        "tags": [
+          "Setup Links | Directory Sync"
+        ],
+        "summary": "Get the Setup Link",
+        "operationId": "get-dsync-setup-link",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Setup Link ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupLink"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/sso/setuplinks/product": {
+      "get": {
+        "tags": [
+          "Setup Links | Single Sign On"
+        ],
+        "summary": "Get the Setup Links by product",
+        "operationId": "get-sso-setup-link-by-product",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/productParamGet"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SetupLink"
+                  }
+                }
               }
             }
           }
         }
       }
+    },
+    "/api/v1/dsync/setuplinks/product": {
+      "get": {
+        "tags": [
+          "Setup Links | Directory Sync"
+        ],
+        "summary": "Get the Setup Links by product",
+        "operationId": "get-dsync-setup-link-by-product",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/productParamGet"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SetupLink"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/sso-traces": {
+      "get": {
+        "tags": [
+          "SSO Traces"
+        ],
+        "summary": "Get trace by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Trace ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SSOTrace"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/sso-traces/product": {
+      "get": {
+        "tags": [
+          "SSO Traces"
+        ],
+        "summary": "Get all traces for a product",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/product"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SSOTrace"
+                      }
+                    },
+                    "pageToken": {
+                      "type": "string",
+                      "description": "token for pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync": {
+      "post": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Create a directory connection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "product",
+                  "tenant"
+                ],
+                "type": "object",
+                "properties": {
+                  "tenant": {
+                    "type": "string",
+                    "description": "Tenant"
+                  },
+                  "product": {
+                    "type": "string",
+                    "description": "Product"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name"
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "Webhook URL"
+                  },
+                  "webhook_secret": {
+                    "type": "string",
+                    "description": "Webhook secret"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Directory provider. (Supported values are azure-scim-v2, onelogin-scim-v2, okta-scim-v2, jumpcloud-scim-v2, generic-scim-v2, google)"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Directory"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      },
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get a directory connection by tenant and product",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant (Optional if directoryId is provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product (Optional if directoryId is provided)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Directory"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync/{directoryId}": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get a directory connection by id",
+        "parameters": [
+          {
+            "name": "directoryId",
+            "in": "path",
+            "description": "Directory ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Directory"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      },
+      "patch": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Update a directory connection",
+        "parameters": [
+          {
+            "name": "directoryId",
+            "in": "path",
+            "description": "Directory ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name"
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "Webhook URL"
+                  },
+                  "webhook_secret": {
+                    "type": "string",
+                    "description": "Webhook secret"
+                  },
+                  "log_webhook_events": {
+                    "type": "string",
+                    "description": "If true, webhook requests will be logged"
+                  },
+                  "deactivated": {
+                    "type": "string",
+                    "description": "If true, the directory connection will be deactivated"
+                  },
+                  "google_access_token": {
+                    "type": "string",
+                    "description": "Google access token"
+                  },
+                  "google_refresh_token": {
+                    "type": "string",
+                    "description": "Google refresh token"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Directory"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      },
+      "delete": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Delete a directory connection by id",
+        "parameters": [
+          {
+            "name": "directoryId",
+            "in": "path",
+            "description": "Directory ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      }
+    },
+    "/api/v1/dsync/product": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get directory connections by product",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/product"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Directory"
+                      }
+                    },
+                    "pageToken": {
+                      "type": "string",
+                      "description": "token for pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync/groups/{groupId}": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get group by id from a directory",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant (Optional if directoryId is provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product (Optional if directoryId is provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "directoryId",
+            "in": "query",
+            "description": "Directory ID (Optional if tenant/product is provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "Group ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Group"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync/groups": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get groups from a directory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/tenant"
+          },
+          {
+            "$ref": "#/components/parameters/product"
+          },
+          {
+            "$ref": "#/components/parameters/directoryId"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Group"
+                      }
+                    },
+                    "pageToken": {
+                      "type": "string",
+                      "description": "token for pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync/groups/{groupId}/members": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get list of members in a group",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/tenant"
+          },
+          {
+            "$ref": "#/components/parameters/product"
+          },
+          {
+            "$ref": "#/components/parameters/groupId"
+          },
+          {
+            "$ref": "#/components/parameters/directoryId"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Member"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync/users/{userId}": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get user by id from a directory",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant (Optional if directoryId is provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product (Optional if directoryId is provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "directoryId",
+            "in": "query",
+            "description": "Directory ID (Optional if tenant/product is provided)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync/users": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get users from a directory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/tenant"
+          },
+          {
+            "$ref": "#/components/parameters/product"
+          },
+          {
+            "$ref": "#/components/parameters/directoryId"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    },
+                    "pageToken": {
+                      "type": "string",
+                      "description": "token for pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/dsync/events": {
+      "get": {
+        "tags": [
+          "Directory Sync"
+        ],
+        "summary": "Get event logs for a directory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/directoryId"
+          },
+          {
+            "$ref": "#/components/parameters/tenant"
+          },
+          {
+            "$ref": "#/components/parameters/product"
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Event"
+                      }
+                    },
+                    "pageToken": {
+                      "type": "string",
+                      "description": "token for pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
+    },
+    "/api/v1/identity-federation": {
+      "post": {
+        "tags": [
+          "Identity Federation"
+        ],
+        "summary": "Create an Identity Federation app",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdentityFederationAppCreate",
+                "required": [
+                  "name",
+                  "product",
+                  "tenant"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityFederationResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      },
+      "get": {
+        "tags": [
+          "Identity Federation"
+        ],
+        "summary": "Get an Identity Federation app",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "App ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityFederationResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      },
+      "patch": {
+        "tags": [
+          "Identity Federation"
+        ],
+        "summary": "Update an Identity Federation app",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdentityFederationApp",
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityFederationResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      },
+      "delete": {
+        "tags": [
+          "Identity Federation"
+        ],
+        "summary": "Delete an Identity Federation app",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "App ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/IdentityFederationError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-medium"
+      }
+    },
+    "/api/v1/identity-federation/product": {
+      "get": {
+        "tags": [
+          "Identity Federation"
+        ],
+        "summary": "Get Identity Federation apps by product",
+        "parameters": [
+          {
+            "name": "product",
+            "in": "query",
+            "description": "Product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageOffset"
+          },
+          {
+            "$ref": "#/components/parameters/pageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/IdentityFederationApp"
+                      }
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/IdentityFederationError"
+                    },
+                    "pageToken": {
+                      "type": "string",
+                      "description": "token for pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-ory-ratelimit-bucket": "polis-public-low"
+      }
     }
   },
-  "definitions": {},
-  "responses": {},
-  "parameters": {},
+  "components": {
+    "schemas": {
+      "Connection": {
+        "type": "object",
+        "properties": {
+          "clientID": {
+            "type": "string",
+            "description": "Connection clientID"
+          },
+          "clientSecret": {
+            "type": "string",
+            "description": "Connection clientSecret"
+          },
+          "name": {
+            "type": "string",
+            "description": "Connection name"
+          },
+          "label": {
+            "type": "string",
+            "description": "Connection label"
+          },
+          "description": {
+            "type": "string",
+            "description": "Connection description"
+          },
+          "redirectUrl": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of allowed redirect URLs"
+          },
+          "defaultRedirectUrl": {
+            "type": "string",
+            "description": "The redirect URL to use in the IdP login flow"
+          },
+          "tenant": {
+            "type": "string",
+            "description": "Connection tenant"
+          },
+          "product": {
+            "type": "string",
+            "description": "Connection product"
+          },
+          "idpMetadata": {
+            "type": "object",
+            "properties": {},
+            "description": "SAML IdP metadata"
+          },
+          "oidcProvider": {
+            "type": "object",
+            "properties": {},
+            "description": "OIDC IdP metadata"
+          },
+          "deactivated": {
+            "type": "boolean",
+            "description": "Connection status"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "Connection sort order"
+          },
+          "acsUrlOverride": {
+            "type": "string",
+            "description": "Override the global ACS URL on a per connection basis"
+          },
+          "samlAudienceOverride": {
+            "type": "string",
+            "description": "Override the global SAML Audience on a per connection basis"
+          }
+        },
+        "example": {
+          "idpMetadata": {
+            "sso": {
+              "postUrl": "https://dev-20901260.okta.com/app/dev-20901260_jacksonnext_1/xxxxxxxxxxxsso/saml",
+              "redirectUrl": "https://dev-20901260.okta.com/app/dev-20901260_jacksonnext_1/xxxxxxxxxxxsso/saml"
+            },
+            "entityID": "http://www.okta.com/xxxxxxxxxxxxx",
+            "thumbprint": "Eo+eUi3UM3XIMkFFtdVK3yJ5vO9f7YZdasdasdad",
+            "loginType": "idp",
+            "provider": "okta.com"
+          },
+          "defaultRedirectUrl": "http://localhost:3000/default",
+          "redirectUrl": [
+            "http://localhost:3000/default"
+          ],
+          "tenant": "example.com",
+          "product": "API Engine",
+          "name": "Hoppscotch-SP",
+          "description": "SP for example.com",
+          "clientID": "Xq8AJt3yYAxmXizsCWmUBDRiVP1iTC8Y/otnvFIMitk",
+          "clientSecret": "00e3e11a3426f97d8000000738300009130cd45419c5943",
+          "deactivated": false
+        }
+      },
+      "validationErrorsPost": {
+        "description": "Please provide rawMetadata or encodedRawMetadata | Please provide a defaultRedirectUrl | Please provide redirectUrl | redirectUrl is invalid | Exceeded maximum number of allowed redirect urls | defaultRedirectUrl is invalid | Please provide tenant | Please provide product | Please provide a friendly name | Description should not exceed 100 characters | Strategy&#58; xxxx not supported | Please provide the clientId from OpenID Provider | Please provide the clientSecret from OpenID Provider | Please provide the discoveryUrl for the OpenID Provider"
+      },
+      "validationErrorsPatch": {
+        "description": "Please provide clientID/clientSecret | clientSecret mismatch | Tenant/Product config mismatch with IdP metadata | Description should not exceed 100 characters| redirectUrl is invalid | Exceeded maximum number of allowed redirect urls | defaultRedirectUrl is invalid | Tenant/Product config mismatch with OIDC Provider metadata"
+      },
+      "SetupLink": {
+        "type": "object",
+        "properties": {
+          "setupID": {
+            "type": "string",
+            "description": "Setup link ID"
+          },
+          "tenant": {
+            "type": "string",
+            "description": "Tenant"
+          },
+          "product": {
+            "type": "string",
+            "description": "Product"
+          },
+          "validTill": {
+            "type": "string",
+            "description": "Valid till timestamp"
+          },
+          "url": {
+            "type": "string",
+            "description": "Setup link URL"
+          }
+        },
+        "example": {
+          "data": {
+            "setupID": "0689f76f7b5aa22f00381a124cb4b153fc1a8c08",
+            "tenant": "acme",
+            "product": "my-app",
+            "service": "sso",
+            "validTill": 1689849146690,
+            "url": "http://localhost:5225/setup/0b96a483ebfe0af0b561dda35a96647074d944631ff9e070"
+          }
+        }
+      },
+      "SSOTrace": {
+        "type": "object",
+        "properties": {
+          "traceId": {
+            "type": "string",
+            "description": "Trace ID"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp"
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "tenant": {
+                "type": "string",
+                "description": "Tenant"
+              },
+              "product": {
+                "type": "string",
+                "description": "Product"
+              },
+              "clientID": {
+                "type": "string",
+                "description": "Connection client ID"
+              },
+              "issuer": {
+                "type": "string",
+                "description": "Issuer"
+              },
+              "relayState": {
+                "type": "string",
+                "description": "Relay state"
+              },
+              "samlResponse": {
+                "type": "string",
+                "description": "SAML response"
+              },
+              "isSAMLFederated": {
+                "type": "boolean",
+                "description": "Indicates if SAML is federated"
+              },
+              "isOIDCFederated": {
+                "type": "boolean",
+                "description": "Indicates if OIDC is federated"
+              },
+              "isIdPFlow": {
+                "type": "boolean",
+                "description": "Indicates if request is from IdP"
+              }
+            }
+          }
+        }
+      },
+      "Directory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Directory ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "name"
+          },
+          "tenant": {
+            "type": "string",
+            "description": "Tenant"
+          },
+          "product": {
+            "type": "string",
+            "description": "Product"
+          },
+          "type": {
+            "type": "string",
+            "description": "Directory provider"
+          },
+          "deactivated": {
+            "type": "boolean",
+            "description": "Status"
+          },
+          "log_webhook_events": {
+            "type": "boolean",
+            "description": "If true, webhook requests will be logged"
+          },
+          "scim": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "SCIM path"
+              },
+              "endpoint": {
+                "type": "string",
+                "description": "SCIM url"
+              },
+              "secret": {
+                "type": "string",
+                "description": "SCIM secret"
+              }
+            }
+          },
+          "webhook": {
+            "type": "object",
+            "properties": {
+              "endpoint": {
+                "type": "string",
+                "description": "Webhook url"
+              },
+              "secret": {
+                "type": "string",
+                "description": "Webhook secret"
+              }
+            }
+          }
+        }
+      },
+      "Group": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Group ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Group name"
+          },
+          "raw": {
+            "type": "object",
+            "properties": {},
+            "description": "Raw group attributes from the Identity Provider"
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "ID of the user"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "First name"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Last name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Indicates whether the user is active or not"
+          },
+          "raw": {
+            "type": "object",
+            "properties": {},
+            "description": "Raw user attributes from the Identity Provider"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "example": {
+          "id": "id1",
+          "webhook_endpoint": "https://example.com/webhook",
+          "created_at": "2024-03-05T17:06:26.074Z",
+          "status_code": 200,
+          "delivered": true,
+          "payload": {
+            "directory_id": "58b5cd9dfaa39d47eb8f5f88631f9a629a232016",
+            "event": "user.created",
+            "tenant": "boxyhq",
+            "product": "jackson",
+            "data": {
+              "id": "038e767b-9bc6-4dbd-975e-fbc38a8e7d82",
+              "first_name": "Deepak",
+              "last_name": "Prabhakara",
+              "email": "deepak@example.com",
+              "active": true,
+              "raw": {
+                "schemas": [
+                  "urn:ietf:params:scim:schemas:core:2.0:User"
+                ],
+                "userName": "deepak@example.com",
+                "name": {
+                  "givenName": "Deepak",
+                  "familyName": "Prabhakara"
+                },
+                "emails": [
+                  {
+                    "primary": true,
+                    "value": "deepak@example.com",
+                    "type": "work"
+                  }
+                ],
+                "title": "CEO",
+                "displayName": "Deepak Prabhakara",
+                "locale": "en-US",
+                "externalId": "00u1ldzzogFkXFmvT5d7",
+                "groups": [],
+                "active": true
+              }
+            }
+          }
+        }
+      },
+      "IdentityFederationAppCreate": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant"
+          },
+          "product": {
+            "type": "string",
+            "description": "Product"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name"
+          },
+          "acsUrl": {
+            "type": "string",
+            "description": "ACS URL"
+          },
+          "entityId": {
+            "type": "string",
+            "description": "Entity ID"
+          },
+          "logoUrl": {
+            "type": "string",
+            "description": "Logo URL"
+          },
+          "faviconUrl": {
+            "type": "string",
+            "description": "Favicon URL"
+          },
+          "primaryColor": {
+            "type": "string",
+            "description": "Primary color"
+          },
+          "tenants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mapping of tenants whose connections will be grouped under this Identity Federation app"
+          },
+          "mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttributeMapping"
+            },
+            "description": "Mapping of attributes from the IdP to SP"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "If creating an OIDC app, this should be set to 'oidc' otherwise it defaults to 'saml'"
+          },
+          "redirectUrl": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "If creating an OIDC app, provide the redirect URL"
+          },
+          "samlAudienceOverride": {
+            "type": "string",
+            "description": "Override the SAML Audience on a per app basis"
+          },
+          "includeOidcTokensInAssertion": {
+            "type": "boolean",
+            "description": "Include OIDC tokens in the SAML assertion"
+          },
+          "ttlInMinutes": {
+            "type": "number",
+            "description": "Time-to-live in minutes for the SAML assertion, does not apply to OIDC flows"
+          }
+        }
+      },
+      "IdentityFederationApp": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityFederationAppCreate"
+          },
+          {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "App ID"
+              }
+            }
+          }
+        ]
+      },
+      "AttributeMapping": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "SP attribute"
+          },
+          "value": {
+            "type": "string",
+            "description": "IdP attribute"
+          }
+        }
+      },
+      "IdentityFederationResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/IdentityFederationApp"
+          },
+          "error": {
+            "$ref": "#/components/schemas/IdentityFederationError"
+          }
+        }
+      },
+      "IdentityFederationError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "200Get": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Connection"
+              }
+            }
+          }
+        }
+      },
+      "400Get": {
+        "description": "Please provide a `product`.",
+        "content": {}
+      },
+      "401Get": {
+        "description": "Unauthorized",
+        "content": {}
+      },
+      "200GetByProduct": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Connection"
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "tenantParamGet": {
+        "name": "tenant",
+        "in": "query",
+        "description": "Tenant",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "productParamGet": {
+        "name": "product",
+        "in": "query",
+        "description": "Product",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "clientIDParamGet": {
+        "name": "clientID",
+        "in": "query",
+        "description": "Client ID (Optional if tenant/product provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "strategyParamGet": {
+        "name": "strategy",
+        "in": "query",
+        "description": "Strategy which can help to filter connections with tenant/product query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "sortParamGet": {
+        "name": "sort",
+        "in": "query",
+        "description": "If present, the connections will be sorted by `sortOrder`. It won't consider if pagination is used.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "clientIDDel": {
+        "name": "clientID",
+        "in": "query",
+        "description": "Client ID (Optional if tenant/product provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "clientSecretDel": {
+        "name": "clientSecret",
+        "in": "query",
+        "description": "Client Secret (Optional if tenant/product provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "tenantDel": {
+        "name": "tenant",
+        "in": "query",
+        "description": "Tenant (Optional if clientID/Secret provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "productDel": {
+        "name": "product",
+        "in": "query",
+        "description": "Product (Optional if clientID/Secret provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "strategyDel": {
+        "name": "strategy",
+        "in": "query",
+        "description": "Strategy which can help to filter connections with tenant/product query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "setupLinkId": {
+        "name": "id",
+        "in": "query",
+        "description": "Setup link ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "idParamGet": {
+        "name": "id",
+        "in": "query",
+        "description": "Setup Link ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "tenant": {
+        "name": "tenant",
+        "in": "query",
+        "description": "Tenant (Optional if directoryId is provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "product": {
+        "name": "product",
+        "in": "query",
+        "description": "Product (Optional if directoryId is provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "directoryId": {
+        "name": "directoryId",
+        "in": "query",
+        "description": "Directory ID (Optional if tenant/product is provided)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "pageOffset": {
+        "name": "pageOffset",
+        "in": "query",
+        "description": "Starting point from which the set of records are retrieved",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "pageLimit": {
+        "name": "pageLimit",
+        "in": "query",
+        "description": "Number of records to be fetched for the page",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "pageToken": {
+        "name": "pageToken",
+        "in": "query",
+        "description": "Token used for DynamoDB pagination",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "groupId": {
+        "name": "groupId",
+        "in": "path",
+        "description": "Group ID",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
   "tags": []
 }

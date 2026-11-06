@@ -1,0 +1,21 @@
+## Step 2: Configure Application
+
+Next click on the **SSO** tab and enter the following values:
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={idpEntityId} label='IdP Entity ID' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.entityId} label='SP Entity ID' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.acsUrl} label='ACS URL' />
+  </div>
+</div>
+
+<AdvancedSPConfigLink />
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/jumpcloud/3.png)
+
+<Footer />

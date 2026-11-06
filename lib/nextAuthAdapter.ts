@@ -1,16 +1,16 @@
 import { Storable } from '@boxyhq/saml-jackson';
 import DB from 'npm/src/db/db';
-import opts from './env';
+import { jacksonOptions } from './env';
 import type { AdapterUser, VerificationToken } from 'next-auth/adapters';
-import { validateEmailWithACL } from './utils';
 import defaultDb from 'npm/src/db/defaultDb';
+import { logger } from './logger';
 
 const g = global as any;
 
 export async function initNextAuthDB(): Promise<Storable> {
   if (!g.adminAuthStore) {
-    const _opts = defaultDb(opts);
-    const db = await DB.new(_opts.db);
+    const _opts = defaultDb(jacksonOptions);
+    const db = await DB.new({ db: _opts.db, logger });
     g.adminAuthStore = db.store('admin:auth');
   }
   return g.adminAuthStore as Storable;
@@ -23,23 +23,21 @@ export default function Adapter() {
     async createUser(user) {
       return user;
     },
-    async getUser(id) {
+    async getUser() {
       return;
     },
     async getUserByEmail(email) {
-      // ?? we already do the validation in signIn callback (see pages/api/auth/[...nextauth].ts)
-      if (validateEmailWithACL(email)) {
-        return {
-          id: email,
-          name: email.split('@')[0],
-          email,
-          role: 'admin',
-          emailVerified: new Date(),
-        } as AdapterUser;
-      }
-      return null;
+      return email
+        ? ({
+            id: email,
+            name: email.split('@')[0],
+            email,
+            role: 'admin',
+            emailVerified: new Date(),
+          } as AdapterUser)
+        : null;
     },
-    async getUserByAccount({ providerAccountId, provider }) {
+    async getUserByAccount() {
       return;
     },
     async updateUser(user: AdapterUser) {
@@ -47,39 +45,35 @@ export default function Adapter() {
         return null;
       }
       const email = user.id;
-      // ?? we already do the validation in signIn callback (see pages/api/auth/[...nextauth].ts)
-      if (validateEmailWithACL(email)) {
-        return {
-          id: email,
-          name: email.split('@')[0],
-          email,
-          role: 'admin',
-          emailVerified: new Date(),
-        } as AdapterUser;
-      }
-      return null;
+      return {
+        id: email,
+        name: email.split('@')[0],
+        email,
+        role: 'admin',
+        emailVerified: new Date(),
+      } as AdapterUser;
     },
     // will be required in a future release, but are not yet invoked
-    async deleteUser(userId) {
+    async deleteUser() {
       return;
     },
-    async linkAccount(account) {
+    async linkAccount() {
       return;
     },
     // will be required in a future release, but are not yet invoked
-    async unlinkAccount({ providerAccountId, provider }) {
+    async unlinkAccount() {
       return;
     },
-    async createSession({ sessionToken, userId, expires }) {
+    async createSession(_) {
       return;
     },
-    async getSessionAndUser(sessionToken) {
+    async getSessionAndUser(_) {
       return;
     },
-    async updateSession({ sessionToken }) {
+    async updateSession(_) {
       return;
     },
-    async deleteSession(sessionToken) {
+    async deleteSession(_) {
       return;
     },
     async createVerificationToken(data: VerificationToken) {

@@ -1,15 +1,9 @@
 import { JacksonStore } from './JacksonStore';
 
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  Index,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToOne } from 'typeorm';
 
 @Index('_jackson_index_key_store', ['key', 'storeKey'])
-@Entity()
+@Entity({ name: 'jackson_index' })
 export class JacksonIndex {
   @PrimaryGeneratedColumn()
   id!: number;

@@ -1,0 +1,1 @@
+export { defaultHandler } from './default';

@@ -1,0 +1,232 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: jackson
+    jacksondev: "1"
+  name: jackson
+stringData:
+  # BOXYHQ_LICENSE_KEY: ""
+  # DB_CLEANUP_LIMIT: ""
+  # DB_ENCRYPTION_KEY: ""
+  DB_MANUAL_MIGRATION: "true"
+  # DB_TTL: ""
+  # DB_TYPE: ""
+  DB_URL: postgres://postgres:password@jackson-postgres:5432/postgres
+  JACKSON_API_KEYS: secret
+  # NEXTAUTH_ACL: ""
+  # NEXTAUTH_JWT_SIGNING_PRIVATE_KEY: ""
+  NEXTAUTH_SECRET: secret
+  NEXTAUTH_URL: http://localhost:5225
+  # SAML_AUDIENCE: ""
+  # SMTP_FROM: ""
+  # SMTP_HOST: ""
+  # SMTP_PASSWORD: ""
+  # SMTP_PORT: ""
+  # SMTP_USER: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jackson
+    jacksondev: "1"
+    tier: jackson
+  name: jackson
+spec:
+  ports:
+    - name: original
+      port: 5225
+      targetPort: 5225
+  selector:
+    app: jackson
+    jacksondev: "1"
+    tier: jackson
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jackson-internal
+    jacksondev: "1"
+    tier: jackson-internal
+  name: jackson-internal
+spec:
+  ports:
+    - name: original
+      port: 5225
+      targetPort: 5225
+  selector:
+    app: jackson
+    jacksondev: "1"
+    tier: jackson
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: postgres
+    jacksondev: "1"
+  name: jackson-postgres
+spec:
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+  selector:
+    app: postgres
+    jacksondev: "1"
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    jacksondev: "1"
+  name: jackson
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      jacksondev: "1"
+      tier: jackson
+  template:
+    metadata:
+      labels:
+        app: jackson
+        jacksondev: "1"
+        tier: jackson
+    spec:
+      containers:
+        - envFrom:
+            - secretRef:
+                name: jackson
+          image: boxyhq/jackson-local:v1.26.1-333-g3d02ee75-dirty
+          imagePullPolicy: IfNotPresent
+          name: jackson
+          ports:
+            - containerPort: 5225
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /api/health
+              port: 5225
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 100m
+          startupProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /api/health
+              port: 5225
+            periodSeconds: 3
+            timeoutSeconds: 3
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    jacksondev: "1"
+  name: jackson-postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+      jacksondev: "1"
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        jacksondev: "1"
+    spec:
+      containers:
+        - env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_DB
+              value: postgres
+          image: postgres:16.4
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -i
+                - -c
+                - /bin/sh
+                - -i
+                - -c
+                - pg_isready -h 127.0.0.1 -p 5432
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          name: postgres
+          ports:
+            - containerPort: 5432
+              name: postgres
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -i
+                - -c
+                - pg_isready -h 127.0.0.1 -p 5432
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 1
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: jackson-postgres-data
+      volumes:
+        - name: jackson-postgres-data
+          persistentVolumeClaim:
+            claimName: jackson-postgres-data
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          jacksondev: "1"
+        name: jackson-postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    jacksondev: "1"
+  name: jackson-migrate-pg
+spec:
+  template:
+    metadata:
+      labels:
+        jacksondev: "1"
+    spec:
+      containers:
+        - command:
+            - /bin/sh
+            - migrate.sh
+          envFrom:
+            - secretRef:
+                name: jackson
+          image: boxyhq/jackson-local:v1.26.1-333-g3d02ee75-dirty
+          imagePullPolicy: IfNotPresent
+          name: db
+      restartPolicy: OnFailure
+  ttlSecondsAfterFinished: 0

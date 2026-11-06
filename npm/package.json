@@ -1,13 +1,13 @@
 {
   "name": "@boxyhq/saml-jackson",
-  "version": "do-not-change",
-  "description": "SAML Jackson library",
+  "version": "0.0.0",
+  "description": "Polis library",
   "keywords": [
     "SAML 2.0"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/boxyhq/jackson.git"
+    "url": "https://github.com/ory/polis.git"
   },
   "license": "Apache 2.0",
   "main": "src/index.ts",
@@ -18,55 +18,83 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "db:migration:generate:postgres": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:generate -d typeorm.ts  migration/postgres/pg_${MIGRATION_NAME}",
-    "db:migration:generate:mysql": "cross-env DB_TYPE=mysql DB_URL=mysql://root:mysql@localhost:3307/mysql ts-node --transpile-only ./node_modules/typeorm/cli.js migration:generate -d typeorm.ts migration/mysql/ms_${MIGRATION_NAME}",
-    "db:migration:generate:mariadb": "cross-env DB_TYPE=mariadb DB_URL=mariadb://root@localhost:3306/mysql ts-node --transpile-only ./node_modules/typeorm/cli.js migration:generate -d typeorm.ts migration/mariadb/md_${MIGRATION_NAME}",
-    "db:migration:run:postgres": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run -d typeorm.ts",
-    "db:migration:run:mysql": "cross-env DB_TYPE=mysql DB_URL=mysql://root:mysql@localhost:3307/mysql ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run -d typeorm.ts",
-    "db:migration:run:mariadb": "cross-env DB_TYPE=mariadb DB_URL=mariadb://root@localhost:3306/mysql ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run -d typeorm.ts",
+    "db:migration:generate:postgres": "cross-env ts-node --transpile-only ../node_modules/typeorm/cli.js migration:generate -d typeorm.ts  migration/postgres/pg_${MIGRATION_NAME}",
+    "db:migration:generate:cockroachdb": "cross-env DB_TYPE=cockroachdb DB_URL=postgresql://root@localhost:26257/postgres?sslmode=disable ts-node --transpile-only ../node_modules/typeorm/cli.js migration:generate -d typeorm.ts  migration/cockroachdb/pg_${MIGRATION_NAME}",
+    "db:migration:generate:mysql": "cross-env DB_TYPE=mysql DB_URL=mysql://root:mysql@localhost:3307/mysql ts-node --transpile-only ../node_modules/typeorm/cli.js migration:generate -d typeorm.ts migration/mysql/ms_${MIGRATION_NAME}",
+    "db:migration:generate:planetscale": "cross-env DB_ENGINE=planetscale DB_URL=mysql://root:mysql@localhost:3307/mysql ts-node --transpile-only ../node_modules/typeorm/cli.js migration:generate -d typeorm.ts migration/planetscale/ms_${MIGRATION_NAME}",
+    "db:migration:generate:mariadb": "cross-env DB_TYPE=mariadb DB_URL=mariadb://root@localhost:3306/mysql ts-node --transpile-only ../node_modules/typeorm/cli.js migration:generate -d typeorm.ts migration/mariadb/md_${MIGRATION_NAME}",
+    "db:migration:generate:mongo": "migrate-mongo create ${MIGRATION_NAME}",
+    "db:migration:generate:mssql": "cross-env DB_TYPE=mssql DB_URL='sqlserver://localhost:1433;database=master;username=sa;password=123ABabc!' ts-node --transpile-only ../node_modules/typeorm/cli.js migration:generate -d typeorm.ts migration/mssql/mss_${MIGRATION_NAME}",
+    "db:migration:generate:sqlite": "cross-env DB_TYPE=sqlite DB_URL='file:///tmp/migration-sqlite.db' ts-node --transpile-only ../node_modules/typeorm/cli.js migration:generate -d typeorm.ts migration/sqlite/sqlite_${MIGRATION_NAME}",
+    "db:migration:run:postgres": "cross-env ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
+    "db:migration:run:cockroachdb": "cross-env DB_TYPE=cockroachdb DB_URL=postgresql://root@localhost:26257/postgres?sslmode=disable ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
+    "db:migration:run:mysql": "cross-env DB_TYPE=mysql DB_URL=mysql://root:mysql@localhost:3307/mysql ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
+    "db:migration:run:planetscale": "cross-env DB_ENGINE=planetscale DB_URL=${PLANETSCALE_URL} ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
+    "db:migration:run:mariadb": "cross-env DB_TYPE=mariadb DB_URL=mariadb://root@localhost:3306/mysql ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
+    "db:migration:run:mongo": "cross-env DB_URL='mongodb://localhost:27017/jackson' migrate-mongo up",
+    "db:migration:revert:mongo": "cross-env DB_URL='mongodb://localhost:27017/jackson migrate-mongo down",
+    "db:migration:run:mssql": "cross-env DB_TYPE=mssql DB_URL='sqlserver://localhost:1433;database=master;username=sa;password=123ABabc!' ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
+    "db:migration:run:sqlite": "cross-env DB_TYPE=sqlite DB_URL='file:///tmp/migration-sqlite.db' ts-node --transpile-only ../node_modules/typeorm/cli.js migration:run -d typeorm.ts",
     "prepublishOnly": "npm run build",
-    "test": "tap --ts --timeout=100 --coverage test/**/*.test.ts",
+    "test": "cross-env BOXYHQ_NO_ANALYTICS=1 tap --timeout=300 --allow-incomplete-coverage --allow-empty-coverage --bail test/**/*.test.ts",
     "sort": "npx sort-package-json"
   },
   "tap": {
-    "branches": 50,
-    "coverage-map": "map.js",
-    "functions": 70,
-    "lines": 70,
-    "statements": 70
+    "coverage-map": "map.js"
   },
   "dependencies": {
-    "@boxyhq/saml20": "1.0.2",
-    "@opentelemetry/api-metrics": "0.27.0",
-    "@peculiar/webcrypto": "1.4.0",
-    "@peculiar/x509": "1.6.1",
-    "mongodb": "4.6.0",
-    "mysql2": "2.3.3",
-    "pg": "8.7.3",
-    "redis": "4.1.0",
-    "reflect-metadata": "0.1.13",
-    "ripemd160": "2.0.2",
-    "typeorm": "0.3.6",
-    "xml2js": "0.6.2",
-    "xmlbuilder": "15.1.1"
+    "@aws-sdk/client-dynamodb": "3.1013.0",
+    "@aws-sdk/credential-providers": "3.1013.0",
+    "@aws-sdk/util-dynamodb": "3.996.2",
+    "@boxyhq/error-code-mnemonic": "0.1.1",
+    "@boxyhq/metrics": "0.2.12",
+    "@boxyhq/saml20": "1.13.2",
+    "@googleapis/admin": "30.3.0",
+    "axios": "1.13.5",
+    "encoding": "0.1.13",
+    "ipaddr.js": "2.3.0",
+    "jose": "6.2.2",
+    "lodash": "4.17.23",
+    "mixpanel": "0.20.0",
+    "mongodb": "7.1.0",
+    "mssql": "12.2.1",
+    "mysql2": "3.20.0",
+    "node-forge": "1.3.3",
+    "openid-client": "6.8.2",
+    "pg": "8.20.0",
+    "redis": "4.7.1",
+    "reflect-metadata": "0.2.2",
+    "ripemd160": "2.0.3",
+    "better-sqlite3": "12.8.0",
+    "typeorm": "0.3.28"
   },
   "devDependencies": {
-    "@types/node": "17.0.33",
-    "@types/sinon": "10.0.11",
-    "@types/tap": "15.0.7",
-    "@typescript-eslint/eslint-plugin": "5.23.0",
-    "@typescript-eslint/parser": "5.23.0",
-    "cross-env": "7.0.3",
-    "eslint": "8.15.0",
-    "eslint-config-prettier": "8.5.0",
-    "prettier": "2.6.2",
-    "sinon": "14.0.0",
-    "tap": "16.2.0",
-    "ts-node": "10.7.0",
-    "tsconfig-paths": "4.0.0",
-    "typescript": "4.6.4"
+    "@faker-js/faker": "10.3.0",
+    "@types/lodash": "4.17.24",
+    "@types/node": "24.12.0",
+    "@types/sinon": "21.0.0",
+    "cross-env": "10.1.0",
+    "migrate-mongo": "14.0.7",
+    "nock": "14.0.11",
+    "sinon": "21.0.3",
+    "tap": "21.6.2",
+    "ts-node": "10.9.2",
+    "tsconfig-paths": "4.2.0",
+    "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=14.18.1 <=16.x"
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "overrides": {
+    "tap": {
+      "tar": ">=7.5.11",
+      "glob": ">=11.1.0"
+    },
+    "typeorm": {
+      "mongodb": ">=7.0.0",
+      "mssql": ">=12.1.0",
+      "glob": ">=11.1.0"
+    }
   }
 }

@@ -1,0 +1,20 @@
+## Step 2: Configure Application
+
+Enter the following values in the **SAML Settings** section on the next screen:
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={spConfig.acsUrl} label='Single sign on URL' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.entityId} label='Audience URI (SP Entity ID)' />
+  </div>
+</div>
+
+<AdvancedSPConfigLink />
+
+Select **EmailAddress** from the **Name ID format** dropdown.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/okta/4.png)
+
+<Footer />

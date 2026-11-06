@@ -1,0 +1,19 @@
+## Step 2: SAML Profile/Claims/Attributes Mapping
+
+We try and support 4 attributes in the SAML claims:
+
+- **id**
+- **email**
+- **firstName**
+- **lastName**
+
+This is how the common SAML attributes map over for most providers, but some providers have custom mappings. Please refer to the documentation on the Identity Provider to understand the exact mapping.
+
+| SAML Attribute                                                         | Polis Mapping |
+| ---------------------------------------------------------------------- | ------------- |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` | id            |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`   | email         |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`      | firstName     |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`        | lastName      |
+
+<Footer />

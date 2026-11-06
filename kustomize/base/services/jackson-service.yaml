@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jackson
+  namespace: '{{repl ConfigOption "namespace"}}'
+  labels:
+    app: jackson
+    tier: jackson
+spec:
+  type: LoadBalancer
+  ports:
+    - name: original
+      port: 5225
+      targetPort: 5225
+  selector:
+    app: jackson
+    tier: jackson

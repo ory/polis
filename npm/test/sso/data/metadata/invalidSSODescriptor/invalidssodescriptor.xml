@@ -1,0 +1,36 @@
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="https://accounts.google.com/o/saml1" ID="_0545939b76d54c1111ad0000d6d174a3caff9000">
+	<SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" AuthnRequestsSigned="false" WantAssertionsSigned="true">
+		<KeyDescriptor use="encryption">
+			<KeyInfo>
+				<X509Data>
+					<X509Certificate>
+						MIIDdDCCAlygAwIBAgIGAXo6K+u/MA0GCSqGSIb3DQEBCwUAMHsxFDASBgNVBAoTC0dvb2dsZSBJ
+						bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MQ8wDQYDVQQDEwZHb29nbGUxGDAWBgNVBAsTD0dv
+						b2dsZSBGb3IgV29yazELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWEwHhcNMjEwNjIz
+						MTgzOTUzWhcNMjYwNjIyMTgzOTUzWjB7MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEWMBQGA1UEBxMN
+						TW91bnRhaW4gVmlldzEPMA0GA1UEAxMGR29vZ2xlMRgwFgYDVQQLEw9Hb29nbGUgRm9yIFdvcmsx
+						CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+						MIIBCgKCAQEA4qZcxwPiVka9GzGdQ9LVlgVkn3A7O3HtxR6RIm5AMaL4YZziEHt2HgxLdJZyXYJw
+						yfT1KB2IHt+XDQBkgEpQVXuuwSPI8vhI8Jr+nr8zia3MMoy9vJF8ZG7HuWeakaKEh7tJqjYu1Cl9
+						a81rkYdXAFUA+gl2q+stvK26xylAUwptCJSQo0NanWzCq+k5zvX0uLmh58+W5Yv11hDTtAoW+1dH
+						LWUTHXPfoZINPRy5NGKJ2Onq5/D5XJRimNnUa2iYi0Yv9txp1RRq4dpB9MaVttt3iKyDo4/+8fg/
+						bL8BLhguiOeqcP4DEIzMuExi3bZAOu2NC7k7Qf28nA81LzP9DQIDAQABMA0GCSqGSIb3DQEBCwUA
+						A4IBAQARBNB3+MfmKr5WXNXXE9YwUzUGmpfbqUPXh2y2dOAkj6TzoekAsOLWB0p8oyJ5d1bFlTsx
+						i1OY9RuFl0tc35Jbo+ae5GfUvJmbnYGi9z8sBL55HY6x3KQNmM/ehof7ttZwvB6nwuRxAiGYG497
+						3tSzrqMQzEskcgX1mlCW0vks/ztCaayprDXcCUxWdP9FaiSZDEXV6PHhFZgGlRNvERsgaMDJgOsq
+						v6hLX10Q9CtOWzqu18PI4DcfoZ7exWcC29yWvwZzDTfHGaSG1DtUFLwiQmhVUbfd7/fmLV+/iOxV
+						zI0b5xSYZOJ7Kena7gd5zGVrc2ygKAFKiffiI5GLmLkv
+					</X509Certificate>
+				</X509Data>
+			</KeyInfo>
+			<EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes256-gcm" />
+			<EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes128-gcm" />
+			<EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc" />
+			<EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc" />
+		</KeyDescriptor>
+		<NameIDFormat>
+			urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+		</NameIDFormat>
+		<AssertionConsumerService index="1" isDefault="true" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://saml-service-provider.com/api/v1/auth/saml-sso/callback" />
+	</SPSSODescriptor>
+</EntityDescriptor>

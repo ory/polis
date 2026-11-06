@@ -1,0 +1,4 @@
+resources:
+  - ./jackson-deployment.yaml
+
+namespace: default

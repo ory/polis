@@ -1,9 +1,9 @@
 ---
 name: Bug report
 about: Report any issues with the platform
-title: ""
+title: ''
 labels: bug
-assignees: ""
+assignees: ''
 ---
 
 Found a bug? Please fill out the sections below. 👍

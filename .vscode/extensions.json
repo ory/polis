@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "codesee.maps", // codebase visualiser
     "yzhang.markdown-all-in-one", // nicer markdown support
     "esbenp.prettier-vscode", // prettier plugin
     "dbaeumer.vscode-eslint", // eslint plugin

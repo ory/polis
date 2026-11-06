@@ -1,0 +1,14 @@
+---
+resources:
+  - ../../base
+  - ../../base/services
+  - ../dbs/postgres
+  - ../../base/migration
+  - ./secrets.yaml
+
+commonLabels:
+  jacksondev: '1'
+
+images:
+  - name: boxyhq/jackson
+    newTag: 1.52.2

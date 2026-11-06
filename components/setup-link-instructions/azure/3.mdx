@@ -1,0 +1,22 @@
+## Step 3: Attribute Mapping
+
+Click **Edit** on the **Attributes & Claims** section.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/azure/7.png)
+
+You have to configure the following attributes under the **Attributes & Claims** section:
+
+| Name                                                                 | Value                  |
+| -------------------------------------------------------------------- | ---------------------- |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | user.mail              |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`    | user.givenname         |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`         | user.userprincipalname |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`      | user.surname           |
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/azure/8.png)
+
+Go to the section **SAML Signing Certificate** section and download the **Federation Metadata XML**.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/azure/9.png)
+
+<Footer />

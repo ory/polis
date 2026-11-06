@@ -1,17 +1,76 @@
-import { IAdminController, Storable } from '../typings';
+import {
+  IAdminController,
+  Storable,
+  SAMLSSORecord,
+  OIDCSSORecord,
+  SSOTracesInstance,
+  Records,
+  Trace,
+} from '../typings';
+import { JacksonError } from './error';
+import { transformConnections } from './utils';
 
 export class AdminController implements IAdminController {
-  configStore: Storable;
+  private connectionStore: Storable;
+  private ssoTraces: SSOTracesInstance;
 
-  constructor({ configStore }) {
-    this.configStore = configStore;
+  constructor({ connectionStore, ssoTraces }) {
+    this.connectionStore = connectionStore;
+    this.ssoTraces = ssoTraces;
   }
 
-  public async getAllConfig(pageOffset?: number, pageLimit?: number): Promise<Partial<any>[]> {
-    const configList = (await this.configStore.getAll(pageOffset, pageLimit)) as Partial<any>[];
-    if (!configList || !configList.length) {
-      return [];
+  public async getAllConnection(pageOffset?: number, pageLimit?: number, pageToken?: string) {
+    const { data: connectionList, pageToken: nextPageToken } = (await this.connectionStore.getAll(
+      pageOffset,
+      pageLimit,
+      pageToken
+    )) as Records<SAMLSSORecord | OIDCSSORecord>;
+
+    if (!connectionList || !connectionList.length) {
+      return { data: [] };
     }
-    return configList;
+
+    return { data: transformConnections(connectionList), pageToken: nextPageToken };
+  }
+
+  public async getAllSSOTraces(pageOffset: number, pageLimit: number, pageToken?: string) {
+    const { data: traces, pageToken: nextPageToken } = (await this.ssoTraces.getAllTraces(
+      pageOffset,
+      pageLimit,
+      pageToken
+    )) as Records<Trace>;
+
+    if (!traces || !traces.length) {
+      return { data: [] };
+    }
+
+    return { data: traces, pageToken: nextPageToken };
+  }
+
+  public async getSSOTraceById(traceId: string) {
+    const trace = await this.ssoTraces.getByTraceId(traceId);
+
+    if (!trace) {
+      throw new JacksonError(`Trace with id ${traceId} not found`, 404);
+    }
+
+    return trace;
+  }
+
+  public async getTracesByProduct(
+    product: string,
+    pageOffset: number,
+    pageLimit: number,
+    pageToken?: string
+  ) {
+    return await this.ssoTraces.getTracesByProduct({ product, pageOffset, pageLimit, pageToken });
+  }
+
+  public async deleteTracesByProduct(product: string) {
+    return await this.ssoTraces.deleteTracesByProduct(product);
+  }
+
+  public async countByProduct(product: string) {
+    return await this.ssoTraces.countByProduct(product);
   }
 }

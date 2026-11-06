@@ -1,0 +1,19 @@
+## Step 3: Transform Rule
+
+Create a transform rule mapping the incoming **Email-Address** to outgoing **NameID** (of type **Email**), ADFS by default sends **NameID** as **Unspecified** which results in an **InvalidNameIDPolicy** error if this step is missed.
+
+![Transform rule](https://cdn.boxyhq.com/docs/sso/providers/adfs/nameid-email.png)
+
+If you'd rather use Claim rule language then the following rule can be applied:
+
+```sh
+c:[Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] => issue(Type = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier", Issuer = c.Issuer, OriginalIssuer = c.OriginalIssuer, Value = c.Value, ValueType = c.ValueType, Properties["http://schemas.xmlsoap.org/ws/2005/05/identity/claimproperties/format"] = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
+```
+
+Finally open Windows PowerShell as an administrator, then run the following command:
+
+```sh
+ Set-ADFSRelyingPartyTrust -TargetName <display-name> -SamlResponseSignature "MessageAndAssertion"
+```
+
+<Footer />

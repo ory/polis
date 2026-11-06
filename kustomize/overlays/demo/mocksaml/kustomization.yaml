@@ -1,0 +1,8 @@
+---
+resources:
+  - ./mocksaml-secrets.yaml
+  - ./mocksaml-deployment.yaml
+
+images:
+  - name: boxyhq/mock-saml
+    newTag: 1.4.2

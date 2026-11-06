@@ -1,58 +1,27 @@
-import jackson, {
-  IAdminController,
-  IAPIController,
-  IdPConfig,
-  ILogoutController,
-  IOAuthController,
-  IHealthCheckController,
-} from '@boxyhq/saml-jackson';
-import env from '@lib/env';
-import '@lib/metrics';
+import type { SAMLJackson } from '@boxyhq/saml-jackson';
 
-let apiController: IAPIController;
-let oauthController: IOAuthController;
-let adminController: IAdminController;
-let logoutController: ILogoutController;
-let healthCheckController: IHealthCheckController;
+import jackson from '@boxyhq/saml-jackson';
+import { jacksonOptions } from '@lib/env';
+import '@lib/metrics';
+import { logger } from './logger';
 
 const g = global as any;
 
-export default async function init() {
-  if (
-    !g.apiController ||
-    !g.oauthController ||
-    !g.adminController ||
-    !g.healthCheckController ||
-    !g.logoutController
-  ) {
-    const ret = await jackson(env);
-    apiController = ret.apiController;
-    oauthController = ret.oauthController;
-    adminController = ret.adminController;
-    logoutController = ret.logoutController;
-    healthCheckController = ret.healthCheckController;
+const jacksonOptionsWithLogger = {
+  ...jacksonOptions,
+  logger: {
+    info: (msg: string, err?: any) => logger.info(err, msg),
+    error: (msg: string, err?: any) => logger.error(err, msg),
+    warn: (msg: string, err?: any) => logger.warn(err, msg),
+  },
+};
 
-    g.apiController = apiController;
-    g.oauthController = oauthController;
-    g.adminController = adminController;
-    g.logoutController = logoutController;
-    g.healthCheckController = healthCheckController;
-    g.isJacksonReady = true;
-  } else {
-    apiController = g.apiController;
-    oauthController = g.oauthController;
-    adminController = g.adminController;
-    logoutController = g.logoutController;
-    healthCheckController = g.healthCheckController;
+export default async function init() {
+  if (!g.jacksonInstance) {
+    g.jacksonInstance = new Promise((resolve, reject) => {
+      jackson(jacksonOptionsWithLogger).then(resolve).catch(reject);
+    });
   }
 
-  return {
-    apiController,
-    oauthController,
-    adminController,
-    logoutController,
-    healthCheckController,
-  };
+  return (await g.jacksonInstance) as SAMLJackson;
 }
-
-export type { IdPConfig };

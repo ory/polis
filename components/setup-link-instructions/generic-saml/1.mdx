@@ -1,0 +1,28 @@
+## Step 1: Configuration SAML Application
+
+Your Identity Provider (IdP) will ask for the following information while configuring the SAML application.
+
+Please do not add a trailing slash at the end of the URLs.
+
+Create them exactly as shown below:
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={spConfig.acsUrl} label='Reply URL (Assertion Consumer Service URL)' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.entityId} label='Identifier (Entity ID)' />
+  </div>
+</div>
+
+- Response: `Signed`
+
+- Assertion Signature: `Signed`
+
+- Signature Algorithm: `RSA-SHA256`
+
+- Assertion Encryption: `Unencrypted`
+
+The deployed Polis service has a Service Provider (SP) endpoint that exposes the above metadata and the same can be accessed at [SAML Configuration](/.well-known/saml-configuration).
+
+<Footer />

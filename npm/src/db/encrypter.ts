@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { Encrypted, EncryptionKey } from '../typings';
 
 const ALGO = 'aes-256-gcm';
-const BLOCK_SIZE = 16; // 128 bit
+const BLOCK_SIZE = 12; // 96 bit
 
 export const encrypt = (text: string, key: EncryptionKey): Encrypted => {
   const iv = crypto.randomBytes(BLOCK_SIZE);

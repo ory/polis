@@ -1,51 +1,45 @@
-import { getErrorCookie } from '@lib/ui/utils';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { GetServerSidePropsContext } from 'next';
+import { getErrorMessageFromCookie } from '@lib/utils';
 
-export default function Error() {
-  const [error, setError] = useState({ statusCode: null, message: '' });
-  const { pathname } = useRouter();
+export default function Error({ error }) {
+  const { t } = useTranslation('common');
 
-  useEffect(() => {
-    const _error = getErrorCookie() || '';
-    try {
-      const { statusCode, message } = JSON.parse(_error);
-      setError({ statusCode, message });
-    } catch (err) {
-      console.error('Unknown error format');
-    }
-  }, [pathname]);
-
-  const { statusCode, message } = error;
-  let statusText = '';
-  if (typeof statusCode === 'number') {
-    if (statusCode >= 400 && statusCode <= 499) {
-      statusText = 'client-side error';
-    }
-    if (statusCode >= 500 && statusCode <= 599) {
-      statusText = 'server error';
-    }
-  }
-
-  if (statusCode === null) {
+  if (!error.statusCode) {
     return null;
   }
 
   return (
-    <div className='h-full'>
-      <div className='h-[20%] translate-y-[100%] px-[20%] text-[hsl(152,56%,40%)]'>
-        <svg className='mb-5 h-10 w-10' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth={2}>
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-          />
-        </svg>
-        <h1 className='text-xl font-extrabold md:text-6xl'>{error.statusCode}</h1>
-        <h2 className='uppercase'>{statusText}</h2>
-        <p className='mt-6 inline-block'>SAML error: </p>
-        <p className='mr-2 text-xl font-bold'>{message}</p>
+    <div className='flex h-screen'>
+      <div className='m-auto'>
+        <section className='bg-white dark:bg-gray-900'>
+          <div className='mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6'>
+            <div className='mx-auto max-w-screen-sm text-center'>
+              <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-primary lg:text-9xl'>
+                {error.statusCode}
+              </h1>
+              <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl'>
+                {t(error.statusText)}
+              </p>
+              <p className='mb-4 text-lg font-light'>
+                {t('sso_error')}: {error.message}
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ locale, req }: GetServerSidePropsContext) {
+  const error = getErrorMessageFromCookie(req.cookies.polis_error);
+
+  return {
+    props: {
+      error,
+      ...(locale ? await serverSideTranslations(locale, ['common']) : {}),
+    },
+  };
 }

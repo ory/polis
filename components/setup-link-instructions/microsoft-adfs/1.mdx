@@ -1,0 +1,43 @@
+## Step 1: Create a claims aware Relying Party Trust using federation metadata
+
+In AD FS, a relying party (RP) trust needs to be set up. You can supply our SP metadata file and let AD FS automatically pick up the configuration.
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={spMetadataUrl} label='Federation metadata URL' />
+  </div>
+</div>
+
+The public certificate is needed for Signature verification. You can download the certificate from the following URL:
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={publicCertUrl} label='Public certificate' />
+  </div>
+</div>
+
+<AdvancedSPConfigLink />
+
+In **Server Manager**, click **Tools**, and then select **AD FS Management**. Under **Actions**, click **Add Relying Party Trust**.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/adfs/addtrust1.png)
+
+On the Welcome page, choose **Claims aware** and click **Start**.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/adfs/addtrust2.png)
+
+On the **Select Data Source** page, click Import data about the relying party published online or on a local network.
+
+In **Federation metadata address (host name or URL)**, type the federation metadata URL or host name for the partner, and then click **Next**.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/adfs/addtrust12.png)
+
+On the **Specify Display Name** page type a name in **Display name**, under Notes type a description for this relying party trust, and then click Next.
+
+On the **Choose Issuance Authorization Rules** page, select either Permit all users to access this relying party or Deny all users access to this relying party, and then click Next.
+
+On the **Ready to Add Trust** page, review the settings, and then click Next to save your relying party trust information.
+
+On the Finish page, click Close. This action automatically displays the Edit Claim Rules dialog box.
+
+<Footer />

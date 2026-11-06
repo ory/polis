@@ -1,0 +1,11 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jackson-migrate-pg
+spec:
+  template:
+    spec:
+      containers:
+        - name: db
+          image: boxyhq/jackson:tagwillbereplaced
+          imagePullPolicy: IfNotPresent

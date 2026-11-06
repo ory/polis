@@ -1,0 +1,26 @@
+## Step 2: Configure Application
+
+Select **Single Sign On** from the **Manage** section of your app and then **SAML**.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/azure/4.png)
+
+Click **Edit** on the **Basic SAML Configuration** section.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/azure/5.png)
+
+Enter the following values in the **Basic SAML Configuration** section on the next screen:
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={spConfig.acsUrl} label='Reply URL (Assertion Consumer Service URL)' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.entityId} label='Identifier (Entity ID)' />
+  </div>
+</div>
+
+Click **Save** to save your changes.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/azure/6.png)
+
+<Footer />

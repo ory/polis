@@ -1,0 +1,19 @@
+## Step 1: Create Application
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={oidcCallbackUrl} label='Callback URL' />
+  </div>
+</div>
+
+**Client/Application ID**
+
+The OIDC Identity Provider normally will generate a unique identifier for the registered App. Make a note of this to be used later when creating the SSO connection with Polis.
+
+**Client Secret**
+
+Along with the Client ID, the IdP also generates a client secret which is used to authenticate the client while issuing tokens. Make a note of this to be used later when creating the SSO connection with Polis.
+
+_Since Polis acts as a proxy between the app and the OIDC Identity Provider, here the application/client is Polis._
+
+<Footer />

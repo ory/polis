@@ -1,0 +1,33 @@
+## Step 2: Configure Application
+
+From your application, click the **Configuration** tab on the left to configure the application.
+
+You have to enter the following values in the **Application details** section:
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={spConfig.entityId} label='Audience (Entity ID)' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.acsUrl} label='ACS (Consumer) URL Validator' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.acsUrl} label='ACS (Consumer) URL' />
+  </div>
+</div>
+
+<AdvancedSPConfigLink />
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/onelogin/4.png)
+
+Select the **Service Provider** from the **SAML initiator** dropdown.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/onelogin/7.png)
+
+Click **Save** to save the configuration.
+
+Click the dropdown menu **More Actions** from the top right corner and click **SAML Metadata** to download the metadata XML file.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/onelogin/5.png)
+
+<Footer />

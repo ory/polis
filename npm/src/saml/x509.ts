@@ -1,45 +1,105 @@
-import * as x509 from '@peculiar/x509';
-import { Crypto } from '@peculiar/webcrypto';
+import * as forge from 'node-forge';
+import crypto from 'crypto';
 
-const crypto = new Crypto();
-x509.cryptoProvider.set(crypto);
+import type { JacksonOption, Storable } from '../typings';
 
-const alg = {
-  name: 'RSASSA-PKCS1-v1_5',
-  hash: 'SHA-256',
-  publicExponent: new Uint8Array([1, 0, 1]),
-  modulusLength: 2048,
+const pki = forge.pki;
+let certificateStore: Storable;
+let cachedCertificate: { publicKey: string; privateKey: string };
+let jacksonOption: JacksonOption;
+
+export const init = async (store: Storable, opts: JacksonOption) => {
+  certificateStore = store;
+  jacksonOption = opts;
+
+  return await getDefaultCertificate();
 };
 
-const generate = async () => {
-  const keys = await crypto.subtle.generateKey(alg, true, ['sign', 'verify']);
+const generateCertificate = () => {
+  const today = new Date();
+  const keys = pki.rsa.generateKeyPair(2048);
+  const cert = pki.createCertificate();
 
-  const extensions: x509.Extension[] = [new x509.BasicConstraintsExtension(false, undefined, true)];
+  cert.publicKey = keys.publicKey;
+  cert.serialNumber = '01';
+  cert.validity.notBefore = new Date();
+  cert.validity.notAfter = new Date(today.setFullYear(today.getFullYear() + 30));
 
-  extensions.push(new x509.KeyUsagesExtension(x509.KeyUsageFlags.digitalSignature, true));
-  if (keys.publicKey) {
-    extensions.push(await x509.SubjectKeyIdentifierExtension.create(keys.publicKey));
+  const attrs = [
+    {
+      name: 'commonName',
+      value: 'Ory Polis',
+    },
+  ];
+
+  cert.setSubject(attrs);
+  cert.setIssuer(attrs);
+  cert.setExtensions([
+    {
+      name: 'basicConstraints',
+      cA: false,
+    },
+    {
+      name: 'keyUsage',
+      keyCertSign: false,
+      digitalSignature: true,
+      nonRepudiation: false,
+      keyEncipherment: false,
+      dataEncipherment: false,
+    },
+  ]);
+
+  // self-sign certificate
+  cert.sign(keys.privateKey, forge.md.sha256.create());
+
+  return {
+    publicKey: pki.certificateToPem(cert),
+    privateKey: pki.privateKeyToPem(keys.privateKey),
+  };
+};
+
+export const getDefaultCertificate = async (): Promise<{ publicKey: string; privateKey: string }> => {
+  if (cachedCertificate && !(await isCertificateExpired(cachedCertificate.publicKey))) {
+    return cachedCertificate;
   }
 
-  const cert = await x509.X509CertificateGenerator.createSelfSigned({
-    serialNumber: '01',
-    name: 'CN=BoxyHQ Jackson',
-    notBefore: new Date(),
-    notAfter: new Date('3021/01/01'), // TODO: set shorter expiry and rotate certificates
-    signingAlgorithm: alg,
-    keys: keys,
-    extensions,
-  });
-  if (keys.privateKey) {
-    const pkcs8 = await crypto.subtle.exportKey('pkcs8', keys.privateKey);
+  if (!certificateStore) {
+    throw new Error('Certificate store not initialized');
+  }
 
-    return {
-      publicKey: cert.toString('pem'),
-      privateKey: x509.PemConverter.encode(pkcs8, 'private key'),
+  if (!jacksonOption) {
+    throw new Error('Jackson option not initialized');
+  }
+
+  // If the user has provided a certificate, use that instead of the default.
+  // We expect the developer to provide base64 encoded keys, so we need to decode them.
+  if (jacksonOption.certs?.privateKey && jacksonOption.certs?.publicKey) {
+    cachedCertificate = {
+      publicKey: Buffer.from(jacksonOption.certs.publicKey, 'base64').toString('utf-8'),
+      privateKey: Buffer.from(jacksonOption.certs.privateKey, 'base64').toString('utf-8'),
     };
+
+    return cachedCertificate;
   }
+
+  // Otherwise, use the default certificate.
+  cachedCertificate = await certificateStore.get('default');
+
+  // If certificate is expired let it drop through so it creates a new cert
+  if (cachedCertificate && !(await isCertificateExpired(cachedCertificate.publicKey))) {
+    return cachedCertificate;
+  }
+
+  // If default certificate is not found or has expired, create one and store it.
+  cachedCertificate = generateCertificate();
+
+  await certificateStore.put('default', cachedCertificate);
+
+  return cachedCertificate;
 };
 
-export default {
-  generate,
+const isCertificateExpired = async (publicKey: string) => {
+  const { validTo } = new crypto.X509Certificate(publicKey);
+
+  return !(validTo !== 'Bad time value' && new Date(validTo) > new Date());
 };

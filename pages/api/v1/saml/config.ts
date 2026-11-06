@@ -1,29 +1,26 @@
+// Maintain /config path for backward compatibility
+
 import jackson from '@lib/jackson';
-import { extractAuthToken, validateApiKey } from '@lib/utils';
 import { NextApiRequest, NextApiResponse } from 'next';
+import type { DelConnectionsQuery, GetConfigQuery } from '@boxyhq/saml-jackson';
+import { logger } from '@lib/logger';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const apiKey = extractAuthToken(req);
-    if (!validateApiKey(apiKey)) {
-      res.status(401).json({ message: 'Unauthorized' });
-      return;
-    }
-
-    const { apiController } = await jackson();
+    const { connectionAPIController } = await jackson();
     if (req.method === 'POST') {
-      res.json(await apiController.config(req.body));
+      res.json(await connectionAPIController.config(req.body));
     } else if (req.method === 'GET') {
-      res.json(await apiController.getConfig(req.query as any));
+      res.json(await connectionAPIController.getConfig(req.query as GetConfigQuery));
     } else if (req.method === 'PATCH') {
-      res.status(204).end(await apiController.updateConfig(req.body));
+      res.status(204).end(await connectionAPIController.updateConfig(req.body));
     } else if (req.method === 'DELETE') {
-      res.status(204).end(await apiController.deleteConfig(req.body));
+      res.status(204).end(await connectionAPIController.deleteConfig(req.query as DelConnectionsQuery));
     } else {
-      throw new Error('Method not allowed');
+      throw { message: 'Method not allowed', statusCode: 405 };
     }
   } catch (err: any) {
-    console.error('config api error:', err);
+    logger.error(err, 'config api error');
     const { message, statusCode = 500 } = err;
 
     res.status(statusCode).send(message);

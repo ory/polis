@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jackson
+  namespace: '{{repl ConfigOption "namespace"}}'
+spec:
+  selector:
+    matchLabels:
+      tier: jackson
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jackson
+        tier: jackson
+    spec:
+      containers:
+        - name: jackson
+          image: boxyhq/jackson-local
+          imagePullPolicy: IfNotPresent
+          startupProbe:
+            httpGet:
+              port: 5225
+              path: /api/health
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              port: 5225
+              path: /api/health
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+            successThreshold: 2
+          ports:
+            - containerPort: 5225
+              name: http
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: jackson
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 500m

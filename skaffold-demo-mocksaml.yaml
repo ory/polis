@@ -1,0 +1,6 @@
+apiVersion: skaffold/v4beta10
+kind: Config
+manifests:
+  kustomize:
+    paths:
+      - ./kustomize/overlays/demo/mocksaml

@@ -7,37 +7,59 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches:
-      - '*'
+      - main
+      - release
     tags:
       - 'beta-v*'
   pull_request:
-    types: [opened, synchronize, reopened]
+    # Trigger only for PRs that target main branch
+    branches:
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  # Schedule
+  schedule:
+    - cron: '0 8 * * MON,THU' # Run every Monday and Thursday at 08:00 UTC
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   ci:
     runs-on: ubuntu-latest
+    outputs:
+      NPM_VERSION: ${{ steps.version.outputs.NPM_VERSION }}
+      PUBLISH_TAG: ${{ steps.version.outputs.PUBLISH_TAG }}
+      IMAGE_SUFFIX: ${{ steps.version.outputs.IMAGE_SUFFIX }}
+      IMAGE_PATH: ${{ steps.version.outputs.IMAGE_PATH }}
+      BOXYHQ_GITHUB_REPO: ${{ steps.version.outputs.BOXYHQ_GITHUB_REPO }}
     env:
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      NEXTAUTH_SECRET: secret
       NEXTAUTH_URL: http://localhost:5225
       NEXTAUTH_ACL: '*@boxyhq.com'
       DB_ENGINE: sql
       DB_URL: postgres://postgres:postgres@localhost:5432/postgres
       DB_TYPE: postgres
+      DB_ENCRYPTION_KEY: 'IDv0Q/4meshxZOvDhtZUWsHMRf9VCvBt+PoB8z3bZV8='
       DEBUG: pw:webserver
       SAML_AUDIENCE: https://saml.boxyhq.com
       JACKSON_API_KEYS: secret
+      OPENID_JWS_ALG: RS256
+      OPENID_RSA_PUBLIC_KEY: 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQm9qQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FZOEFNSUlCaWdLQ0FZRUFtRzRtVXhmYll3OTAxRHNzZXVaSwpqMlFSVXIrL2FpWWxyVCs1NkxwK1pETDByVmhpVVdHSCtBK09jT24xZW9mS2tJTktvVTBVQmR1S2RTZ2ZuNkk0Ckg2cUNTdXhCaW50alloZTM5a1ZqMXFUL2o3UGtCWXFtQXhxVnZiY25lMERCczJBVnUyeStSS3ZBMC9RQUUwQk0KMlJrakFCcXFQTHFHOWtLSVBmTHJSVG82ZGNuNjduZm10bCtHNkVQVEtqRWZpRExvYWJ3bFF6VGJQVm5UcGVLbgo2V0NPMkpFVHpicng3T1k2S0J1QTllVDJlRS9CNGVPeVU1bUlqVEVhV1BqcmFZWWVPNnVyVEo5Qmsxa3pveWNrClZ2MG94K2VCZUh2NEpDSVhicGJxQnN3L0hhekVyWFJjQjR5TGVDd0lnRUllL2xhRkJiOE5odVdCQ3NmNXd4Z3EKNzZIc0xYN2FBSEwraGZEaDJmayt2aFlWQmc4dlBwQ0QrODJiLzBQMHhkRXR1elViMlo5eDdxNjR1alBBSTJsMwpSUWdqVzdvV0xDVHZRRVB0SUd3SVppRGdSM1FYRk5pYVpuQUFCalVwSElyVG1DYW85N3hPS1ZOS0FaUk9kWHpRCko0anM5SlZvZnFmTmViQ1hBWFVBOExwYlNtS3g4S3VRZkVQeXVUUTAzR3lCQWdNQkFBRT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg=='
+      OPENID_RSA_PRIVATE_KEY: 'LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUcvUUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQnVjd2dnYmpBZ0VBQW9JQmdRQ1liaVpURjl0akQzVFUKT3l4NjVrcVBaQkZTdjc5cUppV3RQN25vdW41a012U3RXR0pSWVlmNEQ0NXc2ZlY2aDhxUWcwcWhUUlFGMjRwMQpLQitmb2pnZnFvSks3RUdLZTJOaUY3ZjJSV1BXcFArUHMrUUZpcVlER3BXOXR5ZDdRTUd6WUJXN2JMNUVxOERUCjlBQVRRRXpaR1NNQUdxbzh1b2IyUW9nOTh1dEZPanAxeWZydWQrYTJYNGJvUTlNcU1SK0lNdWhwdkNWRE5OczkKV2RPbDRxZnBZSTdZa1JQTnV2SHM1am9vRzREMTVQWjRUOEhoNDdKVG1ZaU5NUnBZK090cGhoNDdxNnRNbjBHVApXVE9qSnlSVy9Takg1NEY0ZS9na0loZHVsdW9HekQ4ZHJNU3RkRndIakl0NExBaUFRaDcrVm9VRnZ3Mkc1WUVLCngvbkRHQ3J2b2V3dGZ0b0FjdjZGOE9IWitUNitGaFVHRHk4K2tJUDd6WnYvUS9URjBTMjdOUnZabjNIdXJyaTYKTThBamFYZEZDQ05idWhZc0pPOUFRKzBnYkFobUlPQkhkQmNVMkpwbWNBQUdOU2tjaXRPWUpxajN2RTRwVTBvQgpsRTUxZk5BbmlPejBsV2grcDgxNXNKY0JkUUR3dWx0S1lySHdxNUI4US9LNU5EVGNiSUVDQXdFQUFRS0NBWUFMCkNYL0VLTUF4a1MwUkVIdFJKMU5yQkZDR1RMek9FWGJOTDRYMU9tcThNOTNZWHVQWWwyNnVXU2NEMlViMWNUZHIKUlJ4dVowdTl2RmF2VXNGT2NHTXV0TXlVSXYwQWExeUgvZVpyd2p5L1RpbDBsTzZiOFowQmNNZDZxaFJGWmd3WQpna3EwakdSUENkNHZvclZ1TDJ2WkZPcytQdEFJajJ1R0VZMTJxZHdjQWtJNUpPL0MzR0x6M2VFaGVJYkY0WEp5CmJOZzhEcnZtZk1GcXRQSkFxdE9rY0FITDM5NWVtVXlhN2hVME1nQ2huV3QwelBhaGxmaUR1ZVJqcjlSajhKc1QKZllqcGQzelZZc0ZQMy85aWRjRW9NUk1DVEFnelZEVXBrbCt3ajhrOFVxTWUvdjdrVFlKTHBQMHQ5N2xsR3FaUwo4dEdpeXRidTRlems5NDNFZ2IwNDM3Q1VndVdQV3BsVzEzUDlSSUV4bkZjd2F4Uk15RWV1RFRxcHg1NWxTdE81CmZXOTdzSFFuM2dQbWVpaTVRODdUM0FzYkY5bHZ5d1g5bDlMdUJoc0RLdlRRVVRpV2cyRFV6bjlQRWRFb0xLWnYKd0xFU1VDZkFSd1NzZU5Kbm80TlRPUUc3ekFvdEsvRFhWWms4NFZ5dUlvMEpsS08wM202dEpORXl5Z1gwNUtrQwpnY0VBMExvSHVlRXAzOHRheWU0aEROWlFqVi9tc1RKek56SmhVOGZXNFlZaGMyOFdFVlF2N0lTNUw2N2draGhxCkoxUklEZTBtYUI5a1Q1Z09GR1VPdy9JYUdxWnB4WUphcUlZZ25GeFk4VmE4cHB6R0hFV25xeEdMNytESHg2U0oKb3FHUkd4UWRUU1QvY3lZZnVyR2RHaVVMd08xZjF5dUJVM01WdEU1S2VSRTlDSEVUV2FiOEhXQ0VhekFsNWVxOAo2aVNXdU9wQlFRa3NucStudTNIYXNPOGIxOU4zZ0x5Y2ZWb1ZzWnByd0RENzBCTXZkTFNDdVVrNW0rY1FINVdsCkN2dVpBb0hCQUxyMERmdTE1UjZuUTFIT3BTODFVSXNqTzJ0dm12OVpQMjVqbklPdUYxYnFob0xzTEdCbkhnUkwKM1VZNnRmT3E2a2ZZZlZwWWxINjZ4MHRvK3lvQ2Fodk11NXo0ZEV3M2hQb1F5Tk1IZkcyQklMOVVhV3VjZEFHWgpYOXY2WkI5U3o3NWd2M3BJQUZwdzhwUHlvZzhqbWdDM1dQaXBIek0wOTRCYmZJL0tramlYeWNrRGx5ZDAvZ2FQCmhPbXV1MnM4aVl6QUcwd1BpOFJ4VVRTS2tFZnlUNnF4ZGxwdUFNTEhkTGxKdnRKejMrNWEzZlJvUmdXb1Vld3kKcHlodXpHZkpLUUtCd0dqS3JTeFdibGFNV3hWOGQ1MWhUK25hbHhDcG1vekF2M3AzbjF0MG93QzRhZVRqVm5neApubVBoTWFCSG42d0ZOWFBBZDRMWkY5eWFJNTk3cVRFWk1KL21vcjNsbHl4NndvNmVFbzJBRlpDMHJ3WHN0cVE5ClYvdGo2QWxFZzFGaU9sN1U5MjBPd1MySG0zQjQwYjRaa1ZBWUhRRURONWUwOU5Xa1pPRnBsVEhTeTNzOFNlRloKM3NHTjE4a1oxQ1RkbjhwUTJkZ1VDaEhWY0ttOEhLYXVOVlZqTnVFc1VJamluSGVoWnEyRUtqaXFHUzVIbmtYMgpESFZJU2FFQjJXMnRLUUtCd0RnRkphT0ZUOUN0b2ppRFNYQXA4NmFkdWhKcGNQS1BGYmpJVklBSXpLbVl3UkcrCkgxWUwwQ3pOWnRMQ2lQOG8rZWJwY2paK1VKRGcreE1YdEJ0VWVlTTJxQWxUVWRYODFQWHh6WnVlcEtSVGl6S0oKNHNVQ0xxakVBcnR4L2twOGtBK21BZnBzVk43RTlZdHJxekFLSlAyTjh6VWZ5Ritad1loTzRiWmNweEFhTzdibQpRb2JxUWF4Sm1UUkV6WmhHblpqMWY3aDgrQTYzUGZRV2lVRmwxSVY3ZzlGNUlQVTh1emRDWjlHOE14L0RUcnNMCis5OTZIb0krYzJSa1B3L2ljUUtCd1FDNDF1VzlRQWVkRzdXWFNvMGcrYXNkSm9rNEQrZ21iZCtkQnU4R1R4MUIKWlBlVlRzZ0wwR1NMVXVrNlZHRXh2RkV0cWhoaHh2amdXdWpNaVBDd093cFBxQ1JaYmVnSDM4WG1pMWh5dXNIeQpwYzh1ekU0OHZ1ajgvYlJScDR4MFppQXJJZUZGOGNCaVV4Y292ZCtOYzd6d1dsTGhaakJkNS9mL3U2VllGS0Y0CktjSkRjb1JaWWM3Tm9DSXA4aFpBSlhXNjFWMXY3NWVxVDlYUldHaVNkNlB3Z3ZhQzUwNkFPeVgvOWNJNFltSVIKeHppM3RweW40bmJjUUdFZHpsMHFKVVU9Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K'
+      PLANETSCALE_URL: mysql://root:mysql@localhost:3308/mysql
+      DYNAMODB_URL: 'http://localhost:8000'
+      BOXYHQ_NO_ANALYTICS: '1'
+      IDP_ENABLED: true
+      AWS_ACCESS_KEY_ID: secret
+      AWS_SECRET_ACCESS_KEY: secret
+      BOXYHQ_LICENSE_KEY: 'dummy-license'
     strategy:
       matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [24]
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:18.3
         ports:
           - 5432:5432
         env:
@@ -50,62 +72,115 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       redis:
-        image: redis:6.2.5-alpine
+        image: redis:8.6-alpine
         ports:
           - 6379:6379
       mongo:
-        image: mongo:4.4.10
+        image: mongo:8.2.6
         ports:
           - 27017:27017
+      planetscale:
+        image: mysql:9.6.0
+        ports:
+          - 3308:3306
+        env:
+          MYSQL_DATABASE: mysql
+          MYSQL_ROOT_PASSWORD: mysql
       mysql:
-        image: mysql:5.7
+        image: mysql:9.6.0
         ports:
           - 3307:3306
         env:
           MYSQL_DATABASE: mysql
           MYSQL_ROOT_PASSWORD: mysql
       maria:
-        image: mariadb:10.4.22
+        image: mariadb:12.2.2
         ports:
           - 3306:3306
         env:
           MARIADB_DATABASE: mysql
           MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2025-latest
+        ports:
+          - 1433:1433
+        env:
+          ACCEPT_EULA: 'Y'
+          SA_PASSWORD: '123ABabc!'
+      dynamodb-local:
+        image: 'amazon/dynamodb-local:3.3.0'
+        ports:
+          - '8000:8000'
+      mocksaml:
+        image: boxyhq/mock-saml:1.4.2
+        ports:
+          - 4000:4000
+        env:
+          APP_URL: http://localhost:4000
+          ENTITY_ID: https://saml.example.com/entityid
+          PUBLIC_KEY: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURiVENDQWxXZ0F3SUJBZ0lVUWR0Q05FRnRGYWF6OUtNYkp6eUhCVm5vMWZFd0RRWUpLb1pJaHZjTkFRRUwKQlFBd1JURUxNQWtHQTFVRUJoTUNSMEl4RXpBUkJnTlZCQWdNQ2xOdmJXVXRVM1JoZEdVeElUQWZCZ05WQkFvTQpHRWx1ZEdWeWJtVjBJRmRwWkdkcGRITWdVSFI1SUV4MFpEQWdGdzB5TkRBME1UUXhNVFUwTkRkYUdBOHpNREl6Ck1EZ3hOakV4TlRRME4xb3dSVEVMTUFrR0ExVUVCaE1DUjBJeEV6QVJCZ05WQkFnTUNsTnZiV1V0VTNSaGRHVXgKSVRBZkJnTlZCQW9NR0VsdWRHVnlibVYwSUZkcFpHZHBkSE1nVUhSNUlFeDBaRENDQVNJd0RRWUpLb1pJaHZjTgpBUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTXpaTFprL2VBUXExZ3BmdWR0cklXdC9MbzZaRjFveXp4T09PV2xmCndSR1ZoT1VjbkEwb2g1SmxXdUQ4TjdEQzMyY2p0OER3dXpRcGZWcWk0M1hOVnhNbG4yTm9NUlJJNVhjQlpYMkYKai9mdnphTG5nUkk1ZkQ3WGxHRGlQcktHOGVWR2YvUzAzYnVWS2d1VzFaSldUL0xlZzlqNWtXS3RxWTA0a3M1SwpET29IN0JOaGNYaXE2R2ZYek5FL0F0WFBKYWF1OU1SRG5ZclYvVFlINENBR2hSclNBc0pROU5zYXJFWjZKN21SClY2VE4xNU9KS2ZpSHhRUURNMWJvTkYzdVMwSkFuc3BtcElHTERlQ0xzdkNHTEwyeGFxVHJXVzVvMnlrWkxsYm4KSThuOG1WcHBQams2MElsVFUyWjJ5TW9ZL0VmRE9CcUIwSWdNa1U3dzlQSVdla01DQXdFQUFhTlRNRkV3SFFZRApWUjBPQkJZRUZCaUNTNEswejdlR2lWYXI2dlUrb2lzWEdkWlVNQjhHQTFVZEl3UVlNQmFBRkJpQ1M0SzB6N2VHCmlWYXI2dlUrb2lzWEdkWlVNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUIKQUNpMFZSN0lHdmdHbmdyL1lpZkxZZzZwWUlFc010cGFsMmYxekMzZGpkRElPTHlmVk12aTJzdUtUazM2MkNGeApXU2lxaVc4UXhPbDZlZTdrUVhTbnpJVlRMb2hwcm5WVFVmeUpXUlpJdThvbGpkREprSE9yekV3YktqZUhsbU1PClZxODZGbzBpN0NnTG1oTjh1dDVyNFdHdytYVElZc2lkZC9SaUFGMlFRMVR4QkJaN3hoZVJlU0o5M0tGd29FbkQKcU5hLzE2VUpsdWpXbmRTMEF2Q09weEFnWXJFL1czbzJqUWVnczZmMnhWemozbFc2WVpEaVg5YXBrUTVKZWlscwp3WFRuSHMvL3dlcCsvWndYbXcrYXQrNXRXRU9ycU15TERDbXpFc294MFBmQUhZdlQ4M0hTMWZtL2RiQUJHNlJwCkcxTU41OUMyYmRxUHd3K0hUVEplZFVvPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=='
+          PRIVATE_KEY: 'LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2d0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktrd2dnU2xBZ0VBQW9JQkFRRE0yUzJaUDNnRUt0WUsKWDduYmF5RnJmeTZPbVJkYU1zOFRqamxwWDhFUmxZVGxISndOS0llU1pWcmcvRGV3d3Q5bkk3ZkE4THMwS1gxYQpvdU4xelZjVEpaOWphREVVU09WM0FXVjloWS8zNzgyaTU0RVNPWHcrMTVSZzRqNnlodkhsUm4vMHROMjdsU29MCmx0V1NWay95M29QWStaRmlyYW1OT0pMT1NnenFCK3dUWVhGNHF1aG4xOHpSUHdMVnp5V21ydlRFUTUySzFmMDIKQitBZ0JvVWEwZ0xDVVBUYkdxeEdlaWU1a1Zla3pkZVRpU240aDhVRUF6Tlc2RFJkN2t0Q1FKN0tacVNCaXczZwppN0x3aGl5OXNXcWs2MWx1YU5zcEdTNVc1eVBKL0psYWFUNDVPdENKVTFObWRzaktHUHhId3pnYWdkQ0lESkZPCjhQVHlGbnBEQWdNQkFBRUNnZ0VBQ0NPbytDblpidkQweUR5OWVjWnI4WVdBS0JKVkp6UlZuZ1ZNcXE4dlVLK00KTkQ1S3hRc1ROL0huQm9GL0JQcjVQWFBoM1R5emM0TWlnL05zN2tWV2JHQldVUERXNG1OekdxTm5rUEU1b3pSWQpDMXovZCtYbzFlWmk4dWFLYnpXRmJ3SzZHdE1FN0dzazNJa0Z1MmJLam0vZzlVSVZVTUp0dGpyRk9vVWV0ajNBCkpFWU5TZFplWFA2Z0RXeitlR0F6V2RXRnlNZ1hHT0hCanVMekt1S3kwb2xQaUFHRTJIMlhicHlCSEk2K09taHUKemU4VEhYSUg0YW1TOTdaN0ZlWTdZaDZPV0xoeVByaVh3VGZjNk1NaktubUdWOWQ3RytVanIyS3NVNGtYMG1MRApQKzhsS1NqVnFvUjF2YUswWEJiV0Fnd0kwbVd4TjhQMFZqSzRjMzJUNFFLQmdRRG9wZUJ6cE1xVjFlY24ydkFzCnkvRW5JeXdMcUlBVUZuRXRsRnlnMkVOM2ZZMDRkUTBqOWNzM0ZqbXNQK3grYjA1U2pJK05vVVQzRUowNC96Uk8KMFcvcmc0cEVTUlNDOHRtelliUGkycktrc2xLSDhmUWd2YzZKV1FVUThsWWx2elh6OTZiTFlxeFNtK0EwZ1Z4QQpEc2JNQk5NZDEzdk5Wa1VjTURsMnNveTNMUUtCZ1FEaGFQWnF4QzRxSVB1TlhOZE5EbExRVGZIWGxFMzRRTXVaCnNiM3J1NVdwbkJOdWpCU0xHREV2a0pvckprcUZ1b3VYUnVOOGIrd3BObi9lc0c3TjZyM3o5bHltRkI1VE1Ba3kKTlBPR0dDNWdqOU0wVytGTmw4M2dIVkN6eVgxa3VyR2t1amVHM1F1b2RoYXZBaWpqUzdnNW5Nb1J3OEpwcitUdwp4NEtKMC92ZEx3S0JnUURBSjVHMXNweXBHVjJ0YTRZSVdnSTZvekJVQ0w2UTJPQnVGeVpTcTQwOStuTlQrRW44Ck01Mi9TQm9talQzV1NEVFd0Y1l6NHNuRmp2RnRERXkxOVFLTjhiMllIUXhXQkNPUHA5a2VQQ2hsSSt4SzRLc1YKQi9DNVBNK1VhYlNCeE9iWk5PbU0vMWo1ZWttNjFFWFBtdVRUeWdCZG00ZGoyQ2VJMnNQN3FBblZtUUtCZ1FDZgp0T0N5OE9ETWxLWG1tTnNyQzNUOWhkeE9KQlBDU3haMmhRck5WUkZMSlB4WG5RU0pNTkRZcEptMjdPQnNNNm5uCnV5QSs4SVhoQlc0Lzk3M3FRK0htVXExK05rN3VIZURHSStKUEpoN2w1OEY3SFlaYWxhNFdsbTZ4azVjMm9WaHcKSUVoclUzNkpFM0lxK1ZyREFNazhlS3hyUGNvblc2cllObU4xQ0M4eG5RS0JnUURiOGZTeDBQcHg1WisxL2tCMwpxVGc2RDJYY1YyZGVWNFdsOS9JQ2owRHFqaGpXekJjaThuTjUyb3ZoSmVXcFVxWnJ1eStVWTg2cVRuK09oNGVJClNkZFRBb0F2cU1sL2gzVzdCRUdad2NsclRJSWRqTHVmK0FuRGN5S0lKY21CUG9JZGsydzZ4dkNWczJqbmdEOTMKcjZ0R3VoNHlvM2pIRkRTR0Y3dDdCRk5RSEE9PQotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg=='
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v6
         with:
           always-auth: true
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org
           scope: '@boxyhq'
           cache: 'npm'
-      - name: Setup Next.js cache
-        uses: actions/cache@v2
+          check-latest: true
+      - name: Run docker-compose up
+        id: docker_compose
+        uses: isbang/compose-action@v2.5.0
         with:
-          path: ${{ github.workspace }}/.next/cache
+          compose-file: './_dev/docker-compose-cockroachdb.yml'
+      - run: node -v
+      - run: npm -v
+      - name: Setup Next.js cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
           # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-      - run: npm install
+      - run: npm i
+      - run: npm run check-lint
+      - run: npm run check-types
+      - run: npm run check-format
+      - run: npm run check-locale
       - run: npm run build
+      - run: npm run db:migration:run:planetscale
+        working-directory: ./npm
+      - run: npm run test
+        working-directory: ./npm
       - name: Install playwright browser dependencies
         run: npx playwright install chromium
       - name: e2e tests
-        run: npx ts-node --log-error e2e/seedAuthDb.ts && npx playwright test
-      - run: npm run test
-        working-directory: ./npm
-      - run: |
-          npm install
-          npm run build
+        run: npx ts-node --log-error e2e/support/pretest.ts && npx playwright test -x
+      - name: Upload e2e trace
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 2
+      - id: version
+        name: Generate NPM_VERSION and PUBLISH_TAG
+        run: |
           npm install -g json
           JACKSON_VERSION=$(echo $(cat ../package.json) | json version)
 
           publishTag="latest"
+          imageSuffix=""
+          BOXYHQ_GITHUB_REPO="boxyhq/jackson"
+          imagePath="${BOXYHQ_GITHUB_REPO}"
 
           if [[ "$GITHUB_REF" == *\/release ]]
           then
@@ -113,73 +188,61 @@ jobs:
           else
             echo "Dev branch"
             publishTag="beta"
+            imageSuffix="-beta"
+            imagePath="${BOXYHQ_GITHUB_REPO}-beta"
             JACKSON_VERSION="${JACKSON_VERSION}-beta.${GITHUB_RUN_NUMBER}"
           fi
 
-          echo ${JACKSON_VERSION} > npmversion.txt
-          echo ${publishTag} > publishTag.txt
+          echo "NPM_VERSION=${JACKSON_VERSION}" >> $GITHUB_OUTPUT
+          echo "PUBLISH_TAG=${publishTag}" >> $GITHUB_OUTPUT
+          echo "IMAGE_SUFFIX=${imageSuffix}" >> $GITHUB_OUTPUT
+          echo "IMAGE_PATH=${imagePath}" >> $GITHUB_OUTPUT
+          echo "BOXYHQ_GITHUB_REPO=${BOXYHQ_GITHUB_REPO}" >> $GITHUB_OUTPUT
 
-          echo $(cat npmversion.txt)
-          echo $(cat publishTag.txt)
         working-directory: ./npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Upload saml-jackson npm version
-        uses: actions/upload-artifact@v2
-        with:
-          name: npmversion
-          path: ./npm/npmversion.txt
-      - name: Upload saml-jackson publish tag
-        uses: actions/upload-artifact@v2
-        with:
-          name: publishTag
-          path: ./npm/publishTag.txt
 
   build:
     needs: ci
     runs-on: ubuntu-latest
-
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
-      - name: Download saml-jackson npm version
-        uses: actions/download-artifact@v2
-        with:
-          name: npmversion
-
-      - name: Get saml-jackson npm version
-        id: npmversion
-        run: echo "::set-output name=npmversion::$(cat npmversion.txt)"
-
-      - run: echo ${{ steps.npmversion.outputs.npmversion }}
+      - run: echo ${{ needs.ci.outputs.NPM_VERSION }}
+      - run: echo ${{ needs.ci.outputs.IMAGE_PATH }}
 
       - name: Get short SHA
         id: slug
-        run: echo "::set-output name=sha7::$(echo ${GITHUB_SHA} | cut -c1-7)"
+        run: echo "SHA7=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
 
       - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/release'
-        uses: docker/login-action@v1
+        if: github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/tags/beta-v')
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build and push
-        if: github.ref == 'refs/heads/release'
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v7
         with:
           context: ./
           file: ./Dockerfile
-          push: true
-          tags: ${{ github.repository }}:latest,${{ github.repository }}:${{ steps.slug.outputs.sha7 }},${{ github.repository }}:${{ steps.npmversion.outputs.npmversion }}
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/tags/beta-v') }}
+          tags: ${{ needs.ci.outputs.IMAGE_PATH }}:${{ needs.ci.outputs.PUBLISH_TAG }},${{ needs.ci.outputs.IMAGE_PATH }}:${{ steps.slug.outputs.SHA7 }},${{ needs.ci.outputs.IMAGE_PATH }}:${{ needs.ci.outputs.NPM_VERSION }}
 
       - name: Image digest
+        if: github.ref == 'refs/heads/release'
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Login to GitHub Container Registry
@@ -187,21 +250,16 @@ jobs:
         run: |
           echo "${{secrets.GITHUB_TOKEN}}" | docker login ghcr.io -u ${{github.repository_owner}} --password-stdin
 
-      # - name: NPM Package SBOM Scan
-      #   uses: anchore/scan-action@v3
-      #   with:
-      #     path: './npm'
-      #     fail-build: true
-      #     severity-cutoff: high
+      - name: Install Cosign
+        if: github.ref == 'refs/heads/release'
+        uses: sigstore/cosign-installer@main
 
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Install Cosign with brew
-        run: brew install cosign
+      - name: Check install!
+        if: github.ref == 'refs/heads/release'
+        run: cosign version
 
       - name: place the cosign private key in a file
+        if: github.ref == 'refs/heads/release'
         run: 'echo "$COSIGN_KEY" > /tmp/cosign.key'
         shell: bash
         env:
@@ -209,7 +267,7 @@ jobs:
 
       - name: Sign the image
         if: github.ref == 'refs/heads/release'
-        run: cosign sign --key /tmp/cosign.key ${{ github.repository }}:${{ steps.slug.outputs.sha7 }} || true
+        run: cosign sign --key /tmp/cosign.key -y ${{ needs.ci.outputs.IMAGE_PATH }}@${{ steps.docker_build.outputs.digest }}
         env:
           COSIGN_PASSWORD: ${{secrets.COSIGN_PASSWORD}}
 
@@ -218,44 +276,47 @@ jobs:
         with:
           format: spdx
           artifact-name: npm_sbom.spdx
+          upload-artifact-retention: 1
       - name: Publish report [SPDX]
         uses: anchore/sbom-action/publish-sbom@v0
         with:
           sbom-artifact-match: ".*\\.spdx$"
-      - name: Create NPM Pacakge SBOM Report [CycloneDx]
+      - name: Create NPM Package SBOM Report [CycloneDx]
         uses: anchore/sbom-action@v0
         with:
           format: cyclonedx
           artifact-name: npm_sbom.cyclonedx
+          upload-artifact-retention: 1
       - name: Publish report [CycloneDx]
         uses: anchore/sbom-action/publish-sbom@v0
         with:
           sbom-artifact-match: ".*\\.cyclonedx$"
       - name: Download artifact for SPDX Report
-        uses: actions/download-artifact@v2
+        if: github.ref == 'refs/heads/release'
+        uses: actions/download-artifact@v8
         with:
           name: npm_sbom.spdx
       - name: Download artifact for CycloneDx Report
-        uses: actions/download-artifact@v2
+        if: github.ref == 'refs/heads/release'
+        uses: actions/download-artifact@v8
         with:
           name: npm_sbom.cyclonedx
       - name: Remove older SBOMs
+        if: github.ref == 'refs/heads/release'
         run: rm -rf ./npm/sbom*.* || true
       - name: Move SPDX Report
+        if: github.ref == 'refs/heads/release'
         run: mv npm_sbom.spdx "./npm/sbom.spdx"
       - name: Move CycloneDx Report
+        if: github.ref == 'refs/heads/release'
         run: mv npm_sbom.cyclonedx "./npm/sbom.cyclonedx"
-      # - name: Next Js Project Scan
-      #   uses: anchore/scan-action@v3
-      #   with:
-      #     path: './'
-      #     fail-build: true
-      #     severity-cutoff: high
+
       - name: Next Js Project SBOM Report [SPDX]
         uses: anchore/sbom-action@v0
         with:
           format: spdx
           artifact-name: sbom.spdx
+          upload-artifact-retention: 1
       - name: Publish report [SPDX]
         uses: anchore/sbom-action/publish-sbom@v0
         with:
@@ -265,118 +326,149 @@ jobs:
         with:
           format: cyclonedx
           artifact-name: sbom.cyclonedx
+          upload-artifact-retention: 1
       - name: Publish report [CycloneDx]
         uses: anchore/sbom-action/publish-sbom@v0
         with:
           sbom-artifact-match: ".*\\.cyclonedx$"
       - name: Remove older SBOMs
+        if: github.ref == 'refs/heads/release'
         run: rm -rf sbom*.* || true
       - name: Download artifact for SPDX Report
-        uses: actions/download-artifact@v2
+        if: github.ref == 'refs/heads/release'
+        uses: actions/download-artifact@v8
         with:
           name: sbom.spdx
       - name: Download artifact for CycloneDx Report
-        uses: actions/download-artifact@v2
+        if: github.ref == 'refs/heads/release'
+        uses: actions/download-artifact@v8
         with:
           name: sbom.cyclonedx
-      - name: Scan docker image using TERN
-        uses: philips-labs/tern-action@v1.1.0
-        id: scan
+
+      - name: Create SBOM Report [Docker][SPDX]
+        if: github.ref == 'refs/heads/release'
+        uses: anchore/sbom-action@v0
         with:
-          image: ${{ github.repository }}:latest
-          format: spdxtagvalue
-          output: docker_sbom.spdx
-      - name: Create/Clear folder
+          image: ${{ needs.ci.outputs.IMAGE_PATH }}:${{ needs.ci.outputs.PUBLISH_TAG }}
+          format: spdx
+          artifact-name: docker_sbom.spdx
+          upload-artifact-retention: 1
+      - name: Publish report [Docker][SPDX]
+        if: github.ref == 'refs/heads/release'
+        uses: anchore/sbom-action/publish-sbom@v0
+        with:
+          sbom-artifact-match: ".*\\.spdx$"
+      - name: Create SBOM Report [Docker][CycloneDx]
+        if: github.ref == 'refs/heads/release'
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ needs.ci.outputs.IMAGE_PATH }}:${{ needs.ci.outputs.PUBLISH_TAG }}
+          format: cyclonedx
+          artifact-name: docker_sbom.cyclonedx
+          upload-artifact-retention: 1
+      - name: Publish report [Docker][CycloneDx]
+        if: github.ref == 'refs/heads/release'
+        uses: anchore/sbom-action/publish-sbom@v0
+        with:
+          sbom-artifact-match: ".*\\.cyclonedx$"
+      - name: Download artifact for SPDX Report [Docker]
+        if: github.ref == 'refs/heads/release'
+        uses: actions/download-artifact@v8
+        with:
+          name: docker_sbom.spdx
+      - name: Download artifact for CycloneDx Report [Docker]
+        if: github.ref == 'refs/heads/release'
+        uses: actions/download-artifact@v8
+        with:
+          name: docker_sbom.cyclonedx
+      - name: Create/Clear folder [Docker]
+        if: github.ref == 'refs/heads/release'
         run: mkdir -p ./_docker/ && rm -rf ./_docker/*.* || true
-      - name: Docker CycloneDx report
-        run: npm install -g @appthreat/cdxgen && cdxgen ${{ github.repository }}:latest -o ./_docker/sbom.xml -t docker
+
       - name: Move Report & cleanup
-        run: |
-          mv docker_sbom.spdx "./_docker/sbom.spdx"
-          rm results.sarif || true
-          rm ./_docker/sbom.json || true
-          mv ./_docker/sbom.xml ./_docker/sbom.cyclonedx || true
-      - name: Download saml-jackson npm version
-        uses: actions/download-artifact@v2
-        with:
-          name: npmversion
-      - name: Get saml-jackson npm version
-        id: _npmversion
-        run: echo "::set-output name=npmversion::$(cat npmversion.txt)"
-      - name: ORAS Setup & Push SBOM reports to GitHub Container Registry
         if: github.ref == 'refs/heads/release'
         run: |
-          ORAS_VERSION="0.8.1"
+          mv docker_sbom.spdx "./_docker/sbom.spdx" || true
+          mv docker_sbom.cyclonedx "./_docker/sbom.cyclonedx" || true
+
+      - name: ORAS Setup
+        if: github.ref == 'refs/heads/release'
+        run: |
+          ORAS_VERSION="v0.8.1"
           ORAS_FILENAME="oras_0.8.1_linux_amd64.tar.gz"
-          curl -LO "https://cdn.bundle.bar/clients/oras/${ORAS_VERSION}/${ORAS_FILENAME}"
+          curl -LO "https://github.com/oras-project/oras/releases/download/${ORAS_VERSION}/${ORAS_FILENAME}"
           mkdir oras_install
           tar -xvf "${ORAS_FILENAME}" -C oras_install
-          ./oras_install/oras push ghcr.io/${{github.repository_owner}}/jackson/sbom:service-${{ steps._npmversion.outputs.npmversion }} ./sbom.*
+
+      - name: Push SBOM reports to GitHub Container Registry & Sign the sbom images
+        if: github.ref == 'refs/heads/release-disabled'
+        run: |
+          result=$(./oras_install/oras push ghcr.io/${{ needs.ci.outputs.BOXYHQ_GITHUB_REPO }}/sbom${{ needs.ci.outputs.IMAGE_SUFFIX }}:service-${{ needs.ci.outputs.NPM_VERSION }} ./sbom.*)
+          ORAS_DIGEST=$(echo $result | grep -oE 'sha256:[a-f0-9]{64}')
+          if [ -z "$ORAS_DIGEST" ]; then
+            echo "Error: ORAS_DIGEST is empty"
+            exit 1
+          fi
+          cosign sign -y --key /tmp/cosign.key ghcr.io/${{ needs.ci.outputs.BOXYHQ_GITHUB_REPO }}/sbom${{ needs.ci.outputs.IMAGE_SUFFIX }}@${ORAS_DIGEST}
           cd _docker
-          ../oras_install/oras push ghcr.io/${{github.repository_owner}}/jackson/sbom:docker-${{ steps._npmversion.outputs.npmversion }} ./sbom.*
+          result=$(../oras_install/oras push ghcr.io/${{ needs.ci.outputs.BOXYHQ_GITHUB_REPO }}/sbom${{ needs.ci.outputs.IMAGE_SUFFIX }}:docker-${{ needs.ci.outputs.NPM_VERSION }} ./sbom.*)
+          ORAS_DIGEST=$(echo $result | grep -oE 'sha256:[a-f0-9]{64}')
+          if [ -z "$ORAS_DIGEST" ]; then
+            echo "Error: ORAS_DIGEST is empty"
+            exit 1
+          fi
+          cosign sign -y --key /tmp/cosign.key ghcr.io/${{ needs.ci.outputs.BOXYHQ_GITHUB_REPO }}/sbom${{ needs.ci.outputs.IMAGE_SUFFIX }}@${ORAS_DIGEST}
           cd ..
           cd npm
-          ../oras_install/oras push ghcr.io/${{github.repository_owner}}/jackson/sbom:npm-${{ steps._npmversion.outputs.npmversion }} ./sbom.*
+          result=$(../oras_install/oras push ghcr.io/${{ needs.ci.outputs.BOXYHQ_GITHUB_REPO }}/sbom${{ needs.ci.outputs.IMAGE_SUFFIX }}:npm-${{ needs.ci.outputs.NPM_VERSION }} ./sbom.*)
+          ORAS_DIGEST=$(echo $result | grep -oE 'sha256:[a-f0-9]{64}')
+          if [ -z "$ORAS_DIGEST" ]; then
+            echo "Error: ORAS_DIGEST is empty"
+            exit 1
+          fi
+          cosign sign -y --key /tmp/cosign.key ghcr.io/${{ needs.ci.outputs.BOXYHQ_GITHUB_REPO }}/sbom${{ needs.ci.outputs.IMAGE_SUFFIX }}@${ORAS_DIGEST}
           cd ..
-
-      - name: Sign the sbom images
-        if: github.ref == 'refs/heads/release'
-        run: |
-          cosign sign --key /tmp/cosign.key ghcr.io/${{github.repository_owner}}/jackson/sbom:service-${{ steps._npmversion.outputs.npmversion }} || true
-          cosign sign --key /tmp/cosign.key ghcr.io/${{github.repository_owner}}/jackson/sbom:docker-${{ steps._npmversion.outputs.npmversion }} || true
-          cosign sign --key /tmp/cosign.key ghcr.io/${{github.repository_owner}}/jackson/sbom:npm-${{ steps._npmversion.outputs.npmversion }} || true
         env:
           COSIGN_PASSWORD: ${{secrets.COSIGN_PASSWORD}}
   publish:
-    needs: build
+    needs: [ci, build]
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [24]
+        package: [npm, internal-ui]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Download saml-jackson npm version
-        uses: actions/download-artifact@v2
-        with:
-          name: npmversion
-      - name: Get saml-jackson npm version
-        id: npmversion
-        run: echo "::set-output name=npmversion::$(cat npmversion.txt)"
-      - run: echo ${{ steps.npmversion.outputs.npmversion }}
-
-      - name: Download saml-jackson publish tag
-        uses: actions/download-artifact@v2
-        with:
-          name: publishTag
-      - name: Get saml-jackson npm version
-        id: publishTag
-        run: echo "::set-output name=publishTag::$(cat publishTag.txt)"
-      - run: echo ${{ steps.publishTag.outputs.publishTag }}
+      - uses: actions/checkout@v6
+      - run: echo ${{ needs.ci.outputs.NPM_VERSION }}
+      - run: echo ${{ needs.ci.outputs.PUBLISH_TAG }}
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v6
         with:
           always-auth: true
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org
           scope: '@boxyhq'
           cache: 'npm'
-      - run: npm install
-        working-directory: ./npm
-
-      - name: Publish NPM
+          check-latest: true
+      - run: ${{ matrix.package == 'internal-ui' && 'npm install' || matrix.package == 'npm' && 'npm install --legacy-peer-deps' }}
+        working-directory: ./${{ matrix.package }}
+      - name: Build ${{ matrix.package }}
+        if: github.ref != 'refs/heads/release' && !contains(github.ref, 'refs/tags/beta-v')
+        run: npm run build
+        working-directory: ./${{ matrix.package }}
+      - name: Publish ${{ matrix.package }}
         if: github.ref == 'refs/heads/release' || contains(github.ref, 'refs/tags/beta-v')
         run: |
           npm install -g json
-          JACKSON_VERSION=${{ steps.npmversion.outputs.npmversion }}
+          JACKSON_VERSION=${{ needs.ci.outputs.NPM_VERSION }}
           json -I -f package.json -e "this.main=\"dist/index.js\""
           json -I -f package.json -e "this.types=\"dist/index.d.ts\""
           json -I -f package.json -e "this.version=\"${JACKSON_VERSION}\""
 
-          npm publish --tag ${{ steps.publishTag.outputs.publishTag }} --access public
-        working-directory: ./npm
+          npm publish --tag ${{ needs.ci.outputs.PUBLISH_TAG }} --access public
+        working-directory: ./${{ matrix.package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

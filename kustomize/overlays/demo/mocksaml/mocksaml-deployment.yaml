@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mocksaml
+spec:
+  selector:
+    matchLabels:
+      tier: mocksaml
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mocksaml
+        tier: mocksaml
+    spec:
+      containers:
+        - name: mocksaml
+          image: boxyhq/mock-saml:tagwillbereplaced
+          imagePullPolicy: IfNotPresent
+          startupProbe:
+            httpGet:
+              port: 4000
+              path: /api/health
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              port: 4000
+              path: /api/health
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+            successThreshold: 2
+          ports:
+            - containerPort: 4000
+              name: http
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: mocksaml
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 500m

@@ -3,9 +3,16 @@ module.exports = {
   bracketSameLine: true,
   singleQuote: true,
   jsxSingleQuote: true,
-  trailingComma: "es5",
+  trailingComma: 'es5',
   semi: true,
   printWidth: 110,
-  arrowParens: "always",
-  importOrderSeparation: true,
+  arrowParens: 'always',
+  overrides: [
+    {
+      files: ['tsconfig.json', 'jsconfig.json'],
+      options: {
+        parser: 'jsonc',
+      },
+    },
+  ],
 };

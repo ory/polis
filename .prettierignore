@@ -5,6 +5,12 @@ public
 **/**/.next
 **/**/public
 npm/migration/**
+npm/dist/**
+npm/.nyc_output/**
+.vscode/**
+next-env.d.ts
+
+npm/package-lock.json
 
 *.lock
 *.log
@@ -14,3 +20,12 @@ npm/migration/**
 .prettierignore
 .DS_Store
 .eslintignore
+
+**/LICENSE
+swagger/swagger.json
+e2e/state.json
+
+internal-ui/dist/**
+
+helm
+eslint.config.cjs

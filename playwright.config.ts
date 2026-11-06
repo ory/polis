@@ -3,29 +3,40 @@ import path from 'path';
 
 // Reference: https://playwright.dev/docs/test-configuration
 const config: PlaywrightTestConfig = {
-  globalSetup: require.resolve('./e2e/globalSetup'),
+  workers: 1,
+  globalSetup: require.resolve('./e2e/support/globalSetup'),
   // Timeout per test
-  timeout: 30 * 1000,
+  timeout: 100 * 1000,
+  // Assertion timeout
+  expect: {
+    timeout: 10 * 1000,
+  },
   // Test directory
   testDir: path.join(__dirname, 'e2e'),
-  // If a test fails, retry it additional 2 times
-  retries: 2,
-  // Artifacts folder where screenshots, videos, and traces are stored.
-  outputDir: 'test-results/',
+  // If a test fails, retry it additional 3 times
+  retries: 1,
+  reporter: 'html',
 
   // Run your local dev server before starting the tests:
   // https://playwright.dev/docs/test-advanced#launching-a-development-web-server-during-the-tests
   webServer: {
-    command: process.env.CI ? 'npm run start' : 'npm run postgres',
+    command: 'npm run start',
     port: 5225,
     timeout: 60 * 1000,
     reuseExistingServer: !process.env.CI,
+    env: {
+      DEBUG: 'pw:webserver',
+      NEXTAUTH_ADMIN_CREDENTIALS: 'super@boxyhq.com:999login',
+    },
   },
 
   use: {
+    // Base URL for all tests
+    baseURL: 'http://localhost:5225',
+
     // Retry a test if its failing with enabled tracing. This allows you to analyse the DOM, console logs, network traffic etc.
     // More information: https://playwright.dev/docs/trace-viewer
-    trace: 'retry-with-trace',
+    trace: 'retain-on-first-failure',
     storageState: './e2e/state.json',
     headless: !!process.env.CI,
 
@@ -42,6 +53,7 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Chrome'],
         baseURL: 'http://localhost:5225',
         storageState: './e2e/state.json',
+        channel: 'chrome',
       },
     },
     // {

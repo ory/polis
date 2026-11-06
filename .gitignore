@@ -43,3 +43,17 @@ yarn-error.log*
 npmversion.txt
 publishTag.txt
 .env
+_dev/docker/dynamodb/shared-local-instance.db
+public/terminus/sprites.png
+**/.tap/**
+
+internal-ui/dist
+_dev/docker/libsql/iku.db
+
+# tests
+/report
+/test-results/
+/playwright-report/
+/playwright/.cache/
+.idea
+_dev/cockroach-data

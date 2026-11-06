@@ -1,0 +1,41 @@
+networks:
+  jackson:
+
+services:
+  postgres:
+    image: postgres:18.3
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=''
+      - POSTGRES_HOST_AUTH_METHOD='trust'
+    networks:
+      - jackson
+    ports:
+      - 5432:5432
+  jackson:
+    image: boxyhq/jackson:1.52.2
+    restart: always
+    environment:
+      - JACKSON_API_KEYS=secret
+      - DB_URL=postgres://postgres:postgres@postgres:5432/postgres
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM=${SMTP_FROM}
+      - EXTERNAL_URL=http://localhost:5225
+      - NEXTAUTH_URL=http://localhost:5225
+      - NEXTAUTH_SECRET=secret
+      - NEXTAUTH_ACL=${NEXTAUTH_ACL}
+      - NEXTAUTH_ADMIN_CREDENTIALS=${NEXTAUTH_ADMIN_CREDENTIALS}
+      - OPENID_RSA_PRIVATE_KEY=${OPENID_RSA_PRIVATE_KEY}
+      - OPENID_RSA_PUBLIC_KEY=${OPENID_RSA_PUBLIC_KEY}
+      - DSYNC_GOOGLE_CLIENT_ID=${DSYNC_GOOGLE_CLIENT_ID}
+      - DSYNC_GOOGLE_CLIENT_SECRET=${DSYNC_GOOGLE_CLIENT_SECRET}
+      - BOXYHQ_LICENSE_KEY=${BOXYHQ_LICENSE_KEY}
+    networks:
+      - jackson
+    ports:
+      - 5225:5225
+    depends_on:
+      - postgres

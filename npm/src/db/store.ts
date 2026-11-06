@@ -1,4 +1,4 @@
-import { Index, Storable } from '../typings';
+import { Index, Records, SortOrder, Storable } from '../typings';
 import * as dbutils from './utils';
 
 class Store implements Storable {
@@ -16,14 +16,30 @@ class Store implements Storable {
     return await this.db.get(this.namespace, dbutils.keyDigest(key));
   }
 
-  async getAll(pageOffset?: number, pageLimit?: number): Promise<unknown[]> {
-    return await this.db.getAll(this.namespace, pageOffset, pageLimit);
+  async getAll(
+    pageOffset?: number,
+    pageLimit?: number,
+    pageToken?: string,
+    sortOrder?: SortOrder
+  ): Promise<Records> {
+    return await this.db.getAll(this.namespace, pageOffset, pageLimit, pageToken, sortOrder);
   }
 
-  async getByIndex(idx: Index): Promise<any> {
+  async getByIndex(
+    idx: Index,
+    pageOffset?: number,
+    pageLimit?: number,
+    pageToken?: string,
+    sortOrder?: SortOrder
+  ): Promise<Records> {
     idx.value = dbutils.keyDigest(idx.value);
 
-    return await this.db.getByIndex(this.namespace, idx);
+    return await this.db.getByIndex(this.namespace, idx, pageOffset, pageLimit, pageToken, sortOrder);
+  }
+
+  async getCount(idx?: Index) {
+    idx && (idx.value = dbutils.keyDigest(idx.value));
+    return await this.db.getCount(this.namespace, idx);
   }
 
   async put(key: string, val: any, ...indexes: Index[]): Promise<any> {
@@ -37,6 +53,13 @@ class Store implements Storable {
 
   async delete(key: string): Promise<any> {
     return await this.db.delete(this.namespace, dbutils.keyDigest(key));
+  }
+
+  async deleteMany(keys: string[]): Promise<void> {
+    return await this.db.deleteMany(
+      this.namespace,
+      keys.map((key) => dbutils.keyDigest(key))
+    );
   }
 }
 

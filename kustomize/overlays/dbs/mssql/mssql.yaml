@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jackson-mssql
+  labels:
+    app: mssql
+spec:
+  type: ClusterIP
+  ports:
+    - name: mssql
+      port: 1433
+      targetPort: 1433
+  selector:
+    app: mssql
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jackson-mssql
+spec:
+  selector:
+    matchLabels:
+      app: mssql
+  serviceName: jackson-mssql
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      containers:
+        - name: mssql
+          image: mcr.microsoft.com/mssql/server:2025-latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ACCEPT_EULA
+              value: 'Y'
+            - name: SA_PASSWORD
+              value: '123ABabc!'
+          ports:
+            - name: mssql
+              containerPort: 1433
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #       - /opt/mssql-tools/bin/sqlcmd
+          #       - -S
+          #       - localhost
+          #       - -U
+          #       - sa
+          #       - -P
+          #       - '123ABabc!'
+          #       - -Q
+          #       - 'SELECT 1'
+          #   initialDelaySeconds: 30
+          #   timeoutSeconds: 5
+          #   failureThreshold: 3
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #       - /opt/mssql-tools/bin/sqlcmd
+          #       - -S
+          #       - localhost
+          #       - -U
+          #       - sa
+          #       - -P
+          #       - '123ABabc!'
+          #       - -Q
+          #       - 'SELECT 1'
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 1
+          #   periodSeconds: 10
+          volumeMounts:
+            - name: jackson-mssql-data
+              mountPath: /var/opt/mssql/data
+      volumes:
+        - name: jackson-mssql-data
+          persistentVolumeClaim:
+            claimName: jackson-mssql-data
+  volumeClaimTemplates:
+    - metadata:
+        name: jackson-mssql-data
+      spec:
+        accessModes:
+          - 'ReadWriteOnce'
+        resources:
+          requests:
+            storage: 1Gi

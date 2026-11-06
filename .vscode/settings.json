@@ -3,6 +3,7 @@
   "files.exclude": {
     "**/.next": true,
     "**/.nyc_output": true,
+    "**/dist": true,
     "**/node_modules": true
   }
 }

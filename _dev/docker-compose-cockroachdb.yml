@@ -1,0 +1,8 @@
+services:
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v25.4
+    platform: linux/amd64
+    ports:
+      - '26257:26257'
+      - '8081:8080'
+    command: start-single-node --insecure

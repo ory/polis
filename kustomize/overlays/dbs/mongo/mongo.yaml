@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jackson-mongo
+  labels:
+    app: mongo
+spec:
+  type: ClusterIP
+  ports:
+    - name: mongo
+      port: 27017
+      targetPort: 27017
+  selector:
+    app: mongo
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jackson-mongo
+spec:
+  selector:
+    matchLabels:
+      app: mongo
+  serviceName: jackson-mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:7.0.12
+          imagePullPolicy: IfNotPresent
+          env:
+            # - name: MONGO_INITDB_ROOT_USERNAME
+            #   value: mongo
+            # - name: MONGO_INITDB_ROOT_PASSWORD
+            #   value: password
+            - name: MONGO_INITDB_DATABASE
+              value: jackson
+            # - name: MONGO_URI
+            #   value: mongodb://jackson-mongo:27017/jackson
+          ports:
+            - name: mongo
+              containerPort: 27017
+          livenessProbe:
+            exec:
+              command:
+                - mongo
+                - --eval
+                - db.adminCommand('ping')
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - mongo
+                - --eval
+                - db.adminCommand('ping')
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+          volumeMounts:
+            - name: jackson-mongo-data
+              mountPath: /data/db
+      volumes:
+        - name: jackson-mongo-data
+          persistentVolumeClaim:
+            claimName: jackson-mongo-data
+  volumeClaimTemplates:
+    - metadata:
+        name: jackson-mongo-data
+      spec:
+        accessModes:
+          - 'ReadWriteOnce'
+        resources:
+          requests:
+            storage: 1Gi

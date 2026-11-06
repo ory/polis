@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "sourceMap": true,
     "outDir": "./dist",
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,11 +19,11 @@
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules"],
   "ts-node": {
-    "files": true
-  }
+    "files": true,
+  },
 }

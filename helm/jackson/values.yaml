@@ -1,0 +1,36 @@
+internal:
+  ports:
+  - name: original
+    port: 5225
+    targetPort: 5225
+  type: ClusterIP
+jackson:
+  dbManualMigration: "true"
+  dbUrl: postgres://postgres:password@jackson-postgres:5432/postgres
+  jackson:
+    image:
+      repository: boxyhq/jackson
+      tag: 1.52.2
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 500m
+      requests:
+        cpu: 100m
+  jacksonApiKeys: secret
+  nextauthSecret: secret
+  nextauthUrl: http://localhost:5225
+  ports:
+  - name: original
+    port: 5225
+    targetPort: 5225
+  replicas: 1
+  type: LoadBalancer
+kubernetesClusterDomain: cluster.local
+migratePg:
+  db:
+    image:
+      repository: boxyhq/jackson
+      tag: 1.52.2
+    imagePullPolicy: IfNotPresent
+

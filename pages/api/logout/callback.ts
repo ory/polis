@@ -2,11 +2,16 @@ import jackson from '@lib/jackson';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    throw new Error(`Method ${req.method} not allowed`);
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    throw { message: 'Method not allowed', statusCode: 405 };
   }
 
-  const { SAMLResponse, RelayState } = req.body;
+  let body = req.body;
+  if (req.method === 'GET') {
+    body = req.query;
+  }
+
+  const { SAMLResponse, RelayState } = body;
 
   try {
     const { logoutController } = await jackson();

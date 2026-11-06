@@ -1,0 +1,13 @@
+---
+resources:
+  - ../../base
+  - ../../base/services
+  - ../dbs/mariadb
+  - ./secrets.yaml
+
+commonLabels:
+  jacksondev: '1'
+
+images:
+  - name: boxyhq/jackson
+    newTag: 1.52.2

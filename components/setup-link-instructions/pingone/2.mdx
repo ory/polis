@@ -1,0 +1,26 @@
+## Step 2: Configure Application
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/pingone/2.png)
+
+From the next screen, you have to enter the following values in the **SAML Configuration** section:
+
+<div className='flex flex-col gap-4'>
+  <div>
+    <InputWithCopyButton text={spConfig.acsUrl} label='ACS URLs' />
+  </div>
+  <div>
+    <InputWithCopyButton text={spConfig.entityId} label='Entity ID' />
+  </div>
+</div>
+
+<AdvancedSPConfigLink />
+
+Click **Save** to save the configuration.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/pingone/3.png)
+
+Click the **Configuration** tab from the top and click **Download Metadata** to download the metadata XML file.
+
+![img alt](https://cdn.boxyhq.com/docs/sso/providers/pingone/4.png)
+
+<Footer />

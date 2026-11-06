@@ -10,8 +10,18 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
-    Droid Sans, Helvetica Neue, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
 }
 
 a {
@@ -23,22 +33,116 @@ a {
   box-sizing: border-box;
 }
 
-.theme-default {
-  --color-primary: 37 194 160;
-  --color-secondary: 48 56 70;
+@layer base {
+  input:not([type='radio']):not([type='checkbox']) {
+    @apply rounded !important;
+  }
 }
 
 @layer components {
   #__next {
     @apply h-full;
   }
+
+  .btn {
+    @apply min-h-8 h-10 rounded normal-case;
+  }
+
   .btn-primary {
-    @apply cursor-pointer rounded-lg bg-primary/70 px-4 py-2 font-semibold text-white shadow-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-75;
+    @apply text-white;
   }
-  .btn-secondary {
-    @apply btn-primary bg-white font-medium text-gray-900 hover:bg-white disabled:cursor-not-allowed disabled:bg-gray-50;
+
+  .btn-primary:focus-visible {
+    @apply outline-primary;
   }
-  .link-primary {
-    @apply mt-2 flex items-center px-4 py-2 font-medium text-secondary/90 hover:font-bold dark:text-gray-400 dark:hover:text-gray-300 md:text-sm md:leading-6;
+
+  .btn-error {
+    @apply text-white;
   }
+
+  .btn-error:focus-visible {
+    @apply outline-error;
+  }
+
+  .modal-box {
+    @apply rounded;
+  }
+
+  .card {
+    @apply rounded;
+  }
+}
+
+.react-datepicker {
+  background-color: #fff !important;
+  color: #000 !important;
+  border: 1px solid #aeaeae !important;
+  border-radius: 0.3rem !important;
+}
+
+.react-datepicker-popper {
+  z-index: 100;
+  border: 1px solid #aeaeae;
+}
+
+.react-datepicker__day-name {
+  font-size: 0.8rem !important;
+}
+
+.react-datepicker__day {
+  font-size: 0.8rem !important;
+}
+
+.react-datepicker__current-month {
+  font-weight: bold !important;
+  font-size: 0.944rem !important;
+}
+
+.SearchEvents {
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
+
+.CustomCheckbox {
+  z-index: 1;
+}
+
+.Input {
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
+
+.react-datepicker__navigation {
+  height: 0;
+}
+
+span.react-datepicker__navigation-icon {
+  display: none;
+}
+
+.react-datepicker__header {
+  border-bottom: 1px solid #aeaeae !important;
+  border-top-left-radius: 0.3rem !important;
+  border-top-right-radius: 0.3rem !important;
+  padding-top: 8px !important;
+}
+
+.react-datepicker__month {
+  margin: 0.4rem !important;
+  text-align: center !important;
+}
+
+.modal-content > div > textarea {
+  background-color: white;
+}
+
+.react-tagsinput {
+  @apply input input-bordered;
+  border-radius: 0.25rem !important;
+}
+
+.react-tagsinput-tag {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid #4f39f6 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.3rem !important;
 }

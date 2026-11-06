@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "moduleResolution": "Node",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "declaration": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "react": ["./node_modules/@types/react"],
+    },
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["dist", "build", "node_modules"],
+}

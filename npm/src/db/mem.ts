@@ -1,6 +1,6 @@
 // This is an in-memory implementation to be used with testing and prototyping only
 
-import { DatabaseDriver, DatabaseOption, Index, Encrypted } from '../typings';
+import { DatabaseDriver, DatabaseOption, Index, Encrypted, Records, SortOrder } from '../typings';
 import * as dbutils from './utils';
 
 class Mem implements DatabaseDriver {
@@ -51,40 +51,87 @@ class Mem implements DatabaseDriver {
     return null;
   }
 
-  async getAll(namespace: string, pageOffset: number, pageLimit: number): Promise<unknown[]> {
-    const offsetAndLimitValueCheck = !dbutils.isNumeric(pageOffset) && !dbutils.isNumeric(pageLimit);
-    let take = Number(offsetAndLimitValueCheck ? this.options.pageLimit : pageLimit);
-    const skip = Number(offsetAndLimitValueCheck ? 0 : pageOffset);
-    let count = 0;
-    take += skip;
+  async getAll(
+    namespace: string,
+    pageOffset?: number,
+    pageLimit?: number,
+    _?: string,
+    sortOrder?: SortOrder
+  ): Promise<Records> {
     const returnValue: string[] = [];
+
+    const { offset: skip, limit } = dbutils.normalizeOffsetAndLimit({
+      pageOffset,
+      pageLimit,
+      maxLimit: this.options.pageLimit!,
+    });
+
+    let take = limit;
+    let count = 0;
+
+    take! += skip!;
+
     if (namespace) {
-      const val: string[] = Array.from(
-        this.indexes[dbutils.keyFromParts(dbutils.createdAtPrefix, namespace)]
-      );
-      const iterator: IterableIterator<string> = val.reverse().values();
+      const index = dbutils.keyFromParts(dbutils.createdAtPrefix, namespace);
+
+      if (this.indexes[index] === undefined) {
+        return { data: [] };
+      }
+
+      const val: string[] = Array.from(this.indexes[index]);
+      const iterator: IterableIterator<string> = sortOrder === 'ASC' ? val.values() : val.reverse().values();
+
       for (const value of iterator) {
-        if (count >= take) {
+        if (count >= take!) {
           break;
         }
-        if (count >= skip) {
+
+        if (count >= skip!) {
           returnValue.push(this.store[dbutils.keyFromParts(namespace, value)]);
         }
+
         count++;
       }
     }
-    return returnValue || [];
+
+    return { data: returnValue || [] };
   }
 
-  async getByIndex(namespace: string, idx: Index): Promise<any> {
-    const dbKeys = await this.indexes[dbutils.keyForIndex(namespace, idx)];
+  async getByIndex(
+    namespace: string,
+    idx: Index,
+    pageOffset?: number,
+    pageLimit?: number,
+    _?: string,
+    sortOrder?: SortOrder
+  ): Promise<Records> {
+    const { offset: skip, limit } = dbutils.normalizeOffsetAndLimit({
+      pageOffset,
+      pageLimit,
+      maxLimit: this.options.pageLimit!,
+    });
 
+    let take = limit;
+
+    let count = 0;
+
+    take! += skip!;
+    const dbKeys = Array.from((await this.indexes[dbutils.keyForIndex(namespace, idx)]) || []) as string[];
+    const iterator: IterableIterator<string> =
+      sortOrder === 'ASC' ? dbKeys.values() : dbKeys.reverse().values();
     const ret: string[] = [];
-    for (const dbKey of dbKeys || []) {
-      ret.push(await this.get(namespace, dbKey));
+    for (const dbKey of iterator || []) {
+      if (count >= take!) {
+        break;
+      }
+      if (count >= skip!) {
+        ret.push(await this.get(namespace, dbKey));
+      }
+
+      count++;
     }
 
-    return ret;
+    return { data: ret };
   }
 
   async put(namespace: string, key: string, val: Encrypted, ttl = 0, ...indexes: any[]): Promise<any> {
@@ -92,7 +139,6 @@ class Mem implements DatabaseDriver {
 
     this.store[k] = val;
 
-    // console.log(this.store)
     if (ttl) {
       this.ttlStore[k] = {
         namespace,
@@ -131,14 +177,6 @@ class Mem implements DatabaseDriver {
         this.store['createdAt'] = new Date().toISOString();
       }
     }
-
-    let modifiedAtSet = this.indexes[dbutils.keyFromParts(dbutils.modifiedAtPrefix, namespace)];
-    if (!modifiedAtSet) {
-      modifiedAtSet = new Set();
-      this.indexes[dbutils.keyFromParts(dbutils.modifiedAtPrefix, namespace)] = modifiedAtSet;
-    }
-    modifiedAtSet.add(key);
-    this.store['modifiedAt'] = new Date().toISOString();
   }
 
   async delete(namespace: string, key: string): Promise<any> {
@@ -153,15 +191,35 @@ class Mem implements DatabaseDriver {
     for (const dbKey of dbKeys || []) {
       this.indexes[dbKey] && this.indexes[dbKey].delete(key);
     }
-    this.indexes[dbutils.keyFromParts(dbutils.createdAtPrefix, namespace)].delete(key);
-    this.indexes[dbutils.keyFromParts(dbutils.modifiedAtPrefix, namespace)].delete(key);
+    if (this.indexes[dbutils.keyFromParts(dbutils.createdAtPrefix, namespace)]) {
+      this.indexes[dbutils.keyFromParts(dbutils.createdAtPrefix, namespace)].delete(key);
+    }
     delete this.cleanup[idxKey];
     delete this.ttlStore[k];
+  }
+
+  async deleteMany(namespace: string, keys: string[]): Promise<void> {
+    if (keys.length === 0) {
+      return;
+    }
+
+    for (const key of keys) {
+      await this.delete(namespace, key);
+    }
+  }
+
+  async close(): Promise<void> {
+    // no-op
+  }
+
+  getStats(): Record<string, number> {
+    // no-op
+    return {};
   }
 }
 
 export default {
-  new: async (options: DatabaseOption) => {
-    return await new Mem(options).init();
+  new: async (options: { db: DatabaseOption }) => {
+    return await new Mem(options.db).init();
   },
 };

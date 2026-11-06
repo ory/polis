@@ -1,0 +1,236 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: jackson
+    jacksondev: "1"
+  {{- include "jackson.labels" . | nindent 4 }}
+  name: {{ include "jackson.fullname" . }}-jackson
+stringData:
+  # BOXYHQ_LICENSE_KEY: ""
+  # DB_CLEANUP_LIMIT: ""
+  # DB_ENCRYPTION_KEY: ""
+  DB_MANUAL_MIGRATION: {{ .Values.jackson.dbManualMigration | quote }}
+  # DB_TTL: ""
+  # DB_TYPE: ""
+  DB_URL: {{ .Values.jackson.dbUrl | quote }}
+  JACKSON_API_KEYS: {{ .Values.jackson.jacksonApiKeys | quote }}
+  # NEXTAUTH_ACL: ""
+  # NEXTAUTH_JWT_SIGNING_PRIVATE_KEY: ""
+  NEXTAUTH_SECRET: {{ .Values.jackson.nextauthSecret | quote }}
+  NEXTAUTH_URL: {{ .Values.jackson.nextauthUrl | quote }}
+  # SAML_AUDIENCE: ""
+  # SMTP_FROM: ""
+  # SMTP_HOST: ""
+  # SMTP_PASSWORD: ""
+  # SMTP_PORT: ""
+  # SMTP_USER: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jackson
+    jacksondev: "1"
+    tier: jackson
+  {{- include "jackson.labels" . | nindent 4 }}
+  name: {{ include "jackson.fullname" . }}-jackson
+spec:
+  ports:
+    {{- .Values.jackson.ports | toYaml | nindent 2 }}
+  selector:
+    app: jackson
+    jacksondev: "1"
+    tier: jackson
+  {{- include "jackson.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.jackson.type }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jackson-internal
+    jacksondev: "1"
+    tier: jackson-internal
+  {{- include "jackson.labels" . | nindent 4 }}
+  name: {{ include "jackson.fullname" . }}-internal
+spec:
+  type: {{ .Values.internal.type }}
+  ports:
+  {{- .Values.internal.ports | toYaml | nindent 2 }}
+  selector:
+    app: jackson
+    jacksondev: "1"
+    tier: jackson
+  {{- include "jackson.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: postgres
+    jacksondev: "1"
+  {{- include "jackson.labels" . | nindent 4 }}
+  name: {{ include "jackson.fullname" . }}-postgres
+spec:
+  ports:
+  {{- .Values.postgres.ports | toYaml | nindent 2 }}
+  selector:
+    app: postgres
+    jacksondev: "1"
+  type: {{ .Values.postgres.type }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    jacksondev: "1"
+  {{- include "jackson.labels" . | nindent 4 }}
+  name: {{ include "jackson.fullname" . }}-jackson
+spec:
+  replicas: {{ .Values.jackson.replicas }}
+  selector:
+    matchLabels:
+      jacksondev: "1"
+      tier: jackson
+    {{- include "jackson.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: jackson
+        jacksondev: "1"
+        tier: jackson
+      {{- include "jackson.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - envFrom:
+            - secretRef:
+                name: {{ include "jackson.fullname" . }}-jackson
+          image: {{ .Values.jackson.jackson.image.repository }}:{{ .Values.jackson.jackson.image.tag
+            | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.jackson.jackson.imagePullPolicy }}
+          name: jackson
+          ports:
+            - containerPort: 5225
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /api/health
+              port: 5225
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 5
+          startupProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /api/health
+              port: 5225
+            periodSeconds: 3
+            timeoutSeconds: 3
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    jacksondev: "1"
+  {{- include "jackson.labels" . | nindent 4 }}
+  name: {{ include "jackson.fullname" . }}-postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+      jacksondev: "1"
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        jacksondev: "1"
+    spec:
+      containers:
+        - env:
+            - name: PGDATA
+              value: {{ quote .Values.postgres.postgres.env.pgdata }}
+            - name: POSTGRES_USER
+              value: {{ quote .Values.postgres.postgres.env.postgresUser }}
+            - name: POSTGRES_PASSWORD
+              value: {{ quote .Values.postgres.postgres.env.postgresPassword }}
+            - name: POSTGRES_DB
+              value: {{ quote .Values.postgres.postgres.env.postgresDb }}
+          image: {{ .Values.postgres.postgres.image.repository }}:{{ .Values.postgres.postgres.image.tag
+            | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.postgres.postgres.imagePullPolicy }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -i
+                - -c
+                - /bin/sh
+                - -i
+                - -c
+                - pg_isready -h 127.0.0.1 -p 5432
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          name: postgres
+          ports:
+            - containerPort: 5432
+              name: postgres
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -i
+                - -c
+                - pg_isready -h 127.0.0.1 -p 5432
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 1
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: jackson-postgres-data
+      volumes:
+        - name: jackson-postgres-data
+          persistentVolumeClaim:
+            claimName: jackson-postgres-data
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          jacksondev: "1"
+        name: jackson-postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    jacksondev: "1"
+  {{- include "jackson.labels" . | nindent 4 }}
+  name: {{ include "jackson.fullname" . }}-migrate-pg
+spec:
+  template:
+    metadata:
+      labels:
+        jacksondev: "1"
+    spec:
+      containers:
+        - command:
+            - /bin/sh
+            - migrate.sh
+          envFrom:
+            - secretRef:
+                name: {{ include "jackson.fullname" . }}-jackson
+          image: {{ .Values.migratePg.db.image.repository }}:{{ .Values.migratePg.db.image.tag
+            | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.migratePg.db.imagePullPolicy }}
+          name: db
+      restartPolicy: OnFailure
+  ttlSecondsAfterFinished: 0
