@@ -78,7 +78,7 @@ export const OAuthErrorResponse = ({
 // https://kentcdodds.com/blog/get-a-catch-block-error-message-with-typescript
 export function getErrorMessage(error: unknown) {
   if (error instanceof saml.WrapError) {
-    return error.message + ' ' + error.inner.message;
+    return error.inner ? error.message + ' ' + error.inner.message : error.message;
   }
   if (error instanceof Error) {
     if (error instanceof JacksonError) {

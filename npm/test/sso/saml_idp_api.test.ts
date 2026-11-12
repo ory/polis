@@ -168,7 +168,7 @@ tap.test('controller/api', async (t) => {
           await connectionAPIController.createSAMLConnection(body as SAMLSSOConnectionWithEncodedMetadata);
           t.fail('Expecting Error.');
         } catch (err: any) {
-          t.match(err.message, /Non-whitespace before first tag./);
+          t.match(err.message, /missing root element/);
         }
       });
     });

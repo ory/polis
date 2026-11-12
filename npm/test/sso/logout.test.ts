@@ -189,6 +189,22 @@ tap.test('LogoutController -> createRequest', async (t) => {
       }
     });
 
+    t.test('Should throw an error when the signature does not verify', async (t) => {
+      // Destination is covered by the signature, so changing it breaks the signature
+      // without tripping the status or request ID checks that run first.
+      const tampered = Buffer.from(
+        logoutResponseXML.replace('Destination="http://localhost:3000/slo"', 'Destination="http://localhost:3000/evil"')
+      ).toString('base64');
+
+      await t.rejects(
+        logoutController.handleResponse({
+          SAMLResponse: tampered,
+          RelayState: relayState,
+        }),
+        { message: 'Invalid signature.', statusCode: 403 }
+      );
+    });
+
     t.test('Return the redirectUrl after the post logout', async (t) => {
       const result = await logoutController.handleResponse({
         SAMLResponse: logoutResponse,
