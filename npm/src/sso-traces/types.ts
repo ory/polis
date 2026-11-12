@@ -1,4 +1,4 @@
-import { SAMLProfile } from '@boxyhq/saml20/dist/typings';
+import type { SAMLProfile } from '@boxyhq/saml20';
 import SSOTraces from '.';
 import { OIDCIdPInitiatedReq } from '../typings';
 

@@ -2,7 +2,7 @@ import saml from '@boxyhq/saml20';
 import crypto from 'crypto';
 import { promisify } from 'util';
 import { deflateRaw } from 'zlib';
-import type { SAMLProfile } from '@boxyhq/saml20/dist/typings';
+import type { SAMLProfile } from '@boxyhq/saml20';
 
 import type {
   Storable,

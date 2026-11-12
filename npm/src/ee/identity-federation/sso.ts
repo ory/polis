@@ -81,8 +81,17 @@ export class SSO {
       context.providerName = providerName;
 
       // Verify the request if it is signed
-      if (publicKey && !saml.validateSignature(decodedRequest, publicKey, null)) {
-        throw new JacksonError(GENERIC_ERR_STRING, 400, 'Invalid SAML Request signature.');
+      if (publicKey) {
+        // validateSignature throws when the signature does not verify (saml20 >= 2.0).
+        let signed: string | null = null;
+        try {
+          signed = saml.validateSignature(decodedRequest, publicKey, null);
+        } catch (_err) {
+          signed = null;
+        }
+        if (!signed) {
+          throw new JacksonError(GENERIC_ERR_STRING, 400, 'Invalid SAML Request signature.');
+        }
       }
 
       app = await this.app.getByEntityId(entityId);

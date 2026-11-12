@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import { deflateRaw } from 'zlib';
 import saml from '@boxyhq/saml20';
 import { validateSSOURL, sigAlg, signQueryString } from './utils';
-import { SAMLProfile } from '@boxyhq/saml20/dist/typings';
+import type { SAMLProfile } from '@boxyhq/saml20';
 import type {
   IOAuthController,
   OAuthReq,

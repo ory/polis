@@ -143,7 +143,12 @@ export class LogoutController {
 
     const { idpMetadata, defaultRedirectUrl }: SAMLConnection = samlConnections[0];
 
-    if (!(await saml.validateSignature(rawResponse, null, idpMetadata.thumbprint))) {
+    // validateSignature throws when the signature does not verify (saml20 >= 2.0).
+    try {
+      if (!(await saml.validateSignature(rawResponse, null, idpMetadata.thumbprint))) {
+        throw new Error('Invalid signature.');
+      }
+    } catch (_err) {
       throw new JacksonError('Invalid signature.', 403);
     }
 
